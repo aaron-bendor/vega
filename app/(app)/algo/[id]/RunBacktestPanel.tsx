@@ -27,9 +27,10 @@ interface RunBacktestPanelProps {
 
 const HORIZONS = [63, 126, 252];
 const DATE_PRESETS = [
-  { label: "2019–2024", start: "2019-01-01", end: "2024-12-31" },
-  { label: "2020–2024", start: "2020-01-01", end: "2024-12-31" },
-  { label: "2022–2024", start: "2022-01-01", end: "2024-12-31" },
+  { label: "1M", start: "2024-01-26", end: "2024-12-31" },
+  { label: "3M", start: "2024-10-01", end: "2024-12-31" },
+  { label: "1Y", start: "2024-01-01", end: "2024-12-31" },
+  { label: "Max", start: "2019-01-01", end: "2024-12-31" },
 ];
 const STOOQ_SYMBOLS = [
   { id: "^spx", label: "S&P 500 (^spx)" },
@@ -71,6 +72,7 @@ export function RunBacktestPanel({
   const [rsiExit, setRsiExit] = useState(defaultParams?.exit ?? 70);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [lastRunAt, setLastRunAt] = useState<Date | null>(null);
   const [result, setResult] = useState<{
     metrics: {
       cumulativeReturn: number;
@@ -157,6 +159,7 @@ export function RunBacktestPanel({
         metrics: data.metrics,
         equityPoints: data.equityPoints ?? [],
       });
+      setLastRunAt(new Date());
     } catch (e) {
       setError(e instanceof Error ? e.message : "Backtest failed");
     } finally {
@@ -166,7 +169,30 @@ export function RunBacktestPanel({
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {lastRunAt && result && (
+        <p className="text-xs text-muted-foreground">
+          Last run: {lastRunAt.toLocaleString()} — {dataSource === "stooq" ? `${symbol}, ${startDate} – ${endDate}` : `${horizon} days synthetic`}
+        </p>
+      )}
+      <div className="flex flex-wrap gap-2">
+        {DATE_PRESETS.map((p) => (
+          <Button
+            key={p.label}
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={loading || dataSource !== "stooq"}
+            onClick={() => {
+              setStartDate(p.start);
+              setEndDate(p.end);
+            }}
+          >
+            {p.label}
+          </Button>
+        ))}
+      </div>
+      <fieldset className="space-y-6" disabled={loading}>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <label className="text-xs font-medium text-muted-foreground mb-1 block">Data source</label>
           <Select value={dataSource} onValueChange={(v) => setDataSource(v as "stooq" | "synthetic")}>
@@ -346,6 +372,10 @@ export function RunBacktestPanel({
       <Button onClick={handleRun} disabled={loading}>
         {loading ? "Running…" : "Run backtest"}
       </Button>
+      </fieldset>
+      {loading && (
+        <p className="text-xs text-muted-foreground">Running… controls disabled.</p>
+      )}
 
       {error && <p className="text-destructive text-sm">{error}</p>}
 

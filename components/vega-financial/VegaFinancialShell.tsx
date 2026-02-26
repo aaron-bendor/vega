@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ProfileSidebar } from "./ProfileSidebar";
 import { FilterSheet } from "./FilterSheet";
+import { FilterChips } from "./FilterChips";
 import { PrototypeBanner } from "@/components/layout/PrototypeBanner";
 import { GlobalHeader } from "@/components/layout/GlobalHeader";
 import { Button } from "@/components/ui/button";
@@ -24,13 +25,11 @@ export function VegaFinancialShell({
       <GlobalHeader />
 
       <div className="flex-1 flex">
-        {/* Desktop sidebar */}
         <div className="hidden lg:block">
           <ProfileSidebar />
         </div>
 
         <div className="flex-1 flex flex-col min-w-0">
-          {/* Sub-header: search + filter */}
           <div className="border-b border-[rgba(51,51,51,0.12)] bg-white">
             <div className="flex items-center gap-3 px-4 lg:px-6 h-12">
               <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
@@ -46,13 +45,16 @@ export function VegaFinancialShell({
               <div className="flex-1 flex items-center gap-2 max-w-md">
                 <Search className="size-4 text-muted-foreground shrink-0" />
                 <Input
-                  placeholder="Search algorithms..."
+                  placeholder="Search algorithms…"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className="h-8 text-sm"
                 />
               </div>
               <FilterSheet />
+            </div>
+            <div className="px-4 lg:px-6 pb-2">
+              <FilterChips />
             </div>
           </div>
           <main className="flex-1 overflow-auto">{children}</main>

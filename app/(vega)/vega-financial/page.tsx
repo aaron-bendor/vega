@@ -85,7 +85,7 @@ async function getAlgorithmsData() {
         shortDesc: a.shortDesc,
         tags: a.tags,
         riskLevel: a.riskLevel ?? "Medium",
-        verified: false,
+        verified: a.verified ?? false,
         return: undefined as number | undefined,
         volatility: undefined as number | undefined,
         maxDrawdown: undefined as number | undefined,
@@ -114,14 +114,21 @@ export default async function VegaFinancialPage() {
   ]);
 
   return (
-    <div className="p-6 space-y-8">
+    <div className="max-w-5xl mx-auto p-6 lg:p-8 space-y-10">
       <section>
-        <h2 className="text-base font-semibold mb-4 text-foreground">Portfolio overview</h2>
+        <div className="flex items-baseline justify-between gap-4 mb-4">
+          <h2 className="text-base font-semibold text-foreground">Portfolio overview</h2>
+        </div>
         <PortfolioOverview account={account} />
       </section>
 
-      <section>
-        <h2 className="text-base font-semibold mb-4 text-foreground">Algorithms</h2>
+      <section id="marketplace">
+        <div className="flex items-baseline justify-between gap-4 mb-4">
+          <h2 className="text-base font-semibold text-foreground">Algorithms</h2>
+          <span className="text-xs text-muted-foreground tabular-nums">
+            {algorithms.length} algorithm{algorithms.length !== 1 ? "s" : ""}
+          </span>
+        </div>
         <AlgorithmCategoryTabs algorithms={algorithms} />
       </section>
     </div>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { CommandPalette } from "@/components/layout/CommandPalette";
 
 export const metadata: Metadata = {
   title: "Vega — University Prototype",
@@ -14,7 +15,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        {children}
+        <CommandPalette />
+      </body>
     </html>
   );
 }
