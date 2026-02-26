@@ -17,7 +17,24 @@ interface EquityPoint {
 
 interface DrawdownChartProps {
   equityData: EquityPoint[];
+  /** Optional start date (YYYY-MM-DD) to show calendar dates on x-axis. */
+  startDate?: string;
+  /** Optional precomputed date labels (one per point, same order as sorted data). */
   dates?: string[];
+}
+
+function addDays(isoDate: string, days: number): string {
+  const d = new Date(isoDate + "T12:00:00Z");
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
+function formatAxisDate(isoDate: string): string {
+  const d = new Date(isoDate + "T12:00:00Z");
+  const day = d.getUTCDate();
+  const month = d.toLocaleDateString("en-GB", { month: "short" });
+  const year = d.getUTCFullYear();
+  return `${day} ${month} ${year}`;
 }
 
 function computeDrawdown(equity: EquityPoint[]): { dayIndex: number; drawdown: number }[] {
@@ -30,7 +47,7 @@ function computeDrawdown(equity: EquityPoint[]): { dayIndex: number; drawdown: n
   });
 }
 
-export function DrawdownChart({ equityData, dates }: DrawdownChartProps) {
+export function DrawdownChart({ equityData, startDate, dates }: DrawdownChartProps) {
   const dd = computeDrawdown(equityData);
   if (!dd.length) {
     return (
@@ -41,20 +58,34 @@ export function DrawdownChart({ equityData, dates }: DrawdownChartProps) {
       </div>
     );
   }
-  const data = [...dd]
-    .sort((a, b) => a.dayIndex - b.dayIndex)
-    .map((d, i) => ({
-      day: dates?.[i] ?? d.dayIndex,
-      drawdown: d.drawdown,
-    }));
+  const sorted = [...dd].sort((a, b) => a.dayIndex - b.dayIndex);
+  const data = sorted.map((d, i) => {
+    const dateLabel =
+      dates?.[i] ??
+      (startDate ? formatAxisDate(addDays(startDate, d.dayIndex)) : `Day ${d.dayIndex}`);
+    return { day: dateLabel, drawdown: d.drawdown };
+  });
 
   return (
     <div className="h-[200px] w-full">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(51,51,51,0.10)" />
-          <XAxis dataKey="day" tick={{ fill: "#333333", fontSize: 12 }} />
-          <YAxis tickFormatter={(v) => `${v}%`} tick={{ fill: "#333333", fontSize: 12 }} />
+          <XAxis
+            dataKey="day"
+            tick={{ fill: "#333333", fontSize: 11 }}
+            interval="preserveStartEnd"
+          />
+          <YAxis
+            tickFormatter={(v) => `${v}%`}
+            tick={{ fill: "#333333", fontSize: 12 }}
+            label={{
+              value: "Drawdown (%)",
+              angle: -90,
+              position: "insideLeft",
+              style: { fill: "#333333", fontSize: 12, textAnchor: "middle" },
+            }}
+          />
           <Tooltip
             contentStyle={{
               backgroundColor: "#FFFFFF",
@@ -64,7 +95,10 @@ export function DrawdownChart({ equityData, dates }: DrawdownChartProps) {
             }}
             labelStyle={{ color: "#111111", fontWeight: 600 }}
             itemStyle={{ color: "#333333" }}
-            formatter={(value: number | undefined) => [`${value != null ? value.toFixed(2) : ""}%`, "Drawdown"]}
+            formatter={(value: number | undefined) => [
+              value != null ? `${value.toFixed(2)}%` : "",
+              "Drawdown (%)",
+            ]}
           />
           <Area
             type="monotone"

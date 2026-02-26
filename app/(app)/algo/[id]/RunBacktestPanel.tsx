@@ -389,8 +389,8 @@ export function RunBacktestPanel({
           />
           {result.equityPoints.length > 0 && (
             <>
-              <EquityCurve data={result.equityPoints} />
-              <DrawdownChart equityData={result.equityPoints} />
+              <EquityCurve data={result.equityPoints} startDate={dataSource === "stooq" ? startDate : undefined} />
+              <DrawdownChart equityData={result.equityPoints} startDate={dataSource === "stooq" ? startDate : undefined} />
             </>
           )}
         </div>

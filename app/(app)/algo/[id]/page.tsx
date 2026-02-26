@@ -174,7 +174,7 @@ export default async function AlgorithmDetailPage({
                 </p>
               </CardHeader>
               <CardContent>
-                <EquityCurve data={equityPoints} />
+                <EquityCurve data={equityPoints} startDate={demoAlgo?.startDate} />
               </CardContent>
             </Card>
           )}
@@ -202,7 +202,7 @@ export default async function AlgorithmDetailPage({
                 <CardTitle className="text-sm font-medium">Equity curve</CardTitle>
               </CardHeader>
               <CardContent>
-                <EquityCurve data={equityPoints} />
+                <EquityCurve data={equityPoints} startDate={demoAlgo?.startDate} />
               </CardContent>
             </Card>
           )}
@@ -216,7 +216,7 @@ export default async function AlgorithmDetailPage({
                 </p>
               </CardHeader>
               <CardContent>
-                <DrawdownChart equityData={equityPoints} />
+                <DrawdownChart equityData={equityPoints} startDate={demoAlgo?.startDate} />
               </CardContent>
             </Card>
           )}
@@ -297,7 +297,7 @@ export default async function AlgorithmDetailPage({
                 <CardTitle className="text-sm font-medium">Drawdown chart</CardTitle>
               </CardHeader>
               <CardContent>
-                <DrawdownChart equityData={equityPoints} />
+                <DrawdownChart equityData={equityPoints} startDate={demoAlgo?.startDate} />
               </CardContent>
             </Card>
           )}

@@ -17,10 +17,27 @@ interface EquityPoint {
 
 interface EquityCurveProps {
   data: EquityPoint[];
+  /** Optional start date (YYYY-MM-DD) to show calendar dates on x-axis. */
+  startDate?: string;
+  /** Optional precomputed date labels (one per point, same order as sorted data). */
   dates?: string[];
 }
 
-export function EquityCurve({ data, dates }: EquityCurveProps) {
+function addDays(isoDate: string, days: number): string {
+  const d = new Date(isoDate + "T12:00:00Z");
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
+function formatAxisDate(isoDate: string): string {
+  const d = new Date(isoDate + "T12:00:00Z");
+  const day = d.getUTCDate();
+  const month = d.toLocaleDateString("en-GB", { month: "short" });
+  const year = d.getUTCFullYear();
+  return `${day} ${month} ${year}`;
+}
+
+export function EquityCurve({ data, startDate, dates }: EquityCurveProps) {
   if (!data?.length) {
     return (
       <div className="h-[300px] w-full flex items-center justify-center rounded-lg border border-dashed border-[rgba(51,51,51,0.18)] bg-[rgba(51,51,51,0.02)]">
@@ -39,20 +56,34 @@ export function EquityCurve({ data, dates }: EquityCurveProps) {
       </div>
     );
   }
-  const chartData = [...data]
-    .sort((a, b) => a.dayIndex - b.dayIndex)
-    .map((p, i) => ({
-      day: dates?.[i] ?? p.dayIndex,
-      value: p.value,
-    }));
+  const sorted = [...data].sort((a, b) => a.dayIndex - b.dayIndex);
+  const chartData = sorted.map((p, i) => {
+    const dateLabel =
+      dates?.[i] ??
+      (startDate ? formatAxisDate(addDays(startDate, p.dayIndex)) : `Day ${p.dayIndex}`);
+    return { day: dateLabel, value: p.value };
+  });
 
   return (
     <div className="h-[300px] w-full">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(51,51,51,0.10)" />
-          <XAxis dataKey="day" tick={{ fill: "#333333", fontSize: 12 }} />
-          <YAxis tickFormatter={(v) => v.toLocaleString()} tick={{ fill: "#333333", fontSize: 12 }} />
+          <XAxis
+            dataKey="day"
+            tick={{ fill: "#333333", fontSize: 11 }}
+            interval="preserveStartEnd"
+          />
+          <YAxis
+            tickFormatter={(v) => v.toLocaleString()}
+            tick={{ fill: "#333333", fontSize: 12 }}
+            label={{
+              value: "Portfolio value (£)",
+              angle: -90,
+              position: "insideLeft",
+              style: { fill: "#333333", fontSize: 12, textAnchor: "middle" },
+            }}
+          />
           <Tooltip
             contentStyle={{
               backgroundColor: "#FFFFFF",
@@ -62,7 +93,10 @@ export function EquityCurve({ data, dates }: EquityCurveProps) {
             }}
             labelStyle={{ color: "#111111", fontWeight: 600 }}
             itemStyle={{ color: "#333333" }}
-            formatter={(value: number | undefined) => [value != null ? value.toFixed(2) : "", "Value"]}
+            formatter={(value: number | undefined) => [
+              value != null ? value.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "",
+              "Portfolio value (£)",
+            ]}
           />
           <Line
             type="monotone"
