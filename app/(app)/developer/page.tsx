@@ -22,7 +22,7 @@ export default async function DeveloperPage() {
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold">Developer Portal</h1>
         {!dbAvailable && (
-          <div className="rounded-lg border border-amber-500/50 bg-amber-500/10 px-4 py-2 text-sm text-amber-800 dark:text-amber-200">
+          <div className="rounded-lg border border-[rgba(51,51,51,0.12)] bg-[rgba(51,51,51,0.04)] px-4 py-2 text-sm text-muted-foreground">
             Database not configured. Run migrations and seed to see your algorithms.
           </div>
         )}

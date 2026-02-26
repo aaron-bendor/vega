@@ -85,8 +85,8 @@ export function DataStatusCard({ symbols, startDate, endDate }: DataStatusCardPr
   return (
     <Card className="mb-8">
       <CardHeader>
-        <CardTitle className="text-base">Data source</CardTitle>
-        <p className="text-sm text-muted-foreground">
+        <CardTitle className="text-sm font-medium">Data source</CardTitle>
+        <p className="text-xs text-muted-foreground">
           Stooq (daily OHLC), symbol(s): {symbols.join(", ") || "^spx"}, range: {startDate} – {endDate}
         </p>
       </CardHeader>
@@ -94,13 +94,13 @@ export function DataStatusCard({ symbols, startDate, endDate }: DataStatusCardPr
         {loading ? (
           <p className="text-sm text-muted-foreground">Checking cache…</p>
         ) : isCached ? (
-          <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-500">
+          <div className="flex items-center gap-2 text-sm text-brand-green">
             <CheckCircle2 className="size-4" />
             Cache ready. Charts will use real historical data.
           </div>
         ) : (
           <div className="space-y-2">
-            <p className="text-sm text-amber-600 dark:text-amber-500">
+            <p className="text-sm text-muted-foreground">
               {needed.length > 0
                 ? `Missing: ${needed.join(", ")}. Download data to see real-data plots.`
                 : "Run prefetch or click below to download."}

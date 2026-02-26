@@ -44,7 +44,7 @@ export default function PrivatePage() {
   return (
     <div className="container mx-auto px-4 py-12 max-w-2xl">
       <div className="text-center mb-10">
-        <div className="size-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
+        <div className="size-16 rounded-full bg-[rgba(51,51,51,0.04)] flex items-center justify-center mx-auto mb-4">
           <Lock className="size-8 text-muted-foreground" />
         </div>
         <h1 className="text-2xl font-bold mb-2">Private — For Marking</h1>

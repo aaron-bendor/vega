@@ -17,10 +17,10 @@ function MetricCard({ label, value, format = "percent" }: MetricCardProps) {
   return (
     <Card>
       <CardHeader className="pb-1">
-        <span className="text-sm font-medium text-muted-foreground">{label}</span>
+        <span className="text-xs font-medium text-muted-foreground">{label}</span>
       </CardHeader>
       <CardContent>
-        <span className="text-xl font-semibold">{display}</span>
+        <span className="text-xl font-semibold text-foreground">{display}</span>
       </CardContent>
     </Card>
   );

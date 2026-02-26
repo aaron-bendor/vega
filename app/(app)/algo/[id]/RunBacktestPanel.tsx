@@ -168,7 +168,7 @@ export function RunBacktestPanel({
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <label className="text-sm font-medium mb-1 block">Data source</label>
+          <label className="text-xs font-medium text-muted-foreground mb-1 block">Data source</label>
           <Select value={dataSource} onValueChange={(v) => setDataSource(v as "stooq" | "synthetic")}>
             <SelectTrigger>
               <SelectValue />
@@ -182,7 +182,7 @@ export function RunBacktestPanel({
         {dataSource === "stooq" ? (
           <>
             <div>
-              <label className="text-sm font-medium mb-1 block">Symbol</label>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">Symbol</label>
               <Select value={symbol} onValueChange={setSymbol}>
                 <SelectTrigger>
                   <SelectValue />
@@ -197,7 +197,7 @@ export function RunBacktestPanel({
               </Select>
             </div>
             <div>
-              <label className="text-sm font-medium mb-1 block">Date range</label>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">Date range</label>
               <Select
                 value={`${startDate}_${endDate}`}
                 onValueChange={(v) => {
@@ -223,7 +223,7 @@ export function RunBacktestPanel({
           </>
         ) : (
           <div>
-            <label className="text-sm font-medium mb-1 block">Horizon (days)</label>
+            <label className="text-xs font-medium text-muted-foreground mb-1 block">Horizon (days)</label>
             <Select value={String(horizon)} onValueChange={(v) => setHorizon(Number(v))}>
               <SelectTrigger>
                 <SelectValue />
@@ -239,7 +239,7 @@ export function RunBacktestPanel({
           </div>
         )}
         <div>
-          <label className="text-sm font-medium mb-1 block">Strategy</label>
+          <label className="text-xs font-medium text-muted-foreground mb-1 block">Strategy</label>
           <Select value={strategyId} onValueChange={setStrategyId}>
             <SelectTrigger>
               <SelectValue />
@@ -254,7 +254,7 @@ export function RunBacktestPanel({
           </Select>
         </div>
         <div>
-          <label className="text-sm font-medium mb-1 block">Starting capital</label>
+          <label className="text-xs font-medium text-muted-foreground mb-1 block">Starting capital</label>
           <Input
             type="number"
             min={100}
@@ -266,7 +266,7 @@ export function RunBacktestPanel({
         {strategyId === "ma_crossover" && (
           <>
             <div>
-              <label className="text-sm font-medium mb-1 block">Fast MA window</label>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">Fast MA window</label>
               <Input
                 type="number"
                 min={2}
@@ -275,7 +275,7 @@ export function RunBacktestPanel({
               />
             </div>
             <div>
-              <label className="text-sm font-medium mb-1 block">Slow MA window</label>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">Slow MA window</label>
               <Input
                 type="number"
                 min={2}
@@ -288,7 +288,7 @@ export function RunBacktestPanel({
         {strategyId === "bollinger_reversion" && (
           <>
             <div>
-              <label className="text-sm font-medium mb-1 block">Window</label>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">Window</label>
               <Input
                 type="number"
                 min={5}
@@ -297,7 +297,7 @@ export function RunBacktestPanel({
               />
             </div>
             <div>
-              <label className="text-sm font-medium mb-1 block">k (bands)</label>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">k (bands)</label>
               <Input
                 type="number"
                 min={1}
@@ -311,7 +311,7 @@ export function RunBacktestPanel({
         {strategyId === "rsi_momentum" && (
           <>
             <div>
-              <label className="text-sm font-medium mb-1 block">Window</label>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">Window</label>
               <Input
                 type="number"
                 min={5}
@@ -320,7 +320,7 @@ export function RunBacktestPanel({
               />
             </div>
             <div>
-              <label className="text-sm font-medium mb-1 block">Entry (oversold)</label>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">Entry (oversold)</label>
               <Input
                 type="number"
                 min={0}
@@ -330,7 +330,7 @@ export function RunBacktestPanel({
               />
             </div>
             <div>
-              <label className="text-sm font-medium mb-1 block">Exit (overbought)</label>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">Exit (overbought)</label>
               <Input
                 type="number"
                 min={50}
@@ -350,7 +350,7 @@ export function RunBacktestPanel({
       {error && <p className="text-destructive text-sm">{error}</p>}
 
       {result && (
-        <div className="space-y-6 pt-4 border-t">
+        <div className="space-y-6 pt-4 border-t border-[rgba(51,51,51,0.12)]">
           <MetricsCards
             cumulativeReturn={result.metrics.cumulativeReturn}
             sharpeRatio={result.metrics.sharpeRatio}

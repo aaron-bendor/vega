@@ -30,10 +30,10 @@ export default async function PortfolioPage() {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6">Paper Portfolio</h1>
       {!dbAvailable && (
-        <div className="mb-6 rounded-lg border border-amber-500/50 bg-amber-500/10 px-4 py-3 text-sm text-amber-800 dark:text-amber-200">
-          <strong>Database not configured.</strong> Set{" "}
-          <code className="rounded bg-muted px-1">DATABASE_URL</code> in{" "}
-          <code className="rounded bg-muted px-1">.env</code>, run migrations and seed to use the portfolio.
+        <div className="mb-6 rounded-lg border border-[rgba(51,51,51,0.12)] bg-[rgba(51,51,51,0.04)] px-4 py-3 text-sm text-muted-foreground">
+          <strong className="text-foreground">Database not configured.</strong> Set{" "}
+          <code className="rounded bg-[rgba(51,51,51,0.06)] px-1">DATABASE_URL</code> in{" "}
+          <code className="rounded bg-[rgba(51,51,51,0.06)] px-1">.env</code>, run migrations and seed to use the portfolio.
         </div>
       )}
       <p className="text-muted-foreground mb-8">Simulated holdings. Not investment advice.</p>

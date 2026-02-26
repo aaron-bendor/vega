@@ -116,12 +116,12 @@ export default async function VegaFinancialPage() {
   return (
     <div className="p-6 space-y-8">
       <section>
-        <h2 className="text-lg font-semibold mb-4">Portfolio overview</h2>
+        <h2 className="text-base font-semibold mb-4 text-foreground">Portfolio overview</h2>
         <PortfolioOverview account={account} />
       </section>
 
       <section>
-        <h2 className="text-lg font-semibold mb-4">Algorithms</h2>
+        <h2 className="text-base font-semibold mb-4 text-foreground">Algorithms</h2>
         <AlgorithmCategoryTabs algorithms={algorithms} />
       </section>
     </div>

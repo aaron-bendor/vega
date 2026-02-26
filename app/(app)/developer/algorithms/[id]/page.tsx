@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import { getAlgorithmById } from "@/lib/db/algorithms";
 import { DeveloperAlgorithmEditor } from "./DeveloperAlgorithmEditor";
+import { Breadcrumb } from "@/components/layout/Breadcrumb";
 
 export default async function DeveloperAlgorithmPage({
   params,
@@ -14,12 +14,14 @@ export default async function DeveloperAlgorithmPage({
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Link
-        href="/developer"
-        className="text-sm text-muted-foreground hover:underline mb-6 block"
-      >
-        ← Back to developer portal
-      </Link>
+      <div className="mb-6">
+        <Breadcrumb
+          items={[
+            { label: "Developer", href: "/developer" },
+            { label: algo.name },
+          ]}
+        />
+      </div>
       <DeveloperAlgorithmEditor algorithm={algo} />
     </div>
   );

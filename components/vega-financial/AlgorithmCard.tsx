@@ -17,6 +17,12 @@ interface AlgorithmCardProps {
   sparklineData?: number[];
 }
 
+function riskVariant(level: string) {
+  if (level === "Low") return "success" as const;
+  if (level === "High") return "destructive" as const;
+  return "outline" as const;
+}
+
 export function AlgorithmCard({
   id,
   name,
@@ -29,57 +35,65 @@ export function AlgorithmCard({
   maxDrawdown,
   sparklineData = [],
 }: AlgorithmCardProps) {
+  const visibleTags = tags.slice(0, 2);
+  const extraCount = tags.length - 2;
+
   return (
     <Link href={`/vega-financial/algorithms/${id}`}>
-      <Card className="h-full hover:border-primary/50 transition-colors bg-card/90 backdrop-blur">
+      <Card className="h-full transition-colors">
         <CardHeader className="pb-2">
           <div className="flex items-start justify-between gap-2">
-            <h3 className="text-base font-semibold leading-tight">{name}</h3>
+            <h3 className="text-sm font-semibold leading-tight text-foreground line-clamp-1">{name}</h3>
             {verified && (
-              <ShieldCheck className="size-4 text-muted-foreground shrink-0 mt-0.5" />
+              <ShieldCheck className="size-4 text-primary shrink-0 mt-0.5" />
             )}
           </div>
-          <p className="text-sm text-muted-foreground line-clamp-2">{shortDesc}</p>
-          <div className="flex flex-wrap gap-1 pt-1">
-            {tags.slice(0, 2).map((tag) => (
-              <Badge key={tag} variant="secondary" className="text-xs">
+          <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">{shortDesc}</p>
+          <div className="flex flex-wrap gap-1 pt-1.5">
+            {visibleTags.map((tag) => (
+              <Badge key={tag} variant="secondary" className="text-[10px]">
                 {tag}
               </Badge>
             ))}
-            <Badge variant="outline" className="text-xs">
+            {extraCount > 0 && (
+              <Badge variant="outline" className="text-[10px]">
+                +{extraCount}
+              </Badge>
+            )}
+            <Badge variant={riskVariant(riskLevel)} className="text-[10px]">
               {riskLevel}
             </Badge>
           </div>
         </CardHeader>
         <CardContent className="pt-0 space-y-2">
           {sparklineData.length > 1 && (
-            <div className="h-12 flex items-end gap-px">
+            <div className="h-10 flex items-end gap-px">
               {sparklineData.map((v, i) => (
                 <div
                   key={i}
-                  className="flex-1 min-w-[2px] bg-primary/40 rounded-sm"
+                  className="flex-1 min-w-[2px] bg-primary/30 rounded-sm"
                   style={{ height: `${Math.max(4, (v / Math.max(...sparklineData)) * 100)}%` }}
                 />
               ))}
             </div>
           )}
-          <div className="grid grid-cols-3 gap-2 text-xs">
+          <div className="flex items-center gap-4 text-xs">
             {ret != null && (
               <span>
                 <span className="text-muted-foreground">Return </span>
-                {formatPercent(ret)}
+                <span className="font-medium text-foreground">{formatPercent(ret)}</span>
               </span>
             )}
             {volatility != null && (
               <span>
                 <span className="text-muted-foreground">Vol </span>
-                {formatPercent(volatility)}
+                <span className="font-medium text-foreground">{formatPercent(volatility)}</span>
               </span>
             )}
             {maxDrawdown != null && (
               <span>
                 <span className="text-muted-foreground">Max DD </span>
-                {formatPercent(maxDrawdown)}
+                <span className="font-medium text-foreground">{formatPercent(maxDrawdown)}</span>
               </span>
             )}
           </div>

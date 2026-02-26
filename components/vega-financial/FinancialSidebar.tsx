@@ -29,31 +29,31 @@ export function FinancialSidebar({ account }: FinancialSidebarProps) {
           <Wallet className="size-5 text-primary" />
         </div>
         <div>
-          <p className="font-medium">Paper account</p>
+          <p className="font-medium text-sm text-foreground">Paper account</p>
           <p className="text-xs text-muted-foreground">Demo mode</p>
         </div>
       </div>
 
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">Account summary</CardTitle>
+          <CardTitle className="text-xs font-medium text-muted-foreground">Account summary</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
           <div className="flex justify-between">
             <span className="text-muted-foreground">Equity</span>
-            <span className="font-medium">{formatCurrency(account.equity)}</span>
+            <span className="font-medium text-foreground">{formatCurrency(account.equity)}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Available</span>
-            <span>{formatCurrency(account.availableCash)}</span>
+            <span className="text-foreground">{formatCurrency(account.availableCash)}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Allocated</span>
-            <span>{formatCurrency(account.allocated)}</span>
+            <span className="text-foreground">{formatCurrency(account.allocated)}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Unrealized PnL</span>
-            <span className={account.unrealizedPnl >= 0 ? "text-green-600" : "text-destructive"}>
+            <span className="text-muted-foreground">Unrealised PnL</span>
+            <span className={account.unrealizedPnl >= 0 ? "text-brand-green" : "text-brand-red"}>
               {formatPercent(account.unrealizedPnlPct / 100)}
             </span>
           </div>
@@ -70,12 +70,10 @@ export function FinancialSidebar({ account }: FinancialSidebarProps) {
 
   return (
     <>
-      {/* Desktop sidebar */}
       <aside className="hidden lg:block w-64 shrink-0">
         <div className="sticky top-24">{sidebarContent}</div>
       </aside>
 
-      {/* Mobile: Sheet trigger */}
       <div className="lg:hidden">
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>

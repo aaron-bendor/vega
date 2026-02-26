@@ -8,7 +8,7 @@ interface AllocationItem {
   color: string;
 }
 
-const COLORS = ["hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
+const COLORS = ["#793DE1", "#9877D1", "#531CB3", "#34D769", "#ED5A5A"];
 
 interface AllocationDonutProps {
   data: { name: string; value: number }[];
@@ -45,6 +45,12 @@ export function AllocationDonut({ data }: AllocationDonutProps) {
           ))}
         </Pie>
         <Tooltip
+          contentStyle={{
+            backgroundColor: "#FFFFFF",
+            border: "1px solid rgba(51,51,51,0.18)",
+            borderRadius: 8,
+            fontSize: 13,
+          }}
           formatter={(value: number | undefined) => [`${(value ?? 0).toFixed(1)}%`, "Allocation"]}
         />
         <Legend />

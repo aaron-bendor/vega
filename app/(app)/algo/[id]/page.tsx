@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAlgorithmVersionById } from "@/lib/db/algorithms";
 import { getLatestBacktestForVersion } from "@/lib/db/backtests";
@@ -9,12 +8,19 @@ import { MetricsCards } from "@/components/charts/MetricsCards";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ShieldCheck, ArrowLeft, Calendar, DollarSign, TrendingUp } from "lucide-react";
+import { ShieldCheck, Calendar, DollarSign, TrendingUp } from "lucide-react";
 import { RunBacktestPanel } from "./RunBacktestPanel";
 import { InvestPanel } from "./InvestPanel";
 import { DataStatusCard } from "./DataStatusCard";
+import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { MOCK_ACCOUNT } from "@/lib/mock/portfolio";
 import { formatCurrency, formatPercent } from "@/lib/utils/format";
+
+function riskVariant(level: string) {
+  if (level === "Low") return "success" as const;
+  if (level === "High") return "destructive" as const;
+  return "outline" as const;
+}
 
 export default async function AlgorithmDetailPage({
   params,
@@ -61,90 +67,81 @@ export default async function AlgorithmDetailPage({
 
   return (
     <div className="container mx-auto px-4 py-6">
-      <Link
-        href="/vega-financial"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-6"
-      >
-        <ArrowLeft className="size-4" /> Back to Vega Financial
-      </Link>
+      <div className="mb-6">
+        <Breadcrumb
+          items={[
+            { label: "Vega Financial", href: "/vega-financial" },
+            { label: "Marketplace", href: "/marketplace" },
+            { label: displayName || "Algorithm" },
+          ]}
+        />
+      </div>
 
-      {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
         <div className="space-y-2">
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold">{displayName}</h1>
-            {verified && <ShieldCheck className="size-5 text-blue-500" aria-label="Verified" />}
+            <h1 className="text-2xl font-bold text-foreground">{displayName}</h1>
+            {verified && <ShieldCheck className="size-5 text-primary" aria-label="Verified" />}
           </div>
           {displayDesc && (
-            <p className="text-muted-foreground">{displayDesc}</p>
+            <p className="text-muted-foreground text-sm">{displayDesc}</p>
           )}
           <div className="flex flex-wrap gap-2">
             {displayTags.map((tag) => (
               <Badge key={tag} variant="secondary">{tag}</Badge>
             ))}
             {displayRisk && (
-              <Badge
-                variant="outline"
-                className={
-                  displayRisk === "Low"
-                    ? "border-green-300 text-green-700"
-                    : displayRisk === "High"
-                      ? "border-red-300 text-red-700"
-                      : ""
-                }
-              >
+              <Badge variant={riskVariant(displayRisk)}>
                 {displayRisk} risk
               </Badge>
             )}
           </div>
         </div>
 
-        {/* Quick metrics strip */}
         {(metricMap.cumulativeReturn != null || metricMap.sharpeRatio != null) && (
           <div className="flex gap-6 text-sm">
             {metricMap.cumulativeReturn != null && (
               <div className="text-center">
                 <p className="text-muted-foreground text-xs">Return</p>
-                <p className="font-semibold">{formatPercent(metricMap.cumulativeReturn)}</p>
+                <p className="font-semibold text-foreground">{formatPercent(metricMap.cumulativeReturn)}</p>
               </div>
             )}
             {metricMap.sharpeRatio != null && (
               <div className="text-center">
                 <p className="text-muted-foreground text-xs">Sharpe</p>
-                <p className="font-semibold">{(metricMap.sharpeRatio as number).toFixed(2)}</p>
+                <p className="font-semibold text-foreground">{(metricMap.sharpeRatio as number).toFixed(2)}</p>
               </div>
             )}
             {metricMap.maxDrawdown != null && (
               <div className="text-center">
                 <p className="text-muted-foreground text-xs">Max DD</p>
-                <p className="font-semibold">{formatPercent(metricMap.maxDrawdown as number)}</p>
+                <p className="font-semibold text-foreground">{formatPercent(metricMap.maxDrawdown as number)}</p>
               </div>
             )}
           </div>
         )}
       </div>
 
-      {/* Position panel (if user is invested) */}
       {holding && (
         <Card className="mb-6 border-primary/20 bg-primary/5">
           <CardContent className="py-4">
             <div className="flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-2 text-sm font-medium">
+              <div className="flex items-center gap-2 text-sm font-medium text-foreground">
                 <TrendingUp className="size-4 text-primary" />
                 You are invested in this algorithm
               </div>
               <div className="flex gap-6 text-sm">
                 <div>
                   <span className="text-muted-foreground">Allocated:</span>{" "}
-                  <span className="font-medium">{formatCurrency(holding.allocated)}</span>
+                  <span className="font-medium text-foreground">{formatCurrency(holding.allocated)}</span>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Current:</span>{" "}
-                  <span className="font-medium">{formatCurrency(holding.currentValue)}</span>
+                  <span className="font-medium text-foreground">{formatCurrency(holding.currentValue)}</span>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Weight:</span>{" "}
-                  <span className="font-medium">{holding.weight.toFixed(1)}%</span>
+                  <span className="font-medium text-foreground">{holding.weight.toFixed(1)}%</span>
                 </div>
               </div>
             </div>
@@ -152,7 +149,6 @@ export default async function AlgorithmDetailPage({
         </Card>
       )}
 
-      {/* Tabs */}
       <Tabs defaultValue="overview" className="space-y-6">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -161,7 +157,6 @@ export default async function AlgorithmDetailPage({
           <TabsTrigger value="about">About</TabsTrigger>
         </TabsList>
 
-        {/* Overview tab */}
         <TabsContent value="overview" className="space-y-6">
           <MetricsCards
             cumulativeReturn={(metricMap.cumulativeReturn ?? version?.cachedReturn) ?? undefined}
@@ -173,7 +168,7 @@ export default async function AlgorithmDetailPage({
           {equityPoints.length > 0 && (
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-base">Equity curve</CardTitle>
+                <CardTitle className="text-sm font-medium">Equity curve</CardTitle>
                 <p className="text-xs text-muted-foreground">
                   Simulated backtest performance. Not investment advice.
                 </p>
@@ -193,7 +188,6 @@ export default async function AlgorithmDetailPage({
           )}
         </TabsContent>
 
-        {/* Performance tab */}
         <TabsContent value="performance" className="space-y-6">
           <MetricsCards
             cumulativeReturn={(metricMap.cumulativeReturn ?? version?.cachedReturn) ?? undefined}
@@ -205,7 +199,7 @@ export default async function AlgorithmDetailPage({
           {equityPoints.length > 0 && (
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-base">Equity curve</CardTitle>
+                <CardTitle className="text-sm font-medium">Equity curve</CardTitle>
               </CardHeader>
               <CardContent>
                 <EquityCurve data={equityPoints} />
@@ -216,7 +210,7 @@ export default async function AlgorithmDetailPage({
           {equityPoints.length > 0 && (
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-base">Drawdown</CardTitle>
+                <CardTitle className="text-sm font-medium">Drawdown</CardTitle>
                 <p className="text-xs text-muted-foreground">
                   Peak-to-trough decline over the backtest period.
                 </p>
@@ -229,7 +223,7 @@ export default async function AlgorithmDetailPage({
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-base">Run backtest</CardTitle>
+              <CardTitle className="text-sm font-medium">Run backtest</CardTitle>
               <p className="text-xs text-muted-foreground">
                 Configure and run a backtest. Simulated performance only.
               </p>
@@ -247,34 +241,24 @@ export default async function AlgorithmDetailPage({
           </Card>
         </TabsContent>
 
-        {/* Risk tab */}
         <TabsContent value="risk" className="space-y-6">
           <div className="grid gap-4 sm:grid-cols-2">
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Risk level</CardTitle>
+                <CardTitle className="text-xs font-medium text-muted-foreground">Risk level</CardTitle>
               </CardHeader>
               <CardContent>
-                <Badge
-                  variant="outline"
-                  className={`text-sm ${
-                    displayRisk === "Low"
-                      ? "border-green-300 text-green-700"
-                      : displayRisk === "High"
-                        ? "border-red-300 text-red-700"
-                        : ""
-                  }`}
-                >
+                <Badge variant={displayRisk ? riskVariant(displayRisk) : "outline"} className="text-sm">
                   {displayRisk ?? "Not classified"}
                 </Badge>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Max drawdown</CardTitle>
+                <CardTitle className="text-xs font-medium text-muted-foreground">Max drawdown</CardTitle>
               </CardHeader>
               <CardContent>
-                <span className="text-xl font-semibold">
+                <span className="text-xl font-semibold text-foreground">
                   {metricMap.maxDrawdown != null
                     ? formatPercent(metricMap.maxDrawdown as number)
                     : "N/A"}
@@ -283,10 +267,10 @@ export default async function AlgorithmDetailPage({
             </Card>
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Annualised volatility</CardTitle>
+                <CardTitle className="text-xs font-medium text-muted-foreground">Annualised volatility</CardTitle>
               </CardHeader>
               <CardContent>
-                <span className="text-xl font-semibold">
+                <span className="text-xl font-semibold text-foreground">
                   {metricMap.annualisedVolatility != null
                     ? formatPercent(metricMap.annualisedVolatility as number)
                     : "N/A"}
@@ -295,10 +279,10 @@ export default async function AlgorithmDetailPage({
             </Card>
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Sharpe ratio</CardTitle>
+                <CardTitle className="text-xs font-medium text-muted-foreground">Sharpe ratio</CardTitle>
               </CardHeader>
               <CardContent>
-                <span className="text-xl font-semibold">
+                <span className="text-xl font-semibold text-foreground">
                   {metricMap.sharpeRatio != null
                     ? (metricMap.sharpeRatio as number).toFixed(2)
                     : "N/A"}
@@ -310,7 +294,7 @@ export default async function AlgorithmDetailPage({
           {equityPoints.length > 0 && (
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-base">Drawdown chart</CardTitle>
+                <CardTitle className="text-sm font-medium">Drawdown chart</CardTitle>
               </CardHeader>
               <CardContent>
                 <DrawdownChart equityData={equityPoints} />
@@ -319,11 +303,10 @@ export default async function AlgorithmDetailPage({
           )}
         </TabsContent>
 
-        {/* About tab */}
         <TabsContent value="about" className="space-y-6">
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-base">About this algorithm</CardTitle>
+              <CardTitle className="text-sm font-medium">About this algorithm</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-sm text-muted-foreground leading-relaxed">
@@ -335,19 +318,19 @@ export default async function AlgorithmDetailPage({
                   <div className="flex items-center gap-2">
                     <Calendar className="size-4 text-muted-foreground" />
                     <span className="text-muted-foreground">Inception:</span>
-                    <span>{demoAlgo.inceptionDate}</span>
+                    <span className="text-foreground">{demoAlgo.inceptionDate}</span>
                   </div>
                 )}
                 {demoAlgo?.minInvestment != null && (
                   <div className="flex items-center gap-2">
                     <DollarSign className="size-4 text-muted-foreground" />
                     <span className="text-muted-foreground">Min investment:</span>
-                    <span>{formatCurrency(demoAlgo.minInvestment)}</span>
+                    <span className="text-foreground">{formatCurrency(demoAlgo.minInvestment)}</span>
                   </div>
                 )}
               </div>
 
-              <div className="pt-4 border-t text-xs text-muted-foreground">
+              <div className="pt-4 border-t border-[rgba(51,51,51,0.12)] text-xs text-muted-foreground">
                 This is a simulated algorithm for demonstration purposes only.
                 No real money is involved. Past performance does not indicate
                 future results.
@@ -358,7 +341,7 @@ export default async function AlgorithmDetailPage({
           {version && (
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-base">Invest</CardTitle>
+                <CardTitle className="text-sm font-medium">Invest</CardTitle>
                 <p className="text-xs text-muted-foreground">
                   Add this algorithm to your paper portfolio.
                 </p>

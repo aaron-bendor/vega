@@ -53,12 +53,12 @@ export default async function MarketplacePage({
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6">Marketplace</h1>
       {!dbAvailable && !useDemo && (
-        <div className="mb-6 rounded-lg border border-amber-500/50 bg-amber-500/10 px-4 py-3 text-sm text-amber-800 dark:text-amber-200">
-          <strong>Database not configured.</strong> Set{" "}
-          <code className="rounded bg-muted px-1">DATABASE_URL</code> in{" "}
-          <code className="rounded bg-muted px-1">.env</code>, run{" "}
-          <code className="rounded bg-muted px-1">npm run prisma:migrate</code>{" "}
-          and <code className="rounded bg-muted px-1">npm run prisma:seed</code>{" "}
+        <div className="mb-6 rounded-lg border border-[rgba(51,51,51,0.12)] bg-[rgba(51,51,51,0.04)] px-4 py-3 text-sm text-muted-foreground">
+          <strong className="text-foreground">Database not configured.</strong> Set{" "}
+          <code className="rounded bg-[rgba(51,51,51,0.06)] px-1">DATABASE_URL</code> in{" "}
+          <code className="rounded bg-[rgba(51,51,51,0.06)] px-1">.env</code>, run{" "}
+          <code className="rounded bg-[rgba(51,51,51,0.06)] px-1">npm run prisma:migrate</code>{" "}
+          and <code className="rounded bg-[rgba(51,51,51,0.06)] px-1">npm run prisma:seed</code>{" "}
           to see seeded data.
         </div>
       )}
@@ -118,9 +118,9 @@ export default async function MarketplacePage({
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filteredDemo.map((v) => (
             <Link key={v.id} href={`/algo/${v.id}`}>
-              <Card className="h-full hover:border-primary/50 transition-colors">
+              <Card className="h-full transition-colors">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-lg">{v.name}</CardTitle>
+                  <CardTitle className="text-sm font-semibold">{v.name}</CardTitle>
                   <CardDescription className="line-clamp-2">{v.shortDesc}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
@@ -142,12 +142,12 @@ export default async function MarketplacePage({
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {versions.map((v) => (
             <Link key={v.id} href={`/algo/${v.id}`}>
-              <Card className="h-full hover:border-primary/50 transition-colors">
+              <Card className="h-full transition-colors">
                 <CardHeader className="pb-2">
                   <div className="flex items-start justify-between gap-2">
-                    <CardTitle className="text-lg">{v.name}</CardTitle>
+                    <CardTitle className="text-sm font-semibold">{v.name}</CardTitle>
                     {v.verificationStatus === "verified" && (
-                      <ShieldCheck className="size-5 text-muted-foreground shrink-0" />
+                      <ShieldCheck className="size-4 text-primary shrink-0" />
                     )}
                   </div>
                   <CardDescription className="line-clamp-2">

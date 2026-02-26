@@ -61,7 +61,7 @@ export function AlgorithmCategoryTabs({
 
   return (
     <Tabs defaultValue="trending" className="w-full">
-      <TabsList className="mb-4 bg-muted/50">
+      <TabsList className="mb-4">
         <TabsTrigger value="trending">Trending</TabsTrigger>
         <TabsTrigger value="low-risk">Low risk</TabsTrigger>
         <TabsTrigger value="verified">Verified</TabsTrigger>

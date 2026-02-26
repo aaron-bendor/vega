@@ -9,7 +9,7 @@ export default function VegaDeveloperPage() {
       <p className="text-muted-foreground mb-8">
         Developer-facing prototype. Coming soon.
       </p>
-      <Card className="max-w-md bg-card/90 backdrop-blur">
+      <Card className="max-w-md">
         <CardHeader>
           <CardTitle>Developer portal</CardTitle>
           <CardDescription>

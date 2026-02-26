@@ -6,11 +6,11 @@ export default function HomePage() {
   return (
     <div className="container mx-auto px-4 py-16 md:py-24">
       <div className="max-w-3xl mx-auto text-center mb-16">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/5 border text-sm text-muted-foreground mb-6">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-brand-p1/30 text-sm text-brand-p3 mb-6">
           <ShieldCheck className="size-4" />
           University prototype — paper trading only
         </div>
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-6">
           Vega
         </h1>
         <p className="text-lg text-muted-foreground max-w-xl mx-auto">
@@ -19,13 +19,13 @@ export default function HomePage() {
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3 max-w-4xl mx-auto">
+      <div className="grid gap-4 md:grid-cols-3 max-w-4xl mx-auto">
         <Link href="/vega-financial" className="group">
-          <div className="p-6 rounded-xl border bg-card hover:shadow-md hover:border-primary/30 transition-all h-full flex flex-col">
+          <div className="p-5 rounded-lg border border-[rgba(51,51,51,0.12)] bg-white hover:border-[rgba(51,51,51,0.18)] hover:bg-[rgba(51,51,51,0.02)] transition-all h-full flex flex-col">
             <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
               <Wallet className="size-6 text-primary" />
             </div>
-            <h2 className="font-semibold text-lg mb-2">Vega Financial</h2>
+            <h2 className="font-semibold text-base mb-2 text-foreground">Vega Financial</h2>
             <p className="text-sm text-muted-foreground mb-4 flex-1">
               Investor dashboard. Portfolio overview, algorithm marketplace,
               and simulated backtesting.
@@ -41,11 +41,11 @@ export default function HomePage() {
         </Link>
 
         <Link href="/vega-developer" className="group">
-          <div className="p-6 rounded-xl border bg-card hover:shadow-md hover:border-primary/30 transition-all h-full flex flex-col">
+          <div className="p-5 rounded-lg border border-[rgba(51,51,51,0.12)] bg-white hover:border-[rgba(51,51,51,0.18)] hover:bg-[rgba(51,51,51,0.02)] transition-all h-full flex flex-col">
             <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
               <Code2 className="size-6 text-primary" />
             </div>
-            <h2 className="font-semibold text-lg mb-2">Vega Developer</h2>
+            <h2 className="font-semibold text-base mb-2 text-foreground">Vega Developer</h2>
             <p className="text-sm text-muted-foreground mb-4 flex-1">
               Developer portal. Create, backtest, and publish algorithmic
               strategies to the marketplace.
@@ -57,11 +57,11 @@ export default function HomePage() {
         </Link>
 
         <Link href="/private" className="group">
-          <div className="p-6 rounded-xl border bg-card hover:shadow-md hover:border-primary/30 transition-all h-full flex flex-col">
+          <div className="p-5 rounded-lg border border-[rgba(51,51,51,0.12)] bg-white hover:border-[rgba(51,51,51,0.18)] hover:bg-[rgba(51,51,51,0.02)] transition-all h-full flex flex-col">
             <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
               <Lock className="size-6 text-primary" />
             </div>
-            <h2 className="font-semibold text-lg mb-2">Private</h2>
+            <h2 className="font-semibold text-base mb-2 text-foreground">Private</h2>
             <p className="text-sm text-muted-foreground mb-4 flex-1">
               Assessment materials. Validation evidence, P&amp;L analysis,
               risk assessment, and funding route map.

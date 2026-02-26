@@ -33,7 +33,7 @@ export function InvestPanel({ versionId }: { versionId: string }) {
   }
 
   return (
-    <div className="mt-6 pt-4 border-t flex flex-wrap items-center gap-4">
+    <div className="mt-6 pt-4 border-t border-[rgba(51,51,51,0.12)] flex flex-wrap items-center gap-4">
       <Input
         type="number"
         min={100}

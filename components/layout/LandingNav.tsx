@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { Wallet, Code2, Lock, Home } from "lucide-react";
 
 const navItems = [
@@ -23,20 +22,22 @@ export function LandingNav() {
           ? pathname === href
           : pathname?.startsWith(href);
         return (
-          <Button key={href} variant="ghost" size="sm" asChild>
-            <Link
-              href={href}
-              className={cn(
-                "flex items-center gap-2",
-                isActive
-                  ? "bg-muted/80 font-medium"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <Icon className="size-4" />
-              <span className="hidden sm:inline">{label}</span>
-            </Link>
-          </Button>
+          <Link
+            key={href}
+            href={href}
+            className={cn(
+              "relative flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors",
+              isActive
+                ? "text-foreground font-medium"
+                : "text-muted-foreground hover:bg-[rgba(51,51,51,0.04)] hover:text-foreground"
+            )}
+          >
+            <Icon className="size-4" />
+            <span className="hidden sm:inline">{label}</span>
+            {isActive && (
+              <span className="absolute bottom-0 left-3 right-3 h-0.5 bg-primary rounded-full" />
+            )}
+          </Link>
         );
       })}
     </nav>

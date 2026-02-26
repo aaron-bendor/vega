@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAlgorithmVersionById } from "@/lib/db/algorithms";
 import { getLatestBacktestForVersion } from "@/lib/db/backtests";
@@ -9,9 +8,16 @@ import { MetricsCards } from "@/components/charts/MetricsCards";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ShieldCheck } from "lucide-react";
-import { RunBacktestPanel } from "@/app/(legacy)/algo/[id]/RunBacktestPanel";
-import { InvestPanel } from "@/app/(legacy)/algo/[id]/InvestPanel";
-import { DataStatusCard } from "@/app/(legacy)/algo/[id]/DataStatusCard";
+import { RunBacktestPanel } from "@/app/(app)/algo/[id]/RunBacktestPanel";
+import { InvestPanel } from "@/app/(app)/algo/[id]/InvestPanel";
+import { DataStatusCard } from "@/app/(app)/algo/[id]/DataStatusCard";
+import { Breadcrumb } from "@/components/layout/Breadcrumb";
+
+function riskVariant(level: string) {
+  if (level === "Low") return "success" as const;
+  if (level === "High") return "destructive" as const;
+  return "outline" as const;
+}
 
 export default async function AlgorithmDetailPage({
   params,
@@ -38,7 +44,6 @@ export default async function AlgorithmDetailPage({
   const demoRun = !version && demoAlgo ? loadDemoRun(id) : null;
   const equityPoints =
     backtest?.equityPoints ?? demoRun?.equityPoints ?? [];
-  const chartDates = demoRun?.dates;
   const metrics = backtest?.metrics ?? [];
   const metricMap = demoRun?.metrics
     ? {
@@ -56,28 +61,28 @@ export default async function AlgorithmDetailPage({
 
   return (
     <div className="p-6 max-w-4xl">
-      <div className="mb-8">
-        <Link
-          href="/vega-financial"
-          className="text-sm text-muted-foreground hover:underline"
-        >
-          ← Back to dashboard
-        </Link>
+      <div className="mb-6">
+        <Breadcrumb
+          items={[
+            { label: "Dashboard", href: "/vega-financial" },
+            { label: displayName || "Algorithm" },
+          ]}
+        />
       </div>
 
       <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
             {displayName}
             {version?.verificationStatus === "verified" && (
-              <ShieldCheck className="size-6 text-muted-foreground" />
+              <ShieldCheck className="size-6 text-primary" />
             )}
             {demoAlgo && (
               <span className="text-xs font-normal text-muted-foreground">(Demo)</span>
             )}
           </h1>
           {displayDesc && (
-            <p className="text-muted-foreground mt-1">{displayDesc}</p>
+            <p className="text-muted-foreground mt-1 text-sm">{displayDesc}</p>
           )}
           <div className="flex flex-wrap gap-2 mt-3">
             {displayTags.map((tag) => (
@@ -86,7 +91,7 @@ export default async function AlgorithmDetailPage({
               </Badge>
             ))}
             {displayRisk && (
-              <Badge variant="outline">{displayRisk}</Badge>
+              <Badge variant={riskVariant(displayRisk)}>{displayRisk}</Badge>
             )}
           </div>
         </div>
@@ -117,38 +122,38 @@ export default async function AlgorithmDetailPage({
 
       <div className="mt-8 space-y-8">
         {equityPoints.length > 0 && (
-          <Card className="bg-card/90 backdrop-blur">
+          <Card>
             <CardHeader>
-              <CardTitle>Equity curve</CardTitle>
-              <p className="text-sm text-muted-foreground">
+              <CardTitle className="text-sm font-medium">Equity curve</CardTitle>
+              <p className="text-xs text-muted-foreground">
                 Simulated backtest performance. Not investment advice.
               </p>
             </CardHeader>
             <CardContent>
-              <EquityCurve data={equityPoints} dates={chartDates} />
+              <EquityCurve data={equityPoints} />
             </CardContent>
           </Card>
         )}
 
         {equityPoints.length > 0 && (
-          <Card className="bg-card/90 backdrop-blur">
+          <Card>
             <CardHeader>
-              <CardTitle>Drawdown</CardTitle>
-              <p className="text-sm text-muted-foreground">
+              <CardTitle className="text-sm font-medium">Drawdown</CardTitle>
+              <p className="text-xs text-muted-foreground">
                 Peak-to-trough decline over the backtest period.
               </p>
             </CardHeader>
             <CardContent>
-              <DrawdownChart equityData={equityPoints} dates={chartDates} />
+              <DrawdownChart equityData={equityPoints} />
             </CardContent>
           </Card>
         )}
       </div>
 
-      <Card className="mt-8 bg-card/90 backdrop-blur">
+      <Card className="mt-8">
         <CardHeader>
-          <CardTitle>Run backtest</CardTitle>
-          <p className="text-sm text-muted-foreground">
+          <CardTitle className="text-sm font-medium">Run backtest</CardTitle>
+          <p className="text-xs text-muted-foreground">
             Configure and run a backtest against this algorithm version.
             Simulated performance only.
           </p>
