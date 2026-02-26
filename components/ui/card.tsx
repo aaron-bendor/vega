@@ -2,16 +2,19 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+const cardVariants = {
+  default:
+    "rounded-lg border border-[rgba(51,51,51,0.12)] bg-card text-card-foreground transition-colors hover:border-[rgba(51,51,51,0.18)]",
+  flat: "bg-transparent text-card-foreground",
+};
+
 const Card = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
+  React.HTMLAttributes<HTMLDivElement> & { variant?: "default" | "flat" }
+>(({ className, variant = "default", ...props }, ref) => (
   <div
     ref={ref}
-    className={cn(
-      "rounded-lg border border-[rgba(51,51,51,0.12)] bg-card text-card-foreground transition-colors hover:border-[rgba(51,51,51,0.18)]",
-      className
-    )}
+    className={cn(cardVariants[variant], className)}
     {...props}
   />
 ))
