@@ -15,8 +15,20 @@ This repo is the coded web app that the [Framer marketing UI](https://ivory-acti
 ## Prerequisites
 
 - Node.js 18+
-- PostgreSQL
-- npm or pnpm
+- npm or pnpm (PostgreSQL only needed for DB mode)
+
+## Quick start — run on another laptop
+
+All UI and app dependencies are listed in `package.json`, so a fresh clone works with no extra setup. **No `.env` or database required** for demo mode.
+
+```bash
+git clone <repo-url>
+cd Vega
+npm install
+npm run dev
+```
+
+Open **http://localhost:3000** (or the port shown in the terminal). You get the **demo** experience: marketplace and algorithm pages use `data/demo/` (no database required). If `DATABASE_URL` is missing, the app treats the DB as unavailable and uses demo data automatically. For equity curves and backtest charts, either use the precomputed demo runs in `data/demo/runs/` or run Stooq prefetch + demo precompute (see below).
 
 ## Real data demo (Stooq)
 

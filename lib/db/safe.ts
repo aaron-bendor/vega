@@ -1,6 +1,6 @@
 /**
- * Safe DB access for demo mode when Postgres is not running.
- * Catches connection errors and returns empty data so pages still render.
+ * Safe DB access for demo mode when Postgres is not running or DATABASE_URL is missing.
+ * Catches connection and init errors and returns empty data so pages still render.
  */
 
 export class DatabaseUnavailableError extends Error {
@@ -22,6 +22,18 @@ export function isDbConnectionError(err: unknown): boolean {
   return false;
 }
 
+/** True if the error means the DB is unavailable (connection or missing DATABASE_URL). */
+export function isDbUnavailableError(err: unknown): boolean {
+  if (err instanceof Error) {
+    if (isDbConnectionError(err)) return true;
+    if (err.name === "PrismaClientInitializationError") return true;
+    const msg = err.message.toLowerCase();
+    if (msg.includes("environment variable not found") || msg.includes("database_url"))
+      return true;
+  }
+  return false;
+}
+
 export async function withDbOrThrow<T>(
   fn: () => Promise<T>,
   fallback: T
@@ -30,7 +42,7 @@ export async function withDbOrThrow<T>(
     const data = await fn();
     return { data, dbAvailable: true };
   } catch (err) {
-    if (isDbConnectionError(err)) {
+    if (isDbUnavailableError(err)) {
       return { data: fallback, dbAvailable: false };
     }
     throw err;
