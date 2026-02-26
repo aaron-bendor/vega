@@ -1,0 +1,129 @@
+import { PortfolioOverview } from "@/components/vega-financial/PortfolioOverview";
+import { AlgorithmCategoryTabs } from "@/components/vega-financial/AlgorithmCategoryTabs";
+import { getInvestmentsForUser } from "@/lib/db/portfolio";
+import { getLatestBacktestForVersion } from "@/lib/db/backtests";
+import { listPublishedVersions } from "@/lib/db/algorithms";
+import { withDbOrThrow } from "@/lib/db/safe";
+import { loadDemoAlgorithms } from "@/lib/demo/loader";
+import { MOCK_ACCOUNT } from "@/lib/mock/portfolio";
+import type { MockAccount, MockHolding } from "@/lib/mock/portfolio";
+
+export const dynamic = "force-dynamic";
+
+const DEMO_CASH = 100000;
+
+async function getPortfolioAccount(): Promise<MockAccount> {
+  const { data: investments, dbAvailable } = await withDbOrThrow(
+    () => getInvestmentsForUser(),
+    []
+  );
+
+  if (!dbAvailable || investments.length === 0) {
+    return MOCK_ACCOUNT;
+  }
+
+  const holdingsWithValue = await Promise.all(
+    investments.map(async (inv) => {
+      const backtest = await getLatestBacktestForVersion(inv.versionId);
+      const lastEquity = backtest?.equityPoints.at(-1)?.value;
+      const pricePerUnit = lastEquity && lastEquity > 0 ? lastEquity : 10000;
+      const currentValue = inv.units * pricePerUnit;
+      const pnl = inv.amount > 0 ? (currentValue - inv.amount) / inv.amount : 0;
+      return {
+        id: inv.id,
+        algorithmName: inv.version.name,
+        versionId: inv.versionId,
+        invested: inv.amount,
+        currentValue,
+        pnl,
+        riskLevel: inv.version.riskLevel ?? "Medium",
+      };
+    })
+  );
+
+  const totalAllocated = holdingsWithValue.reduce((s, h) => s + h.currentValue, 0);
+  const totalInvested = holdingsWithValue.reduce((s, h) => s + h.invested, 0);
+  const availableCash = Math.max(0, DEMO_CASH - totalInvested);
+  const totalEquity = availableCash + totalAllocated;
+  const unrealisedPnl = totalInvested > 0 ? (totalAllocated - totalInvested) / totalInvested : 0;
+  const unrealisedPnlPct = unrealisedPnl * 100;
+
+  const holdings: MockHolding[] = holdingsWithValue.map((h) => ({
+    id: h.id,
+    algorithmId: h.versionId,
+    name: h.algorithmName,
+    allocated: h.invested,
+    currentValue: h.currentValue,
+    weight: totalAllocated > 0 ? (h.currentValue / totalAllocated) * 100 : 0,
+    returnPct: h.pnl * 100,
+    tags: [],
+  }));
+
+  return {
+    equity: totalEquity,
+    availableCash,
+    allocated: totalAllocated,
+    unrealizedPnl: totalEquity - DEMO_CASH,
+    unrealizedPnlPct: unrealisedPnlPct,
+    holdings,
+  };
+}
+
+async function getAlgorithmsData() {
+  const { data: versions, dbAvailable } = await withDbOrThrow(
+    () => listPublishedVersions({}),
+    []
+  );
+
+  const demoAlgos = !dbAvailable ? loadDemoAlgorithms() : [];
+  const useDemo = !dbAvailable && demoAlgos.length > 0;
+
+  const items = useDemo
+    ? demoAlgos.map((a) => ({
+        id: a.id,
+        name: a.name,
+        shortDesc: a.shortDesc,
+        tags: a.tags,
+        riskLevel: a.riskLevel ?? "Medium",
+        verified: false,
+        return: undefined as number | undefined,
+        volatility: undefined as number | undefined,
+        maxDrawdown: undefined as number | undefined,
+        sparklineData: [] as number[],
+      }))
+    : versions.map((v) => ({
+        id: v.id,
+        name: v.name,
+        shortDesc: v.shortDesc ?? v.description ?? "",
+        tags: v.tags?.map((t) => t.tag.name) ?? [],
+        riskLevel: v.riskLevel ?? "Medium",
+        verified: v.verificationStatus === "verified",
+        return: v.cachedReturn ?? undefined,
+        volatility: v.cachedVolatility ?? undefined,
+        maxDrawdown: v.cachedMaxDrawdown ?? undefined,
+        sparklineData: [] as number[],
+      }));
+
+  return items;
+}
+
+export default async function VegaFinancialPage() {
+  const [account, algorithms] = await Promise.all([
+    getPortfolioAccount(),
+    getAlgorithmsData(),
+  ]);
+
+  return (
+    <div className="p-6 space-y-8">
+      <section>
+        <h2 className="text-lg font-semibold mb-4">Portfolio overview</h2>
+        <PortfolioOverview account={account} />
+      </section>
+
+      <section>
+        <h2 className="text-lg font-semibold mb-4">Algorithms</h2>
+        <AlgorithmCategoryTabs algorithms={algorithms} />
+      </section>
+    </div>
+  );
+}

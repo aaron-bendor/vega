@@ -1,0 +1,152 @@
+// Vega Financial — University Prototype
+// Prisma schema for Postgres
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String            @id @default(cuid())
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  investments      Investment[]
+  developerProfile DeveloperProfile?
+}
+
+model DeveloperProfile {
+  id         String      @id @default(cuid())
+  userId     String?     @unique
+  user       User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  algorithms Algorithm[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model Algorithm {
+  id            String             @id @default(cuid())
+  developerId   String
+  developer     DeveloperProfile   @relation(fields: [developerId], references: [id], onDelete: Cascade)
+  name          String
+  shortDesc     String?            @map("short_desc")
+  description   String?
+  universe      String?
+  riskLevel     String?            @map("risk_level")
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  versions      AlgorithmVersion[]
+  tags          AlgorithmTag[]
+}
+
+model Tag {
+  id          String               @id @default(cuid())
+  name        String               @unique
+  algorithms  AlgorithmTag[]
+  versions    AlgorithmVersionTag[]
+}
+
+model AlgorithmTag {
+  algorithmId String
+  tagId       String
+  algorithm   Algorithm @relation(fields: [algorithmId], references: [id], onDelete: Cascade)
+  tag         Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  @@id([algorithmId, tagId])
+  @@index([tagId])
+}
+
+model AlgorithmVersion {
+  id                  String        @id @default(cuid())
+  algorithmId         String
+  algorithm           Algorithm     @relation(fields: [algorithmId], references: [id], onDelete: Cascade)
+  name                String
+  shortDesc           String?       @map("short_desc")
+  description         String?
+  universe            String?
+  riskLevel           String?       @map("risk_level")
+  strategyTemplateId  String        @map("strategy_template_id")
+  parameters         Json          @default("{}")
+  verificationStatus String?       @map("verification_status")
+  publishedAt        DateTime      @default(now())
+  // Data source for backtests
+  dataSource          String?       @default("stooq") @map("data_source") // "stooq" | "synthetic"
+  symbols             Json?         @default("[]")   // string[] e.g. ["^spx"] or ["spy.us","tlt.us"]
+  startDate           String?       @map("start_date") // YYYY-MM-DD
+  endDate             String?       @map("end_date")   // YYYY-MM-DD
+  // Cached headline metrics for marketplace cards
+  cachedReturn       Float?        @map("cached_return")
+  cachedSharpe       Float?        @map("cached_sharpe")
+  cachedMaxDrawdown  Float?        @map("cached_max_drawdown")
+  cachedVolatility  Float?        @map("cached_volatility")
+  backtestRuns      BacktestRun[]
+  investments       Investment[]
+  tags              AlgorithmVersionTag[]
+
+  @@index([publishedAt])
+  @@index([verificationStatus])
+  @@index([algorithmId])
+}
+
+model AlgorithmVersionTag {
+  versionId   String
+  tagId       String
+  version     AlgorithmVersion @relation(fields: [versionId], references: [id], onDelete: Cascade)
+  tag         Tag              @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  @@id([versionId, tagId])
+  @@index([tagId])
+}
+
+model BacktestRun {
+  id              String       @id @default(cuid())
+  versionId       String
+  version         AlgorithmVersion @relation(fields: [versionId], references: [id], onDelete: Cascade)
+  horizon         Int
+  strategyId      String       @map("strategy_id")
+  parameters      Json         @default("{}")
+  startingCapital Float        @map("starting_capital")
+  seed            String
+  createdAt       DateTime     @default(now())
+  metrics         Metric[]
+  equityPoints   EquityPoint[]
+
+  @@index([versionId])
+}
+
+model Metric {
+  id           String      @id @default(cuid())
+  backtestId   String
+  backtest     BacktestRun @relation(fields: [backtestId], references: [id], onDelete: Cascade)
+  key          String
+  value        Float
+
+  @@unique([backtestId, key])
+  @@index([backtestId])
+}
+
+model EquityPoint {
+  id         String      @id @default(cuid())
+  backtestId String
+  backtest   BacktestRun @relation(fields: [backtestId], references: [id], onDelete: Cascade)
+  dayIndex   Int         @map("day_index")
+  value      Float
+
+  @@unique([backtestId, dayIndex])
+  @@index([backtestId])
+}
+
+model Investment {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  versionId String
+  version   AlgorithmVersion @relation(fields: [versionId], references: [id], onDelete: Cascade)
+  amount    Float
+  units     Float
+  createdAt DateTime        @default(now())
+
+  @@index([userId])
+  @@index([versionId])
+}
