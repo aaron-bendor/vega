@@ -8,9 +8,10 @@ import { updateAlgorithmSchema } from "@/lib/validation/algorithms";
 
 export async function GET(
   _request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const algo = await getAlgorithmById(params.id);
+  const { id } = await params;
+  const algo = await getAlgorithmById(id);
   if (!algo) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
@@ -19,9 +20,10 @@ export async function GET(
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
     const parsed = updateAlgorithmSchema.safeParse(body);
     if (!parsed.success) {
@@ -47,7 +49,7 @@ export async function PATCH(
     if (parsed.data.riskLevel !== undefined)
       data.riskLevel = parsed.data.riskLevel;
     if (tagIds !== undefined) data.tagIds = tagIds;
-    const algo = await updateAlgorithm(params.id, data);
+    const algo = await updateAlgorithm(id, data);
     return NextResponse.json(algo);
   } catch (err) {
     console.error("Update algorithm error:", err);

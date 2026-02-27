@@ -25,9 +25,9 @@ function riskVariant(level: string) {
 export default async function AlgorithmDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const { id } = params;
+  const { id } = await params;
   let version: Awaited<ReturnType<typeof getAlgorithmVersionById>> = null;
   let demoAlgo: ReturnType<typeof loadDemoAlgorithms>[0] | null = null;
 

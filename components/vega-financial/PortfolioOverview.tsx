@@ -5,6 +5,7 @@ import { formatCurrency, formatPercent } from "@/lib/utils/format";
 import type { MockAccount } from "@/lib/mock/portfolio";
 import { Card, CardContent } from "@/components/ui/card";
 import { AllocationDonut } from "@/components/vega-financial/AllocationDonut";
+import { RiskBadge } from "@/components/vega-financial/RiskBadge";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, TrendingUp, TrendingDown, DollarSign, PiggyBank } from "lucide-react";
 
@@ -113,6 +114,9 @@ export function PortfolioOverview({ account }: PortfolioOverviewProps) {
                     <th className="pb-2 text-left text-xs font-medium text-muted-foreground">
                       Algorithm
                     </th>
+                    <th className="pb-2 text-center text-xs font-medium text-muted-foreground w-20">
+                      Risk
+                    </th>
                     <th className="pb-2 text-right text-xs font-medium text-muted-foreground">
                       Value
                     </th>
@@ -138,6 +142,13 @@ export function PortfolioOverview({ account }: PortfolioOverviewProps) {
                         >
                           {h.name}
                         </Link>
+                      </td>
+                      <td className="text-center">
+                        {h.riskScore != null ? (
+                          <RiskBadge score={h.riskScore} variant="compact" />
+                        ) : (
+                          <span className="text-xs text-muted-foreground">—</span>
+                        )}
                       </td>
                       <td className="text-right font-medium tabular-nums">
                         {formatCurrency(h.currentValue)}

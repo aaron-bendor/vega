@@ -4,6 +4,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
+import type { InvestableAttributes } from "@/lib/vega-financial/types";
 
 export interface DemoAlgorithm {
   id: string;
@@ -22,6 +23,25 @@ export interface DemoAlgorithm {
   verified?: boolean;
   minInvestment?: number;
   inceptionDate?: string;
+  /** 1–10 risk score (eToro-style). */
+  riskScore?: number;
+  /** 95% monthly VaR as decimal (e.g. 0.05 = 5%). */
+  var95MonthlyPct?: number;
+  /** True if wrapped by vol-target/risk overlay (Darwinex investable asset). */
+  standardised?: boolean;
+  /** Platform attribute layer for filtering and comparison. */
+  attributes?: InvestableAttributes;
+  /** Developer id for follow/feed. */
+  developerId?: string;
+}
+
+export interface DemoDeveloper {
+  id: string;
+  displayName: string;
+  shortBio?: string;
+  verified?: boolean;
+  joinedDate?: string;
+  algorithmCount?: number;
 }
 
 export interface DemoRun {
@@ -55,5 +75,19 @@ export function loadDemoRun(demoId: string): DemoRun | null {
     return JSON.parse(raw) as DemoRun;
   } catch {
     return null;
+  }
+}
+
+let cachedDevs: DemoDeveloper[] | null = null;
+
+export function loadDemoDevelopers(): DemoDeveloper[] {
+  if (cachedDevs) return cachedDevs;
+  try {
+    const file = path.join(process.cwd(), "data", "demo", "developers.json");
+    const raw = fs.readFileSync(file, "utf8");
+    cachedDevs = JSON.parse(raw) as DemoDeveloper[];
+    return cachedDevs ?? [];
+  } catch {
+    return [];
   }
 }

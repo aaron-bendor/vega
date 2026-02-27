@@ -1,17 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  RiskDisclosureModal,
+  getRiskDisclosureAccepted,
+} from "@/components/vega-financial/RiskDisclosureModal";
 
 export function InvestPanel({ versionId }: { versionId: string }) {
   const router = useRouter();
   const [amount, setAmount] = useState(10000);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [disclosureOpen, setDisclosureOpen] = useState(false);
+  const [accepted, setAccepted] = useState(false);
 
-  async function handleInvest() {
+  useEffect(() => {
+    setAccepted(getRiskDisclosureAccepted());
+  }, []);
+
+  async function doInvest() {
     setLoading(true);
     setError(null);
     try {
@@ -32,6 +42,19 @@ export function InvestPanel({ versionId }: { versionId: string }) {
     }
   }
 
+  function handleInvestClick() {
+    if (!accepted) {
+      setDisclosureOpen(true);
+      return;
+    }
+    doInvest();
+  }
+
+  function handleDisclosureAccept() {
+    setAccepted(true);
+    doInvest();
+  }
+
   return (
     <div className="mt-6 pt-4 border-t border-[rgba(51,51,51,0.12)] flex flex-wrap items-center gap-4">
       <Input
@@ -42,10 +65,15 @@ export function InvestPanel({ versionId }: { versionId: string }) {
         onChange={(e) => setAmount(Number(e.target.value) || 10000)}
         className="w-32"
       />
-      <Button onClick={handleInvest} disabled={loading}>
+      <Button onClick={handleInvestClick} disabled={loading}>
         {loading ? "Adding…" : "Add to paper portfolio"}
       </Button>
       {error && <p className="text-destructive text-sm">{error}</p>}
+      <RiskDisclosureModal
+        open={disclosureOpen}
+        onOpenChange={setDisclosureOpen}
+        onAccept={handleDisclosureAccept}
+      />
     </div>
   );
 }

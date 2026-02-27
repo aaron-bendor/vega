@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { ShieldCheck } from "lucide-react";
 import { formatPercent } from "@/lib/utils/format";
+import { RiskBadge } from "./RiskBadge";
 
 interface AlgorithmCardProps {
   id: string;
@@ -9,6 +10,9 @@ interface AlgorithmCardProps {
   shortDesc: string;
   tags: string[];
   riskLevel: string;
+  riskScore?: number;
+  var95MonthlyPct?: number;
+  standardised?: boolean;
   verified?: boolean;
   return?: number;
   volatility?: number;
@@ -16,10 +20,10 @@ interface AlgorithmCardProps {
   sparklineData?: number[];
 }
 
-function riskClass(level: string) {
-  if (level === "Low") return "text-brand-green";
-  if (level === "High") return "text-brand-red";
-  return "text-muted-foreground";
+function riskLevelToScore(level: string): number {
+  if (level === "Low") return 3;
+  if (level === "High") return 8;
+  return 5;
 }
 
 export function AlgorithmCard({
@@ -28,6 +32,9 @@ export function AlgorithmCard({
   shortDesc,
   tags,
   riskLevel,
+  riskScore,
+  var95MonthlyPct,
+  standardised,
   verified,
   return: ret,
   volatility,
@@ -36,6 +43,7 @@ export function AlgorithmCard({
   const visibleTags = tags.slice(0, 2);
   const extraCount = tags.length - 2;
   const hasMetrics = ret != null || volatility != null || maxDrawdown != null;
+  const score = riskScore ?? riskLevelToScore(riskLevel);
 
   return (
     <Link href={`/vega-financial/algorithms/${id}`}>
@@ -57,9 +65,12 @@ export function AlgorithmCard({
                   {shortDesc}
                 </p>
               </div>
-              <span className={`text-xs font-medium shrink-0 ${riskClass(riskLevel)}`}>
-                {riskLevel}
-              </span>
+              <RiskBadge
+                score={score}
+                var95MonthlyPct={var95MonthlyPct}
+                standardised={standardised}
+                variant="compact"
+              />
             </div>
             <div className="flex flex-wrap items-center gap-1.5">
               {visibleTags.map((tag) => (
@@ -160,8 +171,13 @@ export function AlgorithmCard({
                 Run backtest for metrics
               </div>
             )}
-            <div className={`text-[10px] font-medium w-12 text-center shrink-0 ${riskClass(riskLevel)}`}>
-              {riskLevel}
+            <div className="shrink-0">
+              <RiskBadge
+                score={score}
+                var95MonthlyPct={var95MonthlyPct}
+                standardised={standardised}
+                variant="compact"
+              />
             </div>
           </div>
         </CardContent>

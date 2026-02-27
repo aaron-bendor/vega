@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlgorithmCard } from "./AlgorithmCard";
+import type { InvestableAttributes } from "@/lib/vega-financial/types";
 
 export interface AlgorithmForCard {
   id: string;
@@ -10,6 +11,10 @@ export interface AlgorithmForCard {
   shortDesc: string;
   tags: string[];
   riskLevel: string;
+  riskScore?: number;
+  var95MonthlyPct?: number;
+  standardised?: boolean;
+  attributes?: InvestableAttributes;
   verified?: boolean;
   return?: number;
   volatility?: number;
@@ -38,11 +43,35 @@ export function AlgorithmCategoryTabs({
   const tab = searchParams.get("tab") || "trending";
   const risk = searchParams.get("risk");
   const verifiedOnly = searchParams.get("verified") === "true";
+  const minTrackRecord = searchParams.get("minTrackRecord");
+  const maxCorrelation = searchParams.get("maxCorrelation");
+  const minRiskStability = searchParams.get("minRiskStability");
+  const minRiskAdjustment = searchParams.get("minRiskAdjustment");
 
   const filterList = (list: AlgorithmForCard[]) => {
     let out = list;
     if (risk) out = out.filter((a) => a.riskLevel === risk);
     if (verifiedOnly) out = out.filter((a) => a.verified);
+    if (minTrackRecord) {
+      const min = Number(minTrackRecord);
+      if (!Number.isNaN(min))
+        out = out.filter((a) => (a.attributes?.experience ?? 0) >= min);
+    }
+    if (maxCorrelation) {
+      const max = Number(maxCorrelation);
+      if (!Number.isNaN(max))
+        out = out.filter((a) => (a.attributes?.marketCorrelation ?? 100) <= max);
+    }
+    if (minRiskStability) {
+      const min = Number(minRiskStability);
+      if (!Number.isNaN(min))
+        out = out.filter((a) => (a.attributes?.riskStability ?? 0) >= min);
+    }
+    if (minRiskAdjustment) {
+      const min = Number(minRiskAdjustment);
+      if (!Number.isNaN(min))
+        out = out.filter((a) => (a.attributes?.riskAdjustment ?? 0) >= min);
+    }
     return out;
   };
 
@@ -62,6 +91,9 @@ export function AlgorithmCategoryTabs({
           shortDesc={algo.shortDesc}
           tags={algo.tags}
           riskLevel={algo.riskLevel}
+          riskScore={algo.riskScore}
+          var95MonthlyPct={algo.var95MonthlyPct}
+          standardised={algo.standardised}
           verified={algo.verified}
           return={algo.return}
           volatility={algo.volatility}

@@ -1,0 +1,34 @@
+[
+  {
+    "id": "dev-1",
+    "displayName": "Quant Labs",
+    "shortBio": "Systematic equity strategies.",
+    "verified": true,
+    "joinedDate": "2022-06-01",
+    "algorithmCount": 3
+  },
+  {
+    "id": "dev-2",
+    "displayName": "Passive Edge",
+    "shortBio": "Low-cost index and trend following.",
+    "verified": true,
+    "joinedDate": "2022-03-01",
+    "algorithmCount": 2
+  },
+  {
+    "id": "dev-3",
+    "displayName": "Mean Reversion Co",
+    "shortBio": "Volatility and band strategies.",
+    "verified": false,
+    "joinedDate": "2024-01-10",
+    "algorithmCount": 1
+  },
+  {
+    "id": "dev-4",
+    "displayName": "Momentum Signals",
+    "shortBio": "RSI and momentum overlays.",
+    "verified": false,
+    "joinedDate": "2024-09-01",
+    "algorithmCount": 1
+  }
+]

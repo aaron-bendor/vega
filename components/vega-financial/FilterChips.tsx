@@ -10,15 +10,26 @@ export function FilterChips() {
   const verified = searchParams.get("verified") === "true";
   const sort = searchParams.get("sort");
   const tab = searchParams.get("tab");
+  const minTrackRecord = searchParams.get("minTrackRecord");
+  const maxCorrelation = searchParams.get("maxCorrelation");
+  const minRiskStability = searchParams.get("minRiskStability");
+  const minRiskAdjustment = searchParams.get("minRiskAdjustment");
 
-  const hasFilters = risk || verified || sort || tab;
+  const hasFilters =
+    risk ||
+    verified ||
+    sort ||
+    tab ||
+    minTrackRecord ||
+    maxCorrelation ||
+    minRiskStability ||
+    minRiskAdjustment;
 
   const clearAll = () => {
     const params = new URLSearchParams(searchParams.toString());
-    params.delete("risk");
-    params.delete("verified");
-    params.delete("sort");
-    params.delete("tab");
+    ["risk", "verified", "sort", "tab", "minTrackRecord", "maxCorrelation", "minRiskStability", "minRiskAdjustment"].forEach(
+      (k) => params.delete(k)
+    );
     router.push(`/vega-financial?${params.toString()}`);
   };
 

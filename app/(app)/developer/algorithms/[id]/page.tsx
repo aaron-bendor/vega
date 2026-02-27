@@ -6,9 +6,9 @@ import { Breadcrumb } from "@/components/layout/Breadcrumb";
 export default async function DeveloperAlgorithmPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const { id } = params;
+  const { id } = await params;
   const algo = await getAlgorithmById(id);
   if (!algo) notFound();
 

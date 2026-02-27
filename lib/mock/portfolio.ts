@@ -7,6 +7,8 @@ export interface MockHolding {
   weight: number;
   returnPct: number;
   tags: string[];
+  /** 1–10 risk score for display (optional). */
+  riskScore?: number;
 }
 
 export interface MockAccount {
@@ -34,6 +36,7 @@ export const MOCK_ACCOUNT: MockAccount = {
       weight: 32.1,
       returnPct: 12.33,
       tags: ["Momentum", "Equity"],
+      riskScore: 5,
     },
     {
       id: "h2",
@@ -44,6 +47,7 @@ export const MOCK_ACCOUNT: MockAccount = {
       weight: 30.0,
       returnPct: 57.49,
       tags: ["Trend Following"],
+      riskScore: 3,
     },
     {
       id: "h3",
@@ -54,6 +58,7 @@ export const MOCK_ACCOUNT: MockAccount = {
       weight: 37.8,
       returnPct: 32.35,
       tags: ["Mean Reversion"],
+      riskScore: 5,
     },
   ],
 };

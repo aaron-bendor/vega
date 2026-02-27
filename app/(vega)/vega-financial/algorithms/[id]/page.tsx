@@ -8,6 +8,8 @@ import { MetricsCards } from "@/components/charts/MetricsCards";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ShieldCheck } from "lucide-react";
+import { RiskBadge } from "@/components/vega-financial/RiskBadge";
+import { InvestableAttributesStrip } from "@/components/vega-financial/InvestableAttributesStrip";
 import { RunBacktestPanel } from "@/app/(app)/algo/[id]/RunBacktestPanel";
 import { InvestPanel } from "@/app/(app)/algo/[id]/InvestPanel";
 import { DataStatusCard } from "@/app/(app)/algo/[id]/DataStatusCard";
@@ -58,6 +60,9 @@ export default async function AlgorithmDetailPage({
   const displayDesc = version?.shortDesc ?? demoAlgo?.shortDesc ?? "";
   const displayTags = version?.tags?.map((t) => t.tag.name) ?? demoAlgo?.tags ?? [];
   const displayRisk = version?.riskLevel ?? demoAlgo?.riskLevel ?? null;
+  const riskScore = demoAlgo?.riskScore ?? (displayRisk === "Low" ? 3 : displayRisk === "High" ? 8 : 5);
+  const var95MonthlyPct = demoAlgo?.var95MonthlyPct;
+  const standardised = demoAlgo?.standardised;
 
   return (
     <div className="p-6 max-w-4xl">
@@ -84,7 +89,13 @@ export default async function AlgorithmDetailPage({
           {displayDesc && (
             <p className="text-muted-foreground mt-1 text-sm">{displayDesc}</p>
           )}
-          <div className="flex flex-wrap gap-2 mt-3">
+          <div className="flex flex-wrap items-center gap-2 mt-3">
+            <RiskBadge
+              score={riskScore}
+              var95MonthlyPct={var95MonthlyPct}
+              standardised={standardised}
+              variant="default"
+            />
             {displayTags.map((tag) => (
               <Badge key={tag} variant="secondary">
                 {tag}
@@ -92,6 +103,9 @@ export default async function AlgorithmDetailPage({
             ))}
             {displayRisk && (
               <Badge variant={riskVariant(displayRisk)}>{displayRisk}</Badge>
+            )}
+            {demoAlgo?.attributes && (
+              <InvestableAttributesStrip attributes={demoAlgo.attributes} variant="default" className="w-full mt-2" />
             )}
           </div>
         </div>
@@ -167,7 +181,7 @@ export default async function AlgorithmDetailPage({
             startDate={(version?.startDate as string | undefined) ?? demoAlgo?.startDate}
             endDate={(version?.endDate as string | undefined) ?? demoAlgo?.endDate}
           />
-          {version && <InvestPanel versionId={id} />}
+          {(version || demoAlgo) && <InvestPanel versionId={id} />}
         </CardContent>
       </Card>
     </div>

@@ -3,21 +3,22 @@ import { getAlgorithmById, publishAlgorithm } from "@/lib/db/algorithms";
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json().catch(() => ({}));
     const strategyTemplateId =
       (body.strategyTemplateId as string) || "buyAndHold";
     const parameters = (body.parameters as Record<string, unknown>) ?? {};
 
-    const algo = await getAlgorithmById(params.id);
+    const algo = await getAlgorithmById(id);
     if (!algo) {
       return NextResponse.json({ error: "Algorithm not found" }, { status: 404 });
     }
 
     const version = await publishAlgorithm(
-      params.id,
+      id,
       strategyTemplateId,
       parameters
     );

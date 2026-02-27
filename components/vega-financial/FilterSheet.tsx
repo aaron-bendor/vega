@@ -18,8 +18,20 @@ export function FilterSheet() {
   const risk = searchParams.get("risk") ?? "";
   const verified = searchParams.get("verified") === "true";
   const sort = searchParams.get("sort") ?? "trending";
+  const minTrackRecord = searchParams.get("minTrackRecord") ?? "";
+  const maxCorrelation = searchParams.get("maxCorrelation") ?? "";
+  const minRiskStability = searchParams.get("minRiskStability") ?? "";
+  const minRiskAdjustment = searchParams.get("minRiskAdjustment") ?? "";
 
-  const setParams = (updates: { risk?: string; verified?: boolean; sort?: string }) => {
+  const setParams = (updates: {
+    risk?: string;
+    verified?: boolean;
+    sort?: string;
+    minTrackRecord?: string;
+    maxCorrelation?: string;
+    minRiskStability?: string;
+    minRiskAdjustment?: string;
+  }) => {
     const params = new URLSearchParams(searchParams.toString());
     if (updates.risk !== undefined) {
       if (updates.risk) params.set("risk", updates.risk);
@@ -29,8 +41,22 @@ export function FilterSheet() {
       if (updates.verified) params.set("verified", "true");
       else params.delete("verified");
     }
-    if (updates.sort !== undefined) {
-      params.set("sort", updates.sort);
+    if (updates.sort !== undefined) params.set("sort", updates.sort);
+    if (updates.minTrackRecord !== undefined) {
+      if (updates.minTrackRecord) params.set("minTrackRecord", updates.minTrackRecord);
+      else params.delete("minTrackRecord");
+    }
+    if (updates.maxCorrelation !== undefined) {
+      if (updates.maxCorrelation) params.set("maxCorrelation", updates.maxCorrelation);
+      else params.delete("maxCorrelation");
+    }
+    if (updates.minRiskStability !== undefined) {
+      if (updates.minRiskStability) params.set("minRiskStability", updates.minRiskStability);
+      else params.delete("minRiskStability");
+    }
+    if (updates.minRiskAdjustment !== undefined) {
+      if (updates.minRiskAdjustment) params.set("minRiskAdjustment", updates.minRiskAdjustment);
+      else params.delete("minRiskAdjustment");
     }
     router.push(`/vega-financial?${params.toString()}`);
   };
@@ -84,6 +110,53 @@ export function FilterSheet() {
             <Label htmlFor="verified" className="cursor-pointer text-sm">
               Verified only
             </Label>
+          </div>
+          <div>
+            <Label className="text-xs font-medium text-muted-foreground">Track record (months min)</Label>
+            <input
+              type="number"
+              min={0}
+              placeholder="Any"
+              value={minTrackRecord}
+              onChange={(e) => setParams({ minTrackRecord: e.target.value || "" })}
+              className="w-full mt-2 rounded-lg border border-[rgba(51,51,51,0.18)] bg-background px-3 py-2 text-sm"
+            />
+          </div>
+          <div>
+            <Label className="text-xs font-medium text-muted-foreground">Market correlation (max %)</Label>
+            <input
+              type="number"
+              min={0}
+              max={100}
+              placeholder="Any"
+              value={maxCorrelation}
+              onChange={(e) => setParams({ maxCorrelation: e.target.value || "" })}
+              className="w-full mt-2 rounded-lg border border-[rgba(51,51,51,0.18)] bg-background px-3 py-2 text-sm"
+            />
+          </div>
+          <div>
+            <Label className="text-xs font-medium text-muted-foreground">Risk stability (min %)</Label>
+            <input
+              type="number"
+              min={0}
+              max={100}
+              placeholder="Any"
+              value={minRiskStability}
+              onChange={(e) => setParams({ minRiskStability: e.target.value || "" })}
+              className="w-full mt-2 rounded-lg border border-[rgba(51,51,51,0.18)] bg-background px-3 py-2 text-sm"
+            />
+          </div>
+          <div>
+            <Label className="text-xs font-medium text-muted-foreground">Risk adjustment (min %)</Label>
+            <input
+              type="number"
+              min={0}
+              max={100}
+              placeholder="Any"
+              value={minRiskAdjustment}
+              onChange={(e) => setParams({ minRiskAdjustment: e.target.value || "" })}
+              className="w-full mt-2 rounded-lg border border-[rgba(51,51,51,0.18)] bg-background px-3 py-2 text-sm"
+            />
           </div>
           <div>
             <Label className="text-xs font-medium text-muted-foreground">Sort by</Label>
