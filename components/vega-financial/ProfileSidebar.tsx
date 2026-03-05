@@ -33,7 +33,6 @@ export function ProfileSidebar() {
           </div>
           <div>
             <p className="font-medium text-sm text-foreground">Demo User</p>
-            <p className="text-xs text-muted-foreground">Paper trading</p>
           </div>
         </div>
       </div>

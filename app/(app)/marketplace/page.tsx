@@ -50,8 +50,8 @@ export default async function MarketplacePage({
       : [];
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">Marketplace</h1>
+    <div className="container mx-auto px-4 py-8 max-w-5xl">
+      <h1 className="font-syne text-2xl md:text-3xl font-bold mb-6 text-foreground">Marketplace</h1>
       {!dbAvailable && !useDemo && (
         <div className="mb-6 rounded-lg border border-[rgba(51,51,51,0.12)] bg-[rgba(51,51,51,0.04)] px-4 py-3 text-sm text-muted-foreground">
           <strong className="text-foreground">Database not configured.</strong> Set{" "}
@@ -118,9 +118,9 @@ export default async function MarketplacePage({
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filteredDemo.map((v) => (
             <Link key={v.id} href={`/algo/${v.id}`}>
-              <Card className="h-full transition-colors">
+              <Card className="h-full rounded-2xl border-primary/20 bg-primary/[0.03] transition-colors hover:border-primary/30 hover:bg-primary/5">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-semibold">{v.name}</CardTitle>
+                  <CardTitle className="font-syne text-sm font-semibold">{v.name}</CardTitle>
                   <CardDescription className="line-clamp-2">{v.shortDesc}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
@@ -142,10 +142,10 @@ export default async function MarketplacePage({
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {versions.map((v) => (
             <Link key={v.id} href={`/algo/${v.id}`}>
-              <Card className="h-full transition-colors">
+              <Card className="h-full rounded-2xl border-primary/20 bg-primary/[0.03] transition-colors hover:border-primary/30 hover:bg-primary/5">
                 <CardHeader className="pb-2">
                   <div className="flex items-start justify-between gap-2">
-                    <CardTitle className="text-sm font-semibold">{v.name}</CardTitle>
+                    <CardTitle className="font-syne text-sm font-semibold">{v.name}</CardTitle>
                     {v.verificationStatus === "verified" && (
                       <ShieldCheck className="size-4 text-primary shrink-0" />
                     )}

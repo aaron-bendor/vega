@@ -15,7 +15,7 @@ function MetricCard({ label, value, format = "percent" }: MetricCardProps) {
         ? formatPercent(value)
         : value.toFixed(2);
   return (
-    <Card>
+    <Card className="rounded-2xl border-primary/20 bg-primary/[0.03]">
       <CardHeader className="pb-1">
         <span className="text-xs font-medium text-muted-foreground">{label}</span>
       </CardHeader>

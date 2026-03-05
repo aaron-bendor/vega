@@ -29,14 +29,14 @@ export function AllocationDonut({ data }: AllocationDonutProps) {
   }));
 
   return (
-    <ResponsiveContainer width="100%" height={200}>
-      <PieChart>
+    <ResponsiveContainer width="100%" height={260}>
+      <PieChart margin={{ top: 8, right: 8, bottom: 56, left: 8 }}>
         <Pie
           data={chartData}
           cx="50%"
-          cy="50%"
-          innerRadius={60}
-          outerRadius={80}
+          cy="45%"
+          innerRadius={52}
+          outerRadius={68}
           paddingAngle={2}
           dataKey="value"
         >
@@ -53,7 +53,12 @@ export function AllocationDonut({ data }: AllocationDonutProps) {
           }}
           formatter={(value: number | undefined) => [`${(value ?? 0).toFixed(1)}%`, "Allocation"]}
         />
-        <Legend />
+        <Legend
+          verticalAlign="bottom"
+          height={44}
+          wrapperStyle={{ paddingTop: 8 }}
+          formatter={(value) => <span className="text-xs text-foreground">{value}</span>}
+        />
       </PieChart>
     </ResponsiveContainer>
   );

@@ -4,8 +4,7 @@ import { useState } from "react";
 import { ProfileSidebar } from "./ProfileSidebar";
 import { FilterSheet } from "./FilterSheet";
 import { FilterChips } from "./FilterChips";
-import { PrototypeBanner } from "@/components/layout/PrototypeBanner";
-import { GlobalHeader } from "@/components/layout/GlobalHeader";
+import { PillNav } from "@/components/layout/PillNav";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Menu } from "lucide-react";
@@ -21,8 +20,7 @@ export function VegaFinancialShell({
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
-      <PrototypeBanner />
-      <GlobalHeader />
+      <PillNav variant="standalone" />
 
       <div className="flex-1 flex">
         <div className="hidden lg:block">
@@ -30,8 +28,8 @@ export function VegaFinancialShell({
         </div>
 
         <div className="flex-1 flex flex-col min-w-0">
-          <div className="border-b border-[rgba(51,51,51,0.12)] bg-white">
-            <div className="flex items-center gap-3 px-4 lg:px-6 h-12">
+          <div className="border-b border-primary/10 bg-primary/[0.02]">
+            <div className="flex items-center gap-3 px-4 lg:px-6 h-14">
               <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon" className="lg:hidden shrink-0">

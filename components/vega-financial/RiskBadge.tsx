@@ -36,17 +36,19 @@ export function RiskBadge({
       <button
         type="button"
         onClick={() => setSheetOpen(true)}
-        className={`inline-flex items-center gap-1.5 rounded-md border transition-colors hover:bg-[rgba(51,51,51,0.04)] focus:outline-none focus:ring-2 focus:ring-primary/20 ${className} ${
+        className={`inline-flex items-center flex-nowrap gap-1.5 rounded-md border transition-colors hover:bg-[rgba(51,51,51,0.04)] focus:outline-none focus:ring-2 focus:ring-primary/20 ${className} ${
           variant === "compact"
-            ? "border-[rgba(51,51,51,0.18)] px-1.5 py-0.5 text-[10px] font-medium"
-            : "border-[rgba(51,51,51,0.18)] px-2 py-1 text-xs font-medium"
+            ? "border-[rgba(51,51,51,0.18)] pl-1.5 pr-2 py-0.5 text-[10px] font-medium"
+            : "border-[rgba(51,51,51,0.18)] pl-2 pr-2.5 py-1 text-xs font-medium"
         } ${isLow ? "text-brand-green border-brand-green/40" : isHigh ? "text-brand-red border-brand-red/40" : "text-muted-foreground"}`}
         aria-label={`${label} score ${clamped} of 10. Click for explanation.`}
       >
-        <AlertTriangle className={variant === "compact" ? "size-2.5" : "size-3"} aria-hidden />
-        <span className="tabular-nums">{clamped}/10</span>
+        <span className="inline-flex items-center gap-1 shrink-0">
+          <AlertTriangle className={variant === "compact" ? "size-2.5" : "size-3"} aria-hidden />
+          <span className="tabular-nums">{clamped}/10</span>
+        </span>
         {standardised && (
-          <span className="rounded bg-primary/10 px-1 py-0.5 text-[10px] text-primary">
+          <span className="shrink-0 rounded bg-primary/10 px-1.5 py-0.5 text-[10px] font-medium text-primary ml-1">
             Std
           </span>
         )}

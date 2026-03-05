@@ -113,7 +113,7 @@ export function AlgorithmCategoryTabs({
 
   return (
     <Tabs value={tab} onValueChange={setTab} className="w-full">
-      <TabsList className="mb-4">
+      <TabsList className="mb-4 rounded-xl border border-primary/20 bg-primary/[0.03] p-1">
         <TabsTrigger value="trending">Trending</TabsTrigger>
         <TabsTrigger value="low-risk">Low risk</TabsTrigger>
         <TabsTrigger value="verified">Verified</TabsTrigger>

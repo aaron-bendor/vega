@@ -2,7 +2,9 @@
   "name": "vegafinancial",
   "version": "0.1.0",
   "private": true,
-  "engines": { "node": ">=18" },
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -15,12 +17,12 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "screenshots:install": "playwright install chromium",
-"screenshots": "tsx scripts/capture_screenshots.ts",
-                "stooq:prefetch": "tsx scripts/prefetch-stooq.ts",
-                "stooq:clear": "rm -rf data/stooq/cache/*",
-                "demo:precompute": "tsx scripts/precompute-demo-runs.ts"
-            },
-            "prisma": {
+    "screenshots": "tsx scripts/capture_screenshots.ts",
+    "stooq:prefetch": "tsx scripts/prefetch-stooq.ts",
+    "stooq:clear": "rm -rf data/stooq/cache/*",
+    "demo:precompute": "tsx scripts/precompute-demo-runs.ts"
+  },
+  "prisma": {
     "seed": "npx ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "dependencies": {
@@ -39,6 +41,7 @@
     "recharts": "^3.7.0",
     "tailwind-merge": "^3.4.1",
     "tailwindcss-animate": "^1.0.7",
+    "three": "^0.160.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {
@@ -46,6 +49,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/three": "^0.183.1",
     "eslint": "^8",
     "eslint-config-next": "14.2.35",
     "playwright": "^1.58.2",

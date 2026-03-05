@@ -1,27 +1,21 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { VegaDeveloperHero } from "@/components/vega-developer/VegaDeveloperHero";
+import { VegaDeveloperBuildSection } from "@/components/vega-developer/VegaDeveloperBuildSection";
+import { VegaDeveloperIDESection } from "@/components/vega-developer/VegaDeveloperIDESection";
+import { Footer } from "@/components/landing/Footer";
 
 export default function VegaDeveloperPage() {
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-2">Vega Developer</h1>
-      <p className="text-muted-foreground mb-8">
-        Developer-facing prototype. Coming soon.
-      </p>
-      <Card className="max-w-md">
-        <CardHeader>
-          <CardTitle>Developer portal</CardTitle>
-          <CardDescription>
-            Create, publish, and manage algorithmic strategies.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button asChild>
-            <Link href="/developer">Open legacy developer portal</Link>
-          </Button>
-        </CardContent>
-      </Card>
+    <div
+      className="relative flex flex-col min-h-screen bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: "url(/backgroundDeveloper.png)" }}
+    >
+      <div className="absolute inset-0 bg-black/30 pointer-events-none" aria-hidden />
+      <div className="relative flex flex-col flex-1 z-[1]">
+        <VegaDeveloperHero />
+        <VegaDeveloperBuildSection />
+        <VegaDeveloperIDESection />
+        <Footer />
+      </div>
     </div>
   );
 }

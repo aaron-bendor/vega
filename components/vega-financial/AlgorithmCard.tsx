@@ -47,14 +47,14 @@ export function AlgorithmCard({
 
   return (
     <Link href={`/vega-financial/algorithms/${id}`}>
-      <Card className="h-full transition-colors hover:border-[rgba(51,51,51,0.18)] hover:bg-[rgba(51,51,51,0.02)]">
-        <CardContent className="p-4">
+      <Card className="h-full rounded-2xl border-primary/20 bg-primary/[0.03] transition-colors hover:border-primary/30 hover:bg-primary/5">
+        <CardContent className="p-5">
           {/* Mobile / narrow: stacked */}
           <div className="flex flex-col gap-3 md:hidden">
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-semibold text-foreground truncate">
+                  <h3 className="font-syne text-sm font-semibold text-foreground truncate">
                     {name}
                   </h3>
                   {verified && (
@@ -76,7 +76,7 @@ export function AlgorithmCard({
               {visibleTags.map((tag) => (
                 <span
                   key={tag}
-                  className="text-[10px] px-1.5 py-0.5 rounded border border-[rgba(51,51,51,0.18)] text-muted-foreground"
+                  className="text-[10px] px-2 py-0.5 rounded-md border border-primary/20 text-muted-foreground"
                   title={tag}
                 >
                   {tag}
@@ -114,7 +114,7 @@ export function AlgorithmCard({
           <div className="hidden md:flex items-center gap-4">
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <h3 className="text-sm font-semibold text-foreground truncate">
+                <h3 className="font-syne text-sm font-semibold text-foreground truncate">
                   {name}
                 </h3>
                 {verified && (
@@ -125,11 +125,11 @@ export function AlgorithmCard({
                 {shortDesc}
               </p>
             </div>
-            <div className="flex items-center gap-1.5 shrink-0 max-w-[120px] flex-wrap justify-end">
+            <div className="flex items-center gap-1.5 shrink-0 max-w-[100px] flex-wrap justify-end">
               {visibleTags.map((tag) => (
                 <span
                   key={tag}
-                  className="text-[10px] px-1.5 py-0.5 rounded border border-[rgba(51,51,51,0.18)] text-muted-foreground truncate max-w-[56px]"
+                  className="text-[10px] px-2 py-0.5 rounded-md border border-primary/20 text-muted-foreground truncate max-w-[56px]"
                   title={tag}
                 >
                   {tag}

@@ -122,18 +122,18 @@ export default async function VegaFinancialPage() {
   ]);
 
   return (
-    <div className="max-w-5xl mx-auto p-6 lg:p-8 space-y-10">
+    <div className="max-w-5xl mx-auto p-6 lg:p-8 space-y-12">
       <section>
         <div className="flex items-baseline justify-between gap-4 mb-4">
-          <h2 className="text-base font-semibold text-foreground">Portfolio overview</h2>
+          <h2 className="font-syne text-xl font-semibold text-foreground">Portfolio overview</h2>
         </div>
         <PortfolioOverview account={account} />
       </section>
 
       <section id="marketplace">
         <div className="flex items-baseline justify-between gap-4 mb-4">
-          <h2 className="text-base font-semibold text-foreground">Algorithms</h2>
-          <span className="text-xs text-muted-foreground tabular-nums">
+          <h2 className="font-syne text-xl font-semibold text-foreground">Algorithms</h2>
+          <span className="text-sm text-muted-foreground tabular-nums">
             {algorithms.length} algorithm{algorithms.length !== 1 ? "s" : ""}
           </span>
         </div>

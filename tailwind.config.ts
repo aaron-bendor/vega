@@ -8,6 +8,12 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        syne: ["var(--font-syne)", "system-ui", "sans-serif"],
+        "dm-sans": ["var(--font-dm-sans)", "system-ui", "sans-serif"],
+        "maven-pro": ["var(--font-maven-pro)", "system-ui", "sans-serif"],
+        "dm-mono": ["var(--font-dm-mono)", "monospace"],
+      },
       colors: {
         background: "rgb(var(--background) / <alpha-value>)",
         foreground: "rgb(var(--foreground) / <alpha-value>)",

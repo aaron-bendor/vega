@@ -65,11 +65,11 @@ export default async function AlgorithmDetailPage({
   const standardised = demoAlgo?.standardised;
 
   return (
-    <div className="p-6 max-w-4xl">
+    <div className="p-6 lg:p-8 max-w-4xl mx-auto">
       <div className="mb-6">
         <Breadcrumb
           items={[
-            { label: "Dashboard", href: "/vega-financial" },
+            { label: "Vega Financial", href: "/vega-financial" },
             { label: displayName || "Algorithm" },
           ]}
         />
@@ -77,7 +77,7 @@ export default async function AlgorithmDetailPage({
 
       <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
+          <h1 className="font-syne text-2xl md:text-3xl font-bold text-foreground flex items-center gap-2">
             {displayName}
             {version?.verificationStatus === "verified" && (
               <ShieldCheck className="size-6 text-primary" />
@@ -136,9 +136,9 @@ export default async function AlgorithmDetailPage({
 
       <div className="mt-8 space-y-8">
         {equityPoints.length > 0 && (
-          <Card>
+          <Card className="rounded-2xl border-primary/20 bg-primary/[0.03]">
             <CardHeader>
-              <CardTitle className="text-sm font-medium">Equity curve</CardTitle>
+              <CardTitle className="font-syne text-base font-semibold">Equity curve</CardTitle>
               <p className="text-xs text-muted-foreground">
                 Simulated backtest performance. Not investment advice.
               </p>
@@ -150,9 +150,9 @@ export default async function AlgorithmDetailPage({
         )}
 
         {equityPoints.length > 0 && (
-          <Card>
+          <Card className="rounded-2xl border-primary/20 bg-primary/[0.03]">
             <CardHeader>
-              <CardTitle className="text-sm font-medium">Drawdown</CardTitle>
+              <CardTitle className="font-syne text-base font-semibold">Drawdown</CardTitle>
               <p className="text-xs text-muted-foreground">
                 Peak-to-trough decline over the backtest period.
               </p>
@@ -164,9 +164,9 @@ export default async function AlgorithmDetailPage({
         )}
       </div>
 
-      <Card className="mt-8">
+      <Card className="mt-8 rounded-2xl border-primary/20 bg-primary/[0.03]">
         <CardHeader>
-          <CardTitle className="text-sm font-medium">Run backtest</CardTitle>
+          <CardTitle className="font-syne text-base font-semibold">Run backtest</CardTitle>
           <p className="text-xs text-muted-foreground">
             Configure and run a backtest against this algorithm version.
             Simulated performance only.

@@ -8,6 +8,10 @@
   }
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 @layer base {
   :root {
     /* Brand palette (raw RGB triplets) */
@@ -72,3 +76,135 @@
     font-variant-numeric: tabular-nums;
   }
 }
+
+@keyframes hero-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-reveal-delay {
+  opacity: 0;
+  animation: hero-reveal 0.7s ease-out forwards;
+  animation-delay: 0.8s;
+}
+
+.animate-fade-up-hero {
+  opacity: 0;
+  animation: hero-reveal 0.7s ease-out forwards;
+}
+.animate-hero-1 { animation-delay: 0.15s; }
+.animate-hero-2 { animation-delay: 0.35s; }
+.animate-hero-3 { animation-delay: 0.55s; }
+.animate-hero-4 { animation-delay: 0.75s; }
+
+.animate-fade-in-left {
+  opacity: 0;
+  animation: fade-in-left 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+}
+
+@keyframes fade-in-left {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* liquidGL sets pointer-events: none on .liquidGL; inner content must stay clickable */
+.liquidGL-content {
+  pointer-events: auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* Nav pill: scroll-proof glass, crisp straight top edge, no refraction/magnify on scroll */
+.nav-pill-glass {
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+}
+
+/* Auto-hiding banner (NN Group pattern): hide after scroll past banner height, reveal on scroll up; spacer prevents layout shift */
+.site-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  transform: translateY(0);
+  transition: transform 180ms ease;
+  will-change: transform;
+}
+.site-banner.is-hidden {
+  transform: translateY(-100%);
+}
+#siteBannerSpacer {
+  height: var(--banner-height, 5rem);
+  flex-shrink: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-banner {
+    transition: none;
+  }
+}
+
+/* Scroll-proof liquid-ish cards (CSS + SVG, no page capture) */
+.lg-card {
+  position: relative;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px) saturate(1.25);
+  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.lg-card:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* Distortion layer: gradient approximates section background */
+.lg-card::before {
+  content: "";
+  position: absolute;
+  inset: -20px;
+  background: radial-gradient(
+    1200px 800px at 20% 10%,
+    rgba(83, 28, 179, 0.5) 0%,
+    rgba(30, 27, 75, 0.9) 55%,
+    rgba(15, 15, 25, 0.98) 100%
+  );
+  filter: url(#lg-distort);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+/* Rim light + dispersion hint */
+.lg-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(120% 140% at 20% 10%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.06) 35%, transparent 60%),
+    radial-gradient(120% 140% at 80% 90%, rgba(120, 220, 255, 0.14) 0%, rgba(255, 80, 180, 0.1) 35%, transparent 60%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.lg-content {
+  position: relative;
+  z-index: 1;
+  color: rgba(255, 255, 255, 0.92);
+}
+
