@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AnimateOnScroll } from "./AnimateOnScroll";
+import { TypingEffect } from "./TypingEffect";
 
 const features = [
   "Full performance history and more metrics",
@@ -14,17 +15,16 @@ const features = [
 
 export function ProductFeaturesSection() {
   return (
-    <section id="built-for" className="relative w-full bg-white py-16 md:py-24 overflow-hidden">
-      <div className="max-w-[1200px] mx-auto px-4 md:px-8">
+    <section id="built-for" className="relative z-0 w-full overflow-hidden py-16 md:py-24">
+      <div className="pointer-events-none absolute inset-0 z-0 bg-white" aria-hidden />
+      <div className="relative z-10 max-w-[1200px] mx-auto px-4 md:px-8">
         <AnimateOnScroll>
-          <p className="font-dm-mono text-sm md:text-xl font-normal text-[#531cb3] tracking-[2px] leading-tight">
-            {"// WHO IS IT FOR"}
-          </p>
-        </AnimateOnScroll>
-
-        <AnimateOnScroll delay={0.1}>
-          <h2 className="font-maven-pro font-extrabold text-[#111] text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-[-2px] leading-[1.15] mt-4">
-            Built for the everyday investor
+          <h2 className="font-maven-pro font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-[-2px] leading-[1.25] min-h-[2.6em] sm:min-h-[2.2em] md:min-h-[1.35em]">
+            <span className="text-black font-extrabold">Built for </span>
+            <TypingEffect
+              className="font-maven-pro text-[#531cb3] font-black md:tracking-[-2px] tracking-[2px]"
+              caretClassName="text-[#531cb3]"
+            />
           </h2>
         </AnimateOnScroll>
 
@@ -57,7 +57,7 @@ export function ProductFeaturesSection() {
               <ul className="mt-6 space-y-2.5">
                 {features.map((feature) => (
                   <li key={feature} className="flex items-start gap-3 group">
-                    <span className="font-dm-mono text-[#531cb3] text-sm mt-0.5 shrink-0 group-hover:translate-x-1 transition-transform">
+                    <span className="font-dm-mono text-[#531cb3] text-sm mt-0.5 shrink-0 group-hover:translate-x-1 transition-transform duration-300 ease-out">
                       →
                     </span>
                     <p className="font-dm-sans font-light text-[#333] text-base md:text-lg leading-[1.4]">
@@ -71,7 +71,7 @@ export function ProductFeaturesSection() {
             <AnimateOnScroll delay={0.3}>
               <Link
                 href="/vega-financial"
-                className="mt-8 inline-flex items-center justify-center h-[50px] px-8 rounded-[30px] bg-[#6b21e8] text-white font-dm-sans font-bold text-base md:text-lg hover:bg-[#5a1bc4] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
+                className="mt-8 inline-flex items-center justify-center h-[50px] px-8 rounded-[30px] bg-[#6b21e8] text-white font-dm-sans font-bold text-base md:text-lg hover:bg-[#5a1bc4] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 ease-out"
               >
                 Learn more
               </Link>

@@ -1,7 +1,8 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { PillNav } from "@/components/layout/PillNav";
+import { SiteHeader } from "@/components/layout/SiteHeader";
+import { SmoothScrollToHash } from "@/components/landing/SmoothScrollToHash";
 
 export function LandingLayoutClient({
   children,
@@ -13,8 +14,9 @@ export function LandingLayoutClient({
 
   return (
     <>
-      {!isHome && <PillNav variant="standalone" />}
-      <main className="flex-1 flex flex-col">{children}</main>
+      <SmoothScrollToHash />
+      <SiteHeader variant={isHome ? "hero" : "standalone"} />
+      <main className="flex-1 flex flex-col relative z-[1]">{children}</main>
     </>
   );
 }

@@ -10,6 +10,29 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 6rem; /* avoid fixed nav covering anchor targets */
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Motion system: single place for timing and easing */
+:root {
+  --motion-duration-fast: 120ms;
+  --motion-duration-normal: 180ms;
+  --motion-duration-slow: 240ms;
+  --motion-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
 }
 
 @layer base {
@@ -74,6 +97,7 @@ html {
   body {
     @apply bg-background text-foreground;
     font-variant-numeric: tabular-nums;
+    overflow-x: hidden;
   }
 }
 
@@ -113,11 +137,71 @@ html {
   to   { opacity: 1; transform: translateX(0); }
 }
 
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Typing effect caret blink */
+@keyframes caret-blink {
+  50% { opacity: 0; }
+}
+.typing-caret {
+  animation: caret-blink 0.9s steps(1) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .typing-caret {
+    animation: none;
+  }
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Smooth focus and hover transitions for interactive elements */
+.smooth-focus {
+  transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
 /* liquidGL sets pointer-events: none on .liquidGL; inner content must stay clickable */
 .liquidGL-content {
   pointer-events: auto;
   position: relative;
   z-index: 1;
+}
+
+/* Spacer behind hero nav: same background as hero so no white band or seam */
+.hero-header-bg {
+  background-color: #000;
+  background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.15),
+      rgba(0, 0, 0, 0.05),
+      rgba(0, 0, 0, 0.25)
+    ),
+    url(/backgroundHero.png);
+  background-size: cover;
+  background-position: center;
 }
 
 /* Nav pill: scroll-proof glass, crisp straight top edge, no refraction/magnify on scroll */
@@ -137,7 +221,7 @@ html {
   right: 0;
   z-index: 1000;
   transform: translateY(0);
-  transition: transform 180ms ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform;
 }
 .site-banner.is-hidden {
@@ -150,6 +234,11 @@ html {
 @media (prefers-reduced-motion: reduce) {
   .site-banner {
     transition: none;
+  }
+  .animate-fade-in-up,
+  .animate-scale-in,
+  .animate-fade-in-left {
+    animation-duration: 0.01ms !important;
   }
 }
 
@@ -206,5 +295,10 @@ html {
   position: relative;
   z-index: 1;
   color: rgba(255, 255, 255, 0.92);
+}
+
+/* Investing made simple: allow section to show full phone image (no clipping) */
+#investing-made-simple {
+  overflow: visible !important;
 }
 

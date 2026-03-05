@@ -46,7 +46,10 @@ export function AlgorithmCard({
   const score = riskScore ?? riskLevelToScore(riskLevel);
 
   return (
-    <Link href={`/vega-financial/algorithms/${id}`}>
+    <Link
+      href={`/vega-financial/algorithms/${id}`}
+      className="focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-2xl block"
+    >
       <Card className="h-full rounded-2xl border-primary/20 bg-primary/[0.03] transition-colors hover:border-primary/30 hover:bg-primary/5">
         <CardContent className="p-5">
           {/* Mobile / narrow: stacked */}
@@ -64,6 +67,11 @@ export function AlgorithmCard({
                 <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
                   {shortDesc}
                 </p>
+                <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-2 text-[10px] text-muted-foreground">
+                  <span>Risk: <span className="text-foreground font-medium">{riskLevel}</span></span>
+                  <span>Style: <span className="text-foreground">{visibleTags[0] ?? "—"}</span></span>
+                  <span>Asset: <span className="text-foreground">{visibleTags[1] ?? tags[2] ?? "—"}</span></span>
+                </div>
               </div>
               <RiskBadge
                 score={score}
@@ -124,6 +132,11 @@ export function AlgorithmCard({
               <p className="text-xs text-muted-foreground truncate mt-0.5">
                 {shortDesc}
               </p>
+              <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1.5 text-[10px] text-muted-foreground">
+                <span>Risk: <span className="text-foreground font-medium">{riskLevel}</span></span>
+                <span>Style: <span className="text-foreground">{visibleTags[0] ?? "—"}</span></span>
+                <span>Asset: <span className="text-foreground">{visibleTags[1] ?? tags[2] ?? "—"}</span></span>
+              </div>
             </div>
             <div className="flex items-center gap-1.5 shrink-0 max-w-[100px] flex-wrap justify-end">
               {visibleTags.map((tag) => (
@@ -167,8 +180,8 @@ export function AlgorithmCard({
                 )}
               </div>
             ) : (
-              <div className="text-xs text-muted-foreground shrink-0 w-20 text-right">
-                Run backtest for metrics
+              <div className="text-xs text-muted-foreground shrink-0 w-32 text-right">
+                Run backtest to see metrics
               </div>
             )}
             <div className="shrink-0">

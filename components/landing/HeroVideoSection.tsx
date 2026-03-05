@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { PillNav } from "@/components/layout/PillNav";
 
 export function HeroVideoSection() {
   return (
     <section
-      className="relative w-full h-screen flex flex-col bg-black bg-cover bg-center"
+      className="relative w-full h-screen flex flex-col bg-black bg-cover bg-center pt-20"
       style={{ backgroundImage: "url(/backgroundHero.png)" }}
     >
       <div
@@ -16,7 +15,7 @@ export function HeroVideoSection() {
       />
 
       <div className="relative flex flex-col flex-1 min-h-0">
-        <PillNav variant="hero" />
+        {/* SiteHeader (marketing nav) is rendered once by (landing) layout with variant="hero" */}
 
         <div className="flex-1 flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-12 px-4 md:px-8 max-w-7xl mx-auto w-full py-6 md:py-8 min-h-0">
           {/* Phone — desktop, full device visible (524×1063), no crop */}

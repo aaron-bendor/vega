@@ -4,14 +4,14 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { AnimateOnScroll } from "./AnimateOnScroll";
 
-const PHONE_IMAGE = "/investingmadesimple5.png";
 const PHONE_WIDTH = 440;
-const PHONE_HEIGHT = 901;
+const PHONE_HEIGHT = 820; // 2.png and 3.png are 440×820
 
 const steps = [
   {
     num: "1.",
     title: "Browse & Discover",
+    phone: "/investingmadesimple2.png",
     description: (
       <>
         Explore trading strategies verified by our own experienced developers.
@@ -23,6 +23,7 @@ const steps = [
   {
     num: "2.",
     title: "View performance",
+    phone: "/investingmadesimple3.png",
     description: (
       <>
         See plain-English descriptions, past returns, developer background, etc.
@@ -34,6 +35,7 @@ const steps = [
   {
     num: "3.",
     title: "Invest any amount",
+    phone: "/investingmadesimple3.png",
     description: (
       <>
         Start from as little as £1.

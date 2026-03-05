@@ -64,9 +64,9 @@ export function FilterSheet() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline" size="sm">
-          <Filter className="size-4 mr-1" />
-          Filter
+        <Button variant="outline" size="sm" aria-label="Open filters">
+          <Filter className="size-4 mr-1" aria-hidden />
+          Filters
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="w-80">

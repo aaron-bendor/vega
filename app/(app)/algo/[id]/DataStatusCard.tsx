@@ -92,7 +92,10 @@ export function DataStatusCard({ symbols, startDate, endDate }: DataStatusCardPr
       </CardHeader>
       <CardContent className="space-y-3">
         {loading ? (
-          <p className="text-sm text-muted-foreground">Checking cache…</p>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground" role="status" aria-live="polite">
+            <span className="inline-block size-4 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" aria-hidden />
+            Loading data status…
+          </div>
         ) : isCached ? (
           <div className="flex items-center gap-2 text-sm text-brand-green">
             <CheckCircle2 className="size-4" />

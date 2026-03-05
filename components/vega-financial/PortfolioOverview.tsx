@@ -165,7 +165,6 @@ export function PortfolioOverview({ account }: PortfolioOverviewProps) {
                           ) : (
                             <TrendingDown className="size-3" />
                           )}
-                          {h.returnPct >= 0 ? "+" : ""}
                           {formatPercent(h.returnPct / 100)}
                         </span>
                       </td>

@@ -6,7 +6,7 @@ interface Props {
   children: ReactNode;
   className?: string;
   delay?: number;
-  direction?: "up" | "left" | "right";
+  direction?: "up" | "down" | "left" | "right";
 }
 
 export function AnimateOnScroll({
@@ -35,9 +35,10 @@ export function AnimateOnScroll({
   }, []);
 
   const transforms: Record<string, string> = {
-    up: "translateY(40px)",
-    left: "translateX(40px)",
-    right: "translateX(-40px)",
+    up: "translateY(32px)",
+    down: "translateY(-24px)",
+    left: "translateX(32px)",
+    right: "translateX(-32px)",
   };
 
   return (
@@ -47,7 +48,7 @@ export function AnimateOnScroll({
       style={{
         opacity: visible ? 1 : 0,
         transform: visible ? "translate(0)" : transforms[direction],
-        transition: `opacity 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+        transition: `opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1) ${delay}s, transform 0.85s cubic-bezier(0.22, 1, 0.36, 1) ${delay}s`,
       }}
     >
       {children}

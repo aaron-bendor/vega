@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { formatCurrency, formatPercent } from "@/lib/utils/format";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 export default async function PortfolioPage() {
   const { data: investments, dbAvailable } = await withDbOrThrow(
     () => getInvestmentsForUser(),
@@ -30,11 +32,31 @@ export default async function PortfolioPage() {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6">Paper Portfolio</h1>
       {!dbAvailable && (
-        <div className="mb-6 rounded-lg border border-[rgba(51,51,51,0.12)] bg-[rgba(51,51,51,0.04)] px-4 py-3 text-sm text-muted-foreground">
-          <strong className="text-foreground">Database not configured.</strong> Set{" "}
-          <code className="rounded bg-[rgba(51,51,51,0.06)] px-1">DATABASE_URL</code> in{" "}
-          <code className="rounded bg-[rgba(51,51,51,0.06)] px-1">.env</code>, run migrations and seed to use the portfolio.
-        </div>
+        <Card className="mb-6 border-amber-200 bg-amber-50/50 dark:border-amber-900/30 dark:bg-amber-950/20">
+          <CardContent className="py-6">
+            <p className="text-foreground font-medium mb-2">
+              {isProduction
+                ? "Paper portfolio is unavailable right now."
+                : "Database not configured."}
+            </p>
+            {isProduction ? (
+              <p className="text-muted-foreground text-sm mb-4">
+                You can still browse the marketplace and explore algorithms.
+              </p>
+            ) : (
+              <p className="text-muted-foreground text-sm mb-4">
+                Set <code className="rounded bg-[rgba(51,51,51,0.06)] px-1">DATABASE_URL</code> in{" "}
+                <code className="rounded bg-[rgba(51,51,51,0.06)] px-1">.env</code>, run migrations and seed to use the portfolio.
+              </p>
+            )}
+            <Link
+              href="/marketplace"
+              className="text-primary font-medium hover:underline focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded"
+            >
+              Browse marketplace
+            </Link>
+          </CardContent>
+        </Card>
       )}
       <p className="text-muted-foreground mb-8">Simulated holdings. Not investment advice.</p>
 

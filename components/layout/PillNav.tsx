@@ -4,8 +4,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect, useCallback } from "react";
 import { cn } from "@/lib/utils";
+import { NavLink } from "@/components/ui/NavLink";
 
 const SHOW_THRESHOLD_PX = 16;
 const HIDE_THRESHOLD_PX = 24;
@@ -14,7 +15,6 @@ const TOP_SHOW_THRESHOLD_PX = 8;
 const mainNav: { href: string; label: string; exact?: boolean }[] = [
   { href: "/", label: "Home", exact: true },
   { href: "/#investing-made-simple", label: "How it Works" },
-  { href: "/vega-financial", label: "Products" },
   { href: "/vega-developer", label: "Developer" },
   { href: "/#get-started", label: "Get Started" },
 ];
@@ -113,28 +113,94 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
   }, []);
 
   const pillBg = isStandalone
-    ? "bg-primary/10 backdrop-blur-md border border-primary/20"
+    ? "bg-black/50 backdrop-blur-xl border border-white/15"
     : "bg-black/40 backdrop-blur-xl border border-white/15";
-
-  const linkClass = isStandalone
-    ? "text-foreground/70 hover:text-foreground"
-    : "text-white/80 hover:text-white";
 
   const ctaClass = isStandalone
     ? "bg-primary hover:bg-primary/90 text-primary-foreground"
     : "bg-[#531cb3] hover:bg-[#6b2dd4] text-white";
 
-  const mobileMenuBg = isStandalone
-    ? "bg-white border-border"
-    : "bg-black/80 backdrop-blur-xl border border-white/10";
+  const mobileMenuBg = "bg-black/80 backdrop-blur-xl border border-white/10";
+
+  const isHome = pathname === "/";
+
+  const navItems = mainNav;
+  const [hoveredNavIndex, setHoveredNavIndex] = useState<number | null>(null);
+  const [indicator, setIndicator] = useState({ left: 0, width: 0 });
+  const navContainerRef = useRef<HTMLDivElement>(null);
+  const navItemRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const activeNavIndex = navItems.findIndex(({ href, exact }) =>
+    exact === true ? pathname === href : !href.startsWith("/#") && pathname?.startsWith(href)
+  );
+  const displayIndex = hoveredNavIndex ?? (activeNavIndex >= 0 ? activeNavIndex : null);
+
+  const updateIndicator = useCallback(() => {
+    const container = navContainerRef.current;
+    const items = navItemRefs.current;
+    if (!container) return;
+    if (
+      displayIndex == null ||
+      displayIndex < 0 ||
+      displayIndex >= navItems.length ||
+      !items[displayIndex]
+    ) {
+      setIndicator((prev) => (prev.width === 0 ? prev : { left: 0, width: 0 }));
+      return;
+    }
+    const el = items[displayIndex];
+    const cr = container.getBoundingClientRect();
+    const er = el.getBoundingClientRect();
+    const left = er.left - cr.left;
+    const width = er.width;
+    setIndicator((prev) => (prev.left === left && prev.width === width ? prev : { left, width }));
+  }, [displayIndex, pathname, navItems.length]);
+
+  useLayoutEffect(() => {
+    const raf = requestAnimationFrame(() => updateIndicator());
+    return () => cancelAnimationFrame(raf);
+  }, [updateIndicator]);
+
+  useEffect(() => {
+    const container = navContainerRef.current;
+    if (!container) return;
+    const ro = new ResizeObserver(() => updateIndicator());
+    ro.observe(container);
+    window.addEventListener("resize", updateIndicator);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", updateIndicator);
+    };
+  }, [updateIndicator]);
+
+  const [isScrolled, setIsScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setIsScrolled((window.scrollY ?? 0) > 16);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const pill = (
     <>
+      {/* On home: zero-height spacer so hero starts at top and fills viewport (no white band). Else: reserve space for fixed nav. */}
       <div
         ref={spacerRef}
         id="siteBannerSpacer"
-        className="shrink-0"
-        style={{ height: "var(--banner-height, 5rem)" }}
+        className={cn(
+          "shrink-0 w-full overflow-hidden",
+          isHome ? "h-0 min-h-0" : ""
+        )}
+        style={
+          isHome
+            ? { height: 0, minHeight: 0 }
+            : {
+                height: "var(--banner-height, 5rem)",
+                ...(pathname?.startsWith("/vega-developer")
+                  ? { backgroundColor: "#000" }
+                  : {}),
+              }
+        }
         aria-hidden="true"
       />
       <div
@@ -148,8 +214,9 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
         <div className="flex justify-center px-4">
           <div
             className={cn(
-              "nav-pill-glass w-full max-w-[1400px] h-14 md:h-16 flex rounded-full shrink-0 transition-all duration-300",
-              pillBg
+              "nav-pill-glass w-full max-w-[1400px] h-14 md:h-16 flex rounded-full shrink-0 transition-[background-color,box-shadow] duration-motion-normal ease-motion",
+              pillBg,
+              isScrolled && "bg-black/50 shadow-lg shadow-black/20"
             )}
           >
             <nav
@@ -158,7 +225,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
             >
               <Link
                 href="/"
-                className="flex items-center shrink-0 hover:opacity-90 transition-opacity"
+                className="flex items-center shrink-0 hover:opacity-90 transition-opacity duration-200 ease-out"
                 aria-label="Vega Financial Home"
               >
                 <Image
@@ -171,34 +238,42 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                 />
               </Link>
 
-              <div className="hidden md:flex items-center gap-1 lg:gap-2">
-                {mainNav.map(({ href, label, exact }) => {
-                  const isActive =
-                    exact === true
-                      ? pathname === href
-                      : !href.startsWith("/#") && pathname?.startsWith(href);
-                  return (
-                    <Link
-                      key={href}
+              <div
+                ref={navContainerRef}
+                className="hidden md:flex relative items-center gap-1 lg:gap-2"
+              >
+                <span
+                  aria-hidden
+                  className="absolute left-0 bottom-0 h-0.5 bg-white rounded-full pointer-events-none transition-[transform,width] duration-motion-slow ease-motion"
+                  style={{
+                    transform: `translateX(${indicator.left}px)`,
+                    width: `${indicator.width}px`,
+                  }}
+                />
+                {navItems.map(({ href, label }, i) => (
+                  <div
+                    key={href}
+                    ref={(el) => {
+                      navItemRefs.current[i] = el;
+                    }}
+                    onMouseEnter={() => setHoveredNavIndex(i)}
+                    onMouseLeave={() => setHoveredNavIndex(null)}
+                    className="relative"
+                  >
+                    <NavLink
                       href={href}
-                      className={cn(
-                        "relative font-normal text-sm lg:text-base px-3 py-1.5 rounded-full transition-all duration-200 whitespace-nowrap",
-                        linkClass,
-                        isActive &&
-                          (isStandalone
-                            ? "font-semibold text-foreground bg-primary/5"
-                            : "text-white bg-white/10"),
-                        "hover:bg-white/10"
-                      )}
+                      variant="light"
+                      noUnderline
+                      className="text-sm lg:text-base whitespace-nowrap font-normal"
                     >
                       {label}
-                    </Link>
-                  );
-                })}
+                    </NavLink>
+                  </div>
+                ))}
                 <Link
                   href="/vega-financial"
                   className={cn(
-                    "flex items-center justify-center ml-2 px-5 h-9 md:h-10 rounded-full font-bold text-sm md:text-base transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] shrink-0",
+                    "flex items-center justify-center ml-2 px-5 h-9 md:h-10 rounded-full font-bold text-sm md:text-base transition-[transform,background-color] duration-motion-normal ease-motion hover:scale-[1.03] active:scale-[0.97] shrink-0",
                     ctaClass
                   )}
                 >
@@ -228,7 +303,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                 <Link
                   href="/vega-financial"
                   className={cn(
-                    "flex items-center justify-center min-w-[90px] h-9 rounded-full font-bold text-sm transition-all hover:scale-[1.03] active:scale-[0.97]",
+                    "flex items-center justify-center min-w-[90px] h-9 rounded-full font-bold text-sm transition-[transform,background-color] duration-motion-normal ease-motion hover:scale-[1.03] active:scale-[0.97]",
                     ctaClass
                   )}
                 >
@@ -242,7 +317,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
 
       {mobileMenuOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 md:hidden"
+          className="fixed inset-0 z-40 bg-black/50 md:hidden animate-in fade-in duration-200"
           aria-hidden="true"
           onClick={() => setMobileMenuOpen(false)}
         />
@@ -250,11 +325,11 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
 
       <div
         className={cn(
-          "md:hidden fixed top-20 left-4 right-4 z-50 rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 border",
+          "md:hidden fixed top-20 left-4 right-4 z-50 rounded-2xl shadow-2xl overflow-hidden border transition-[transform,opacity] duration-motion-normal ease-motion",
           mobileMenuBg,
           mobileMenuOpen
-            ? "opacity-100 visible translate-y-0"
-            : "opacity-0 invisible -translate-y-4 pointer-events-none"
+            ? "opacity-100 visible translate-y-0 scale-100"
+            : "opacity-0 invisible -translate-y-2 scale-[0.98] pointer-events-none"
         )}
       >
         <nav className="py-3" aria-label="Mobile navigation">
@@ -263,7 +338,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
               key={href}
               href={href}
               className={cn(
-                "block px-5 py-3.5 font-medium transition-colors",
+                "block px-5 py-3.5 font-medium transition-colors duration-200 ease-out active:scale-[0.99]",
                 isStandalone
                   ? "text-foreground hover:bg-muted/50"
                   : "text-white hover:bg-white/10"
@@ -276,7 +351,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
           <div className="px-5 pt-2 pb-3">
             <Link
               href="/vega-financial"
-              className="flex items-center justify-center h-11 rounded-full font-bold text-sm bg-[#531cb3] text-white hover:bg-[#6b2dd4] transition-colors"
+              className="flex items-center justify-center h-11 rounded-full font-bold text-sm bg-[#531cb3] text-white hover:bg-[#6b2dd4] transition-[background-color] duration-motion-normal ease-motion"
               onClick={() => setMobileMenuOpen(false)}
             >
               Try it now
@@ -289,7 +364,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
 
   if (isStandalone) {
     return (
-      <div className="w-full flex flex-col items-center bg-white pt-0 pb-3 shrink-0">
+      <div className="w-full flex flex-col items-center pt-0 pb-3 shrink-0">
         <div className="relative w-full flex flex-col items-center">
           {pill}
         </div>

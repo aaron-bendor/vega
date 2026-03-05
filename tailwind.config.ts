@@ -8,6 +8,14 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      transitionDuration: {
+        "motion-fast": "120ms",
+        "motion-normal": "180ms",
+        "motion-slow": "240ms",
+      },
+      transitionTimingFunction: {
+        "motion": "cubic-bezier(0.2, 0.8, 0.2, 1)",
+      },
       fontFamily: {
         syne: ["var(--font-syne)", "system-ui", "sans-serif"],
         "dm-sans": ["var(--font-dm-sans)", "system-ui", "sans-serif"],
