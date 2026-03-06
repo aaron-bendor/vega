@@ -1,15 +1,11 @@
 import { Suspense } from "react";
+import { SiteHeader } from "@/components/layout/SiteHeader";
 import { VegaFinancialShell } from "@/components/vega-financial/VegaFinancialShell";
+import { VegaFinancialPageSkeleton } from "@/components/vega-financial/VegaFinancialPageSkeleton";
+import { TourRunner } from "@/components/tour/TourRunner";
 
 function VegaFinancialFallback() {
-  return (
-    <div className="min-h-screen flex flex-col bg-white">
-      <div className="border-b border-[rgba(51,51,51,0.12)] h-12 flex items-center px-4" />
-      <main className="flex-1 flex items-center justify-center p-8">
-        <p className="text-sm text-muted-foreground">Loading…</p>
-      </main>
-    </div>
-  );
+  return <VegaFinancialPageSkeleton />;
 }
 
 export default function VegaFinancialLayout({
@@ -18,8 +14,12 @@ export default function VegaFinancialLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Suspense fallback={<VegaFinancialFallback />}>
-      <VegaFinancialShell>{children}</VegaFinancialShell>
-    </Suspense>
+    <>
+      <SiteHeader variant="standalone" />
+      <TourRunner />
+      <Suspense fallback={<VegaFinancialFallback />}>
+        <VegaFinancialShell>{children}</VegaFinancialShell>
+      </Suspense>
+    </>
   );
 }

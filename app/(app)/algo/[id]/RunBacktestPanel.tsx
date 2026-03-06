@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useLayoutEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -32,6 +33,81 @@ const DATE_PRESETS = [
   { label: "1Y", start: "2024-01-01", end: "2024-12-31" },
   { label: "Max", start: "2019-01-01", end: "2024-12-31" },
 ];
+
+function TimeframePresets({
+  presets,
+  startDate,
+  endDate,
+  disabled,
+  onSelect,
+}: {
+  presets: typeof DATE_PRESETS;
+  startDate: string;
+  endDate: string;
+  disabled: boolean;
+  onSelect: (start: string, end: string) => void;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const [pill, setPill] = useState({ left: 0, width: 0 });
+  const activeIndex = presets.findIndex((p) => p.start === startDate && p.end === endDate);
+
+  const updatePill = useCallback(() => {
+    const container = containerRef.current;
+    if (!container || activeIndex < 0 || activeIndex >= buttonRefs.current.length) {
+      setPill((prev) => (prev.width === 0 ? prev : { left: 0, width: 0 }));
+      return;
+    }
+    const el = buttonRefs.current[activeIndex];
+    if (!el) return;
+    const cr = container.getBoundingClientRect();
+    const er = el.getBoundingClientRect();
+    setPill({ left: er.left - cr.left, width: er.width });
+  }, [activeIndex]);
+
+  useLayoutEffect(() => {
+    updatePill();
+  }, [updatePill]);
+
+  useLayoutEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const ro = new ResizeObserver(updatePill);
+    ro.observe(container);
+    return () => ro.disconnect();
+  }, [updatePill]);
+
+  return (
+    <div ref={containerRef} className="relative flex flex-wrap gap-2 pb-1" data-tour="algo-timeframe">
+      <span
+        aria-hidden
+        className={cn(
+          "pointer-events-none absolute bottom-0 left-0 h-0.5 rounded-full bg-primary ease-motion transition-[transform,width] duration-[var(--motion-duration-normal,180ms)] motion-reduce:!duration-0"
+        )}
+        style={{
+          transform: `translateX(${pill.left}px)`,
+          width: `${pill.width}px`,
+        }}
+      />
+      {presets.map((p, i) => (
+        <Button
+          key={p.label}
+          ref={(el) => {
+            buttonRefs.current[i] = el;
+          }}
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={disabled}
+          onClick={() => onSelect(p.start, p.end)}
+          className="relative z-10"
+        >
+          {p.label}
+        </Button>
+      ))}
+    </div>
+  );
+}
 const STOOQ_SYMBOLS = [
   { id: "^spx", label: "S&P 500 (^spx)" },
   { id: "spy.us", label: "SPY ETF" },
@@ -174,23 +250,16 @@ export function RunBacktestPanel({
           Last run: {lastRunAt.toLocaleString()} — {dataSource === "stooq" ? `${symbol}, ${startDate} – ${endDate}` : `${horizon} days synthetic`}
         </p>
       )}
-      <div className="flex flex-wrap gap-2">
-        {DATE_PRESETS.map((p) => (
-          <Button
-            key={p.label}
-            type="button"
-            variant="outline"
-            size="sm"
-            disabled={loading || dataSource !== "stooq"}
-            onClick={() => {
-              setStartDate(p.start);
-              setEndDate(p.end);
-            }}
-          >
-            {p.label}
-          </Button>
-        ))}
-      </div>
+      <TimeframePresets
+        presets={DATE_PRESETS}
+        startDate={startDate}
+        endDate={endDate}
+        disabled={loading || dataSource !== "stooq"}
+        onSelect={(start, end) => {
+          setStartDate(start);
+          setEndDate(end);
+        }}
+      />
       <fieldset className="space-y-6" disabled={loading}>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div>
@@ -369,7 +438,7 @@ export function RunBacktestPanel({
         )}
       </div>
 
-      <Button onClick={handleRun} disabled={loading}>
+      <Button onClick={handleRun} disabled={loading} data-tour="algo-run-backtest">
         {loading ? "Running…" : "Run backtest"}
       </Button>
       </fieldset>

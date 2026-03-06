@@ -56,7 +56,7 @@ export default async function MarketplacePage({
           to see seeded data.
         </div>
       )}
-      <p className="text-muted-foreground mb-6">
+      <p className="text-muted-foreground mb-6" data-tour="mp-demo-banner">
         Browse published algorithms. Simulated performance only. Paper trading only.
       </p>
       {useDemo && (

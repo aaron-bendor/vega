@@ -18,7 +18,7 @@ const mainNav = [
   { href: "/portfolio", label: "Portfolio", icon: Wallet },
 ];
 
-export function ProfileSidebar() {
+export function ProfileSidebar({ naturalScroll }: { naturalScroll?: boolean } = {}) {
   const pathname = usePathname();
   const navRef = useRef<HTMLElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -64,7 +64,10 @@ export function ProfileSidebar() {
   }, [updateIndicator]);
 
   return (
-    <aside className="w-64 shrink-0 border-r border-[rgba(51,51,51,0.12)] bg-white flex flex-col h-screen sticky top-0">
+    <aside className={cn(
+      "w-64 shrink-0 border-r border-[rgba(51,51,51,0.12)] bg-white flex flex-col",
+      naturalScroll ? "h-auto" : "h-screen sticky top-0"
+    )}>
       <div className="p-4 border-b border-[rgba(51,51,51,0.12)]">
         <div className="flex items-center gap-3">
           <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center">
@@ -80,6 +83,7 @@ export function ProfileSidebar() {
         ref={navRef}
         className="relative p-2 flex-1"
         style={{ "--indicator-top": "0px", "--indicator-height": "0px" } as React.CSSProperties}
+        data-tour="vf-tabs"
       >
         <span
           aria-hidden

@@ -130,7 +130,7 @@ export default async function VegaFinancialPage() {
         <PortfolioOverview account={account} />
       </section>
 
-      <section id="marketplace">
+      <section id="marketplace" data-tour="vf-algo-list">
         <div className="flex items-baseline justify-between gap-4 mb-4">
           <h2 className="font-syne text-xl font-semibold text-foreground">Algorithms</h2>
           <span className="text-sm text-muted-foreground tabular-nums">

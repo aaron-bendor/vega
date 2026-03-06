@@ -2,8 +2,23 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { getTourCompleted, TOUR_START_SESSION_KEY, setTourStep } from "@/lib/tour/storage";
 
 export function HeroVideoSection() {
+  const router = useRouter();
+
+  const handleTryItNow = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!getTourCompleted()) {
+      if (typeof sessionStorage !== "undefined") {
+        sessionStorage.setItem(TOUR_START_SESSION_KEY, "1");
+      }
+      setTourStep(0);
+    }
+    router.push("/vega-financial");
+  };
+
   return (
     <section
       className="relative w-full h-screen flex flex-col bg-black bg-cover bg-center pt-20"
@@ -38,7 +53,7 @@ export function HeroVideoSection() {
               <br />
               trading,
               <br />
-              <span className="hero-reveal-delay inline-block">
+              <span className="hero-tagline-reveal inline-block">
                 finally for
                 <br />
                 everyone.
@@ -54,13 +69,14 @@ export function HeroVideoSection() {
             <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center animate-fade-up-hero animate-hero-4">
               <Link
                 href="/vega-financial"
-                className="font-dm-sans inline-flex items-center justify-center h-14 px-8 w-full sm:w-auto min-w-[174px] rounded-[30px] bg-white/20 backdrop-blur-sm border border-white/30 font-black text-white text-[15px] hover:bg-white/30 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
+                className="font-dm-sans inline-flex items-center justify-center h-14 px-8 w-full sm:w-auto min-w-[174px] rounded-[30px] bg-white/20 backdrop-blur-sm border border-white/30 font-black text-white text-[15px] hover:bg-white/30 hover:scale-[1.02] active:scale-[0.98] transition-[transform,background-color,border-color] duration-motion-normal ease-motion"
+                onClick={handleTryItNow}
               >
                 Start Investing
               </Link>
               <Link
                 href="/vega-developer"
-                className="font-dm-sans inline-flex items-center justify-center h-14 px-8 w-full sm:w-auto min-w-[206px] rounded-[30px] border border-white/50 font-normal text-white text-[15px] hover:bg-white/10 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
+                className="font-dm-sans inline-flex items-center justify-center h-14 px-8 w-full sm:w-auto min-w-[206px] rounded-[30px] border border-white/50 font-normal text-white text-[15px] hover:bg-white/10 hover:scale-[1.02] active:scale-[0.98] transition-[transform,background-color,border-color] duration-motion-normal ease-motion"
               >
                 Build Algorithms&nbsp;→
               </Link>

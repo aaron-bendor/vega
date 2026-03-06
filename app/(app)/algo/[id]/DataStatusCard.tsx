@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { CheckCircle2, Download, Loader2 } from "lucide-react";
 
 interface CachedItem {
@@ -19,10 +20,19 @@ interface DataStatusCardProps {
   endDate: string;
 }
 
+const SKELETON_DELAY_MS = 150;
+
 export function DataStatusCard({ symbols, startDate, endDate }: DataStatusCardProps) {
   const [cached, setCached] = useState<CachedItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showSkeleton, setShowSkeleton] = useState(false);
   const [fetching, setFetching] = useState(false);
+
+  useEffect(() => {
+    if (!loading) return;
+    const t = setTimeout(() => setShowSkeleton(true), SKELETON_DELAY_MS);
+    return () => clearTimeout(t);
+  }, [loading]);
 
   useEffect(() => {
     fetch("/api/data/status")
@@ -92,10 +102,14 @@ export function DataStatusCard({ symbols, startDate, endDate }: DataStatusCardPr
       </CardHeader>
       <CardContent className="space-y-3">
         {loading ? (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground" role="status" aria-live="polite">
-            <span className="inline-block size-4 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" aria-hidden />
-            Loading data status…
-          </div>
+          showSkeleton ? (
+            <div className="flex items-center gap-2" role="status" aria-live="polite" aria-label="Loading data status">
+              <Skeleton className="size-4 rounded-full shrink-0" />
+              <Skeleton className="h-4 w-40" />
+            </div>
+          ) : (
+            <div className="h-5 w-44" aria-hidden />
+          )
         ) : isCached ? (
           <div className="flex items-center gap-2 text-sm text-brand-green">
             <CheckCircle2 className="size-4" />

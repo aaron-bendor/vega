@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
+import { SlidingChipRow } from "@/components/marketplace/SlidingChipRow";
 
 const SORT_OPTIONS = [
   { value: "trending", label: "Trending" },
@@ -78,7 +78,7 @@ export function MarketplaceFilterBar({
   const categories = tagOptions.length > 0 ? tagOptions : CATEGORY_OPTIONS;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-tour="mp-filters">
       {/* Search + Sort row */}
       <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
         <div className="relative flex-1 max-w-md">
@@ -124,44 +124,39 @@ export function MarketplaceFilterBar({
         <div className="px-4 pb-4 grid gap-4 sm:grid-cols-3 border-t border-[rgba(51,51,51,0.08)]">
           <div>
             <p className="text-xs font-medium text-muted-foreground mb-2">Category</p>
-            <div className="flex flex-wrap gap-1.5">
-              <LinkPill href="/marketplace" active={!tag} label="All" />
-              {categories.map((name) => (
-                <LinkPill
-                  key={name}
-                  href={`/marketplace?tag=${encodeURIComponent(name)}`}
-                  active={tag === name}
-                  label={name}
-                />
-              ))}
-            </div>
+            <SlidingChipRow
+              chips={[
+                { href: "/marketplace", label: "All" },
+                ...categories.map((name) => ({
+                  href: `/marketplace?tag=${encodeURIComponent(name)}`,
+                  label: name,
+                })),
+              ]}
+              activeHref={tag ? `/marketplace?tag=${encodeURIComponent(tag)}` : "/marketplace"}
+            />
           </div>
           <div>
             <p className="text-xs font-medium text-muted-foreground mb-2">Asset</p>
-            <div className="flex flex-wrap gap-1.5">
-              {ASSET_OPTIONS.map((name) => (
-                <LinkPill
-                  key={name}
-                  href={`/marketplace?tag=${encodeURIComponent(name)}`}
-                  active={tag === name}
-                  label={name}
-                />
-              ))}
-            </div>
+            <SlidingChipRow
+              chips={ASSET_OPTIONS.map((name) => ({
+                href: `/marketplace?tag=${encodeURIComponent(name)}`,
+                label: name,
+              }))}
+              activeHref={tag ? `/marketplace?tag=${encodeURIComponent(tag)}` : "/marketplace"}
+            />
           </div>
           <div>
             <p className="text-xs font-medium text-muted-foreground mb-2">Risk</p>
-            <div className="flex flex-wrap gap-1.5">
-              <LinkPill href="/marketplace" active={!risk} label="All" />
-              {RISK_OPTIONS.map((r) => (
-                <LinkPill
-                  key={r}
-                  href={`/marketplace?risk=${encodeURIComponent(r)}`}
-                  active={risk === r}
-                  label={r}
-                />
-              ))}
-            </div>
+            <SlidingChipRow
+              chips={[
+                { href: "/marketplace", label: "All" },
+                ...RISK_OPTIONS.map((r) => ({
+                  href: `/marketplace?risk=${encodeURIComponent(r)}`,
+                  label: r,
+                })),
+              ]}
+              activeHref={risk ? `/marketplace?risk=${encodeURIComponent(risk)}` : "/marketplace"}
+            />
           </div>
         </div>
       </details>
@@ -205,31 +200,3 @@ export function MarketplaceFilterBar({
   );
 }
 
-function LinkPill({
-  href,
-  active,
-  label,
-}: {
-  href: string;
-  active: boolean;
-  label: string;
-}) {
-  return (
-    <a
-      href={href}
-      className={cn(
-        "inline-block px-2.5 py-1 rounded-md text-sm",
-        "transition-[transform,background-color,color,box-shadow] duration-motion-normal ease-motion",
-        "focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
-        "hover:translate-y-[-1px] active:translate-y-0 active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.08)]",
-        "motion-reduce:translate-y-0 motion-reduce:hover:translate-y-0 motion-reduce:active:translate-y-0 motion-reduce:active:shadow-none",
-        active
-          ? "bg-primary text-primary-foreground border border-primary shadow-none"
-          : "bg-muted/80 hover:bg-muted text-foreground border border-transparent"
-      )}
-      aria-current={active ? "page" : undefined}
-    >
-      {label}
-    </a>
-  );
-}

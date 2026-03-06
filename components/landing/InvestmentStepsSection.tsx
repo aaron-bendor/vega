@@ -46,7 +46,7 @@ export function InvestmentStepsSection() {
           <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               href="/vega-financial"
-              className="inline-flex items-center justify-center h-14 px-7 rounded-[10px] bg-[#6b21e8] text-white font-dm-sans font-medium text-[15px] hover:bg-[#5a1bc4] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
+              className="inline-flex items-center justify-center h-14 px-7 rounded-[10px] bg-[#6b21e8] text-white font-dm-sans font-medium text-[15px] hover:bg-[#5a1bc4] hover:scale-[1.02] active:scale-[0.98] transition-[transform,background-color] duration-motion-normal ease-motion"
             >
               Download Vega Financial
             </Link>
@@ -54,7 +54,7 @@ export function InvestmentStepsSection() {
               href="https://tally.so/r/ZjaKj5"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center h-14 px-7 rounded-[10px] border border-[#6b21e84c] text-[#f0edff] font-dm-sans font-normal text-[15px] hover:border-[#6b21e899] hover:bg-[#6b21e80d] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
+              className="inline-flex items-center justify-center h-14 px-7 rounded-[10px] border border-[#6b21e84c] text-[#f0edff] font-dm-sans font-normal text-[15px] hover:border-[#6b21e899] hover:bg-[#6b21e80d] hover:scale-[1.02] active:scale-[0.98] transition-[transform,background-color] duration-motion-normal ease-motion"
             >
               Register Interest for Vega Developer&nbsp;→
             </a>

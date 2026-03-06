@@ -16,7 +16,7 @@ export function LandingLayoutClient({
     <>
       <SmoothScrollToHash />
       <SiteHeader variant={isHome ? "hero" : "standalone"} />
-      <main className="flex-1 flex flex-col relative z-[1]">{children}</main>
+      <main className="flex shrink-0 flex-col relative z-[1] overflow-visible">{children}</main>
     </>
   );
 }

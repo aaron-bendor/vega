@@ -75,7 +75,11 @@ export default async function AlgorithmDetailPage({
         />
       </div>
 
-      <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
+      <div
+        className="flex flex-wrap items-start justify-between gap-4 mb-8"
+        style={{ viewTransitionName: `algo-card-${id}` }}
+        data-tour="algo-title"
+      >
         <div>
           <h1 className="font-syne text-2xl md:text-3xl font-bold text-foreground flex items-center gap-2">
             {displayName}
@@ -89,7 +93,7 @@ export default async function AlgorithmDetailPage({
           {displayDesc && (
             <p className="text-muted-foreground mt-1 text-sm">{displayDesc}</p>
           )}
-          <div className="flex flex-wrap items-center gap-2 mt-3">
+          <div className="flex flex-wrap items-center gap-2 mt-3" data-tour="algo-scores">
             <RiskBadge
               score={riskScore}
               var95MonthlyPct={var95MonthlyPct}
@@ -119,6 +123,7 @@ export default async function AlgorithmDetailPage({
         />
       )}
 
+      <div data-tour="algo-metrics">
       <MetricsCards
         cumulativeReturn={
           (metricMap.cumulativeReturn ?? version?.cachedReturn) ?? undefined
@@ -133,6 +138,7 @@ export default async function AlgorithmDetailPage({
           (metricMap.annualisedVolatility ?? version?.cachedVolatility) ?? undefined
         }
       />
+      </div>
 
       <div className="mt-8 space-y-8">
         {equityPoints.length > 0 && (
@@ -164,7 +170,7 @@ export default async function AlgorithmDetailPage({
         )}
       </div>
 
-      <Card className="mt-8 rounded-2xl border-primary/20 bg-primary/[0.03]">
+      <Card className="mt-8 rounded-2xl border-primary/20 bg-primary/[0.03]" data-tour="algo-backtest-form">
         <CardHeader>
           <CardTitle className="font-syne text-base font-semibold">Run backtest</CardTitle>
           <p className="text-xs text-muted-foreground">

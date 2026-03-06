@@ -16,7 +16,7 @@ interface PortfolioOverviewProps {
 export function PortfolioOverview({ account }: PortfolioOverviewProps) {
   if (account.holdings.length === 0) {
     return (
-      <Card className="rounded-2xl border-primary/20 bg-primary/[0.03]">
+      <Card className="rounded-2xl border-primary/20 bg-primary/[0.03]" data-tour="vf-overview">
         <CardContent className="py-12 text-center">
           <div className="size-12 rounded-full bg-[rgba(51,51,51,0.04)] flex items-center justify-center mx-auto mb-4">
             <PiggyBank className="size-6 text-muted-foreground" />
@@ -42,7 +42,7 @@ export function PortfolioOverview({ account }: PortfolioOverviewProps) {
   }));
 
   return (
-    <Card className="rounded-2xl border-primary/20 bg-primary/[0.03]">
+    <Card className="rounded-2xl border-primary/20 bg-primary/[0.03]" data-tour="vf-overview">
       <div className="p-5">
         {/* Top row: metrics (no inner borders) */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
@@ -105,7 +105,7 @@ export function PortfolioOverview({ account }: PortfolioOverviewProps) {
             <p className="text-xs font-medium text-muted-foreground mb-3">Allocation</p>
             <AllocationDonut data={allocationData} />
           </div>
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2" data-tour="vf-holdings">
             <p className="text-xs font-medium text-muted-foreground mb-3">Holdings</p>
             <div className="overflow-x-auto -mx-1">
               <table className="w-full text-sm">

@@ -71,7 +71,7 @@ export function ProductFeaturesSection() {
             <AnimateOnScroll delay={0.3}>
               <Link
                 href="/vega-financial"
-                className="mt-8 inline-flex items-center justify-center h-[50px] px-8 rounded-[30px] bg-[#6b21e8] text-white font-dm-sans font-bold text-base md:text-lg hover:bg-[#5a1bc4] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 ease-out"
+                className="mt-8 inline-flex items-center justify-center h-[50px] px-8 rounded-[30px] bg-[#6b21e8] text-white font-dm-sans font-bold text-base md:text-lg hover:bg-[#5a1bc4] hover:scale-[1.02] active:scale-[0.98] transition-[transform,background-color] duration-motion-normal ease-motion"
               >
                 Learn more
               </Link>

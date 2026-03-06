@@ -1,9 +1,10 @@
 "use client";
 
 /**
- * Single source of truth for marketing site navigation.
- * Use only in marketing layouts: (landing) and (vega)/vega-developer.
- * Do not use in /vega-financial/* or (app) routes — those use AppShell.
+ * Single source of truth for marketing site navigation and top banner.
+ * Used in (landing), (vega)/vega-developer, and (vega)/vega-financial so the
+ * same top banner/nav appears when moving from landing to algorithm pages.
+ * Do not use in (app) routes — those use AppShell.
  */
 import { PillNav } from "./PillNav";
 

@@ -36,7 +36,7 @@ export function VegaFinancialShell({
   );
 
   return (
-    <AppShell toolbar={toolbar}>
+    <AppShell toolbar={toolbar} naturalScroll>
       {children}
     </AppShell>
   );

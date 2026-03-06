@@ -88,8 +88,8 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
       ) : useDemo ? (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filtered.map((v) => (
-            <Link key={v.id} href={`/algo/${v.id}`}>
-              <Card className="h-full rounded-2xl border-primary/20 bg-primary/[0.03] transition-colors hover:border-primary/30 hover:bg-primary/5 focus-within:ring-2 focus-within:ring-ring">
+            <Link key={v.id} href={`/vega-financial/algorithms/${v.id}`}>
+              <Card className="h-full rounded-2xl border-primary/20 bg-primary/[0.03] transition-colors hover:border-primary/30 hover:bg-primary/5 focus-within:ring-2 focus-within:ring-ring" data-tour={v.id === "demo-1" ? "mp-card-alpha" : undefined}>
                 <CardHeader className="pb-2">
                   <CardTitle className="font-syne text-sm font-semibold">{v.name}</CardTitle>
                   <CardDescription className="line-clamp-2">{v.shortDesc}</CardDescription>
@@ -114,8 +114,8 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filtered.map((v) => (
-            <Link key={v.id} href={`/algo/${v.id}`}>
-              <Card className="h-full rounded-2xl border-primary/20 bg-primary/[0.03] transition-colors hover:border-primary/30 hover:bg-primary/5 focus-within:ring-2 focus-within:ring-ring">
+            <Link key={v.id} href={`/vega-financial/algorithms/${v.id}`}>
+              <Card className="h-full rounded-2xl border-primary/20 bg-primary/[0.03] transition-colors hover:border-primary/30 hover:bg-primary/5 focus-within:ring-2 focus-within:ring-ring" data-tour={v.id === "demo-1" ? "mp-card-alpha" : undefined}>
                 <CardHeader className="pb-2">
                   <div className="flex items-start justify-between gap-2">
                     <CardTitle className="font-syne text-sm font-semibold">{v.name}</CardTitle>

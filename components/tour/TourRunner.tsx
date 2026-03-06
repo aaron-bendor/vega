@@ -1,0 +1,110 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import {
+  TOUR_STEPS,
+  getStepCount,
+} from "@/lib/tour/config";
+import {
+  getTourCompleted,
+  getTourStep,
+  setTourCompleted,
+  setTourStep,
+  setTourStartedAt,
+  setTourDismissed,
+  getTourStartRequested,
+  clearTourStartRequested,
+} from "@/lib/tour/storage";
+import {
+  waitForSelector,
+  createDriverForStep,
+  getStepRoute,
+} from "@/lib/tour/controller";
+
+/**
+ * Renders nothing; runs the guided tour when the current route matches the
+ * stored step. Mount in layouts that wrap /vega-financial, /marketplace, and
+ * /vega-financial/algorithms/*.
+ */
+export function TourRunner() {
+  const pathname = usePathname();
+  const router = useRouter();
+  const [step, setStep] = useState(-1);
+
+  // Sync step from storage and handle "Try it now" start request
+  useEffect(() => {
+    if (getTourCompleted()) {
+      setStep(-1);
+      return;
+    }
+    if (getTourStartRequested()) {
+      clearTourStartRequested();
+      setTourStep(0);
+      setTourStartedAt(new Date().toISOString());
+      setStep(0);
+      return;
+    }
+    const stored = getTourStep();
+    setStep(stored);
+  }, [pathname]);
+
+  // When pathname or step matches a step's route, wait for element and show driver
+  useEffect(() => {
+    if (typeof window === "undefined" || step < 0 || step >= getStepCount()) return;
+    const route = getStepRoute(step);
+    if (route !== pathname) return;
+
+    const config = TOUR_STEPS[step];
+    const selector = config?.selector ?? "";
+
+    let cancelled = false;
+    const run = async () => {
+      const el = selector ? await waitForSelector(selector) : null;
+      if (cancelled) return;
+      if (selector && !el) return;
+
+      const driverObj = createDriverForStep(step, {
+        onNext: () => {
+          const nextStep = step + 1;
+          const total = getStepCount();
+          if (nextStep >= total) {
+            setTourCompleted();
+            setStep(-1);
+            return;
+          }
+          setTourStep(nextStep);
+          setStep(nextStep);
+          const nextRoute = getStepRoute(nextStep);
+          if (nextRoute && nextRoute !== pathname) {
+            router.push(nextRoute);
+          }
+        },
+        onPrev: () => {
+          const prevStep = Math.max(0, step - 1);
+          setTourStep(prevStep);
+          setStep(prevStep);
+          const prevRoute = getStepRoute(prevStep);
+          if (prevRoute && prevRoute !== pathname) {
+            router.push(prevRoute);
+          }
+        },
+        onClose: () => {
+          setTourDismissed();
+          setStep(-1);
+        },
+      });
+
+      if (driverObj && !cancelled) {
+        driverObj.drive(0);
+      }
+    };
+
+    run();
+    return () => {
+      cancelled = true;
+    };
+  }, [pathname, step, router]);
+
+  return null;
+}

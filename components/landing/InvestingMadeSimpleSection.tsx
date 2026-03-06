@@ -5,7 +5,9 @@ import Image from "next/image";
 import { AnimateOnScroll } from "./AnimateOnScroll";
 
 const PHONE_WIDTH = 440;
-const PHONE_HEIGHT = 820; // 2.png and 3.png are 440×820
+const PHONE_HEIGHT = 820;
+// Reserve space for full screenshot (440×820) so nothing is cropped
+const PHONE_ASPECT = PHONE_WIDTH / PHONE_HEIGHT;
 
 const steps = [
   {
@@ -47,6 +49,7 @@ const steps = [
   {
     num: "4.",
     title: "Watch it grow",
+    phone: "/investingmadesimple2.png",
     description: (
       <>
         The strategy trades for you automatically. Check your returns at any time in the app.
@@ -101,18 +104,18 @@ export function InvestingMadeSimpleSection() {
 
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 pb-20 md:pb-28">
           {/* Desktop: one image in flow (active); others absolute + hidden. Column height = image height, no crop. */}
-          <div className="hidden lg:block lg:w-[45%] flex justify-center">
-            <div className="sticky top-24 w-[280px] xl:w-[320px]">
-              <div className="relative w-full">
+          <div className="hidden lg:block lg:w-[45%] flex justify-center overflow-visible">
+            <div className="sticky top-24 w-[280px] xl:w-[320px] overflow-visible">
+              {/* Aspect-ratio box reserves full height for 440×820 so the whole screenshot is visible (no crop). */}
+              <div
+                className="relative w-full overflow-visible"
+                style={{ aspectRatio: PHONE_ASPECT }}
+              >
                 {steps.map((step, i) => (
                   <div
                     key={step.num}
-                    className="transition-all duration-700 ease-out"
+                    className="absolute inset-0 transition-all duration-700 ease-out overflow-visible"
                     style={{
-                      position: activeStep === i ? "relative" : "absolute",
-                      top: 0,
-                      left: 0,
-                      right: 0,
                       opacity: activeStep === i ? 1 : 0,
                       pointerEvents: activeStep === i ? "auto" : "none",
                       transform:
@@ -121,14 +124,15 @@ export function InvestingMadeSimpleSection() {
                           : "translateY(12px) scale(0.97)",
                     }}
                   >
-                    <Image
-                      src={PHONE_IMAGE}
+                    {/* Plain img + object-contain: full screenshot visible (status bar → bottom nav), like reference. */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={step.phone}
                       alt={step.title}
                       width={PHONE_WIDTH}
                       height={PHONE_HEIGHT}
-                      className="w-full h-auto object-contain object-top drop-shadow-2xl"
-                      sizes="(max-width: 768px) 100vw, 320px"
-                      priority={i === 0}
+                      className="w-full h-full object-contain object-top drop-shadow-2xl block"
+                      style={{ objectFit: "contain", objectPosition: "top" }}
                     />
                   </div>
                 ))}
@@ -162,7 +166,7 @@ export function InvestingMadeSimpleSection() {
                 {/* Mobile: full phone */}
                 <div className="lg:hidden mt-6 flex justify-center w-full">
                   <Image
-                    src={PHONE_IMAGE}
+                    src={step.phone}
                     alt={step.title}
                     width={PHONE_WIDTH}
                     height={PHONE_HEIGHT}

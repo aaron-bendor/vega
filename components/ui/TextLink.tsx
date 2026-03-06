@@ -7,6 +7,8 @@ interface TextLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   href: string;
   children: React.ReactNode;
   className?: string;
+  /** "blockHighlight" = underline thickens into a block highlight on hover (multi-line safe). Default = simple underline reveal. */
+  variant?: "default" | "blockHighlight";
   /** Optional trailing icon (e.g. arrow); will nudge on hover */
   trailingIcon?: React.ReactNode;
 }
@@ -19,22 +21,27 @@ export function TextLink({
   href,
   children,
   className,
+  variant = "default",
   trailingIcon,
   ...props
 }: TextLinkProps) {
+  const isBlockHighlight = variant === "blockHighlight";
+
   return (
     <Link
       href={href}
       className={cn(
-        "group relative inline-flex items-center gap-1 rounded outline-none",
-        "after:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:origin-left after:scale-x-0",
-        "after:transition-transform after:duration-motion-normal after:ease-motion",
-        "hover:after:scale-x-100 focus-visible:after:scale-x-100",
-        "after:bg-current",
-        "py-0.5",
+        "group relative inline-flex items-center gap-1 rounded outline-none py-0.5",
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         "transition-colors duration-motion-normal ease-motion",
         "text-muted-foreground hover:text-foreground",
+        isBlockHighlight && "text-link-block-highlight",
+        !isBlockHighlight && [
+          "after:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:origin-left after:scale-x-0",
+          "after:transition-transform after:duration-motion-normal after:ease-motion",
+          "hover:after:scale-x-100 focus-visible:after:scale-x-100",
+          "after:bg-current",
+        ],
         className
       )}
       {...props}

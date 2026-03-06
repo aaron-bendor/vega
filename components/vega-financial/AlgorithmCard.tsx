@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import { ShieldCheck } from "lucide-react";
+import { ViewTransitionLink } from "@/components/ui/ViewTransitionLink";
+import { ShieldCheck, ChevronRight } from "lucide-react";
 import { formatPercent } from "@/lib/utils/format";
 import { RiskBadge } from "./RiskBadge";
 
@@ -46,12 +46,21 @@ export function AlgorithmCard({
   const score = riskScore ?? riskLevelToScore(riskLevel);
 
   return (
-    <Link
+    <ViewTransitionLink
       href={`/vega-financial/algorithms/${id}`}
-      className="focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-2xl block"
+      className="group/card focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-2xl block"
     >
-      <Card className="h-full rounded-2xl border-primary/20 bg-primary/[0.03] transition-colors hover:border-primary/30 hover:bg-primary/5">
-        <CardContent className="p-5">
+      <div
+        className="h-full"
+        style={id ? { viewTransitionName: `algo-card-${id}` } : undefined}
+      >
+        <Card className="group/card h-full rounded-2xl border-primary/20 bg-primary/[0.03] transition-[box-shadow,border-color,background-color] duration-motion-normal ease-motion hover:border-primary/30 hover:bg-primary/5 hover:shadow-md hover:shadow-primary/5 motion-reduce:transition-none relative overflow-visible">
+          {/* Left accent bar: scales in on hover/focus-visible */}
+          <span
+            aria-hidden
+            className="absolute left-0 top-4 bottom-4 w-0.5 rounded-full bg-primary/50 origin-bottom scale-y-0 transition-transform duration-motion-normal ease-motion group-hover/card:scale-y-100 group-focus-within/card:scale-y-100 motion-reduce:transition-none"
+          />
+        <CardContent className="p-5 relative">
           {/* Mobile / narrow: stacked */}
           <div className="flex flex-col gap-3 md:hidden">
             <div className="flex items-start justify-between gap-2">
@@ -180,8 +189,9 @@ export function AlgorithmCard({
                 )}
               </div>
             ) : (
-              <div className="text-xs text-muted-foreground shrink-0 w-32 text-right">
+              <div className="text-xs text-muted-foreground shrink-0 w-32 text-right flex items-center justify-end gap-0.5">
                 Run backtest to see metrics
+                <ChevronRight className="size-3.5 opacity-0 -translate-x-1 transition-[opacity,transform] duration-motion-normal ease-motion group-hover/card:opacity-100 group-hover/card:translate-x-0 group-focus-within/card:opacity-100 group-focus-within/card:translate-x-0 motion-reduce:transition-none" aria-hidden />
               </div>
             )}
             <div className="shrink-0">
@@ -195,6 +205,7 @@ export function AlgorithmCard({
           </div>
         </CardContent>
       </Card>
-    </Link>
+      </div>
+    </ViewTransitionLink>
   );
 }

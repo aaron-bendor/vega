@@ -65,7 +65,7 @@ export function InvestPanel({ versionId }: { versionId: string }) {
         onChange={(e) => setAmount(Number(e.target.value) || 10000)}
         className="w-32"
       />
-      <Button onClick={handleInvestClick} disabled={loading}>
+      <Button onClick={handleInvestClick} disabled={loading} data-tour="algo-add-paper">
         {loading ? "Adding…" : "Add to paper portfolio"}
       </Button>
       {error && <p className="text-destructive text-sm">{error}</p>}

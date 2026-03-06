@@ -7,7 +7,7 @@ import { DrawdownChart } from "@/components/charts/DrawdownChart";
 import { MetricsCards } from "@/components/charts/MetricsCards";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsListWithIndicator, TabsTrigger } from "@/components/ui/tabs";
 import { ShieldCheck, Calendar, DollarSign, TrendingUp } from "lucide-react";
 import { RunBacktestPanel } from "./RunBacktestPanel";
 import { InvestPanel } from "./InvestPanel";
@@ -150,12 +150,12 @@ export default async function AlgorithmDetailPage({
       )}
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList>
+        <TabsListWithIndicator>
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="performance">Performance</TabsTrigger>
           <TabsTrigger value="risk">Risk</TabsTrigger>
           <TabsTrigger value="about">About</TabsTrigger>
-        </TabsList>
+        </TabsListWithIndicator>
 
         <TabsContent value="overview" className="space-y-6">
           <MetricsCards
