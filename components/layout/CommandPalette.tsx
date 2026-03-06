@@ -14,8 +14,8 @@ interface AlgorithmOption {
 const PAGES: { href: string; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
   { href: "/", label: "Home", icon: Home },
   { href: "/vega-financial", label: "Vega Financial", icon: Wallet },
-  { href: "/portfolio", label: "Portfolio", icon: LayoutDashboard },
-  { href: "/marketplace", label: "Marketplace", icon: Store },
+  { href: "/vega-financial/portfolio", label: "Portfolio", icon: LayoutDashboard },
+  { href: "/vega-financial/marketplace", label: "Marketplace", icon: Store },
   { href: "/vega-developer", label: "Developer", icon: Code2 },
   { href: "/private", label: "Private", icon: Lock },
 ];

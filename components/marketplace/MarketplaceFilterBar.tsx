@@ -59,7 +59,7 @@ export function MarketplaceFilterBar({
       const params = new URLSearchParams(searchParams.toString());
       if (value) params.set(key, value);
       else params.delete(key);
-      router.push(`/marketplace?${params.toString()}`);
+      router.push(`/vega-financial/marketplace?${params.toString()}`);
     },
     [router, searchParams]
   );
@@ -72,23 +72,23 @@ export function MarketplaceFilterBar({
   }, [tag, risk]);
 
   const clearAll = useCallback(() => {
-    router.push("/marketplace");
+    router.push("/vega-financial/marketplace");
   }, [router]);
 
   const categories = tagOptions.length > 0 ? tagOptions : CATEGORY_OPTIONS;
 
   return (
-    <div className="space-y-4" data-tour="mp-filters">
-      {/* Search + Sort row */}
-      <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
-        <div className="relative flex-1 max-w-md">
+    <div className="space-y-5" data-tour="mp-filters">
+      {/* Search + Sort row — aligned on one line on sm+ */}
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+        <div className="relative flex-1 min-w-0 max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" aria-hidden />
           <Input
             type="search"
-            placeholder="Search algorithms"
+            placeholder="Search algorithms…"
             value={search}
             onChange={(e) => onSearchChange?.(e.target.value)}
-            className="pl-9 h-9"
+            className="pl-9 h-9 w-full"
             aria-label="Search algorithms"
           />
         </div>
@@ -101,7 +101,7 @@ export function MarketplaceFilterBar({
               setParam("sort", v);
             }}
           >
-            <SelectTrigger className="w-[180px] h-9">
+            <SelectTrigger className="w-[180px] h-9 shrink-0">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -115,67 +115,67 @@ export function MarketplaceFilterBar({
         </div>
       </div>
 
-      {/* Grouped filters (collapsible on small screens) */}
-      <details className="rounded-lg border border-[rgba(51,51,51,0.12)] bg-muted/30 overflow-hidden group" open>
-        <summary className="flex items-center justify-between px-4 py-3 cursor-pointer list-none font-medium focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded-lg [&::-webkit-details-marker]:hidden">
+      {/* Category / Risk filters — single row of chips where possible */}
+      <details className="rounded-xl border border-[rgba(51,51,51,0.12)] bg-muted/30 overflow-hidden group" open>
+        <summary className="flex items-center justify-between px-4 py-3 cursor-pointer list-none text-sm font-medium text-foreground focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded-xl [&::-webkit-details-marker]:hidden">
           Filters
-          <ChevronDown className="size-4 shrink-0 transition-transform group-open:rotate-180" aria-hidden />
+          <ChevronDown className="size-4 shrink-0 transition-transform group-open:rotate-180 text-muted-foreground" aria-hidden />
         </summary>
-        <div className="px-4 pb-4 grid gap-4 sm:grid-cols-3 border-t border-[rgba(51,51,51,0.08)]">
-          <div>
+        <div className="px-4 pb-4 pt-1 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 border-t border-[rgba(51,51,51,0.08)]">
+          <div className="min-w-0">
             <p className="text-xs font-medium text-muted-foreground mb-2">Category</p>
             <SlidingChipRow
               chips={[
-                { href: "/marketplace", label: "All" },
+                { href: "/vega-financial/marketplace", label: "All" },
                 ...categories.map((name) => ({
-                  href: `/marketplace?tag=${encodeURIComponent(name)}`,
+                  href: `/vega-financial/marketplace?tag=${encodeURIComponent(name)}`,
                   label: name,
                 })),
               ]}
-              activeHref={tag ? `/marketplace?tag=${encodeURIComponent(tag)}` : "/marketplace"}
+              activeHref={tag ? `/vega-financial/marketplace?tag=${encodeURIComponent(tag)}` : "/vega-financial/marketplace"}
             />
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="text-xs font-medium text-muted-foreground mb-2">Asset</p>
             <SlidingChipRow
               chips={ASSET_OPTIONS.map((name) => ({
-                href: `/marketplace?tag=${encodeURIComponent(name)}`,
+                href: `/vega-financial/marketplace?tag=${encodeURIComponent(name)}`,
                 label: name,
               }))}
-              activeHref={tag ? `/marketplace?tag=${encodeURIComponent(tag)}` : "/marketplace"}
+              activeHref={tag ? `/vega-financial/marketplace?tag=${encodeURIComponent(tag)}` : "/vega-financial/marketplace"}
             />
           </div>
-          <div>
+          <div className="min-w-0 sm:col-span-2 lg:col-span-1">
             <p className="text-xs font-medium text-muted-foreground mb-2">Risk</p>
             <SlidingChipRow
               chips={[
-                { href: "/marketplace", label: "All" },
+                { href: "/vega-financial/marketplace", label: "All" },
                 ...RISK_OPTIONS.map((r) => ({
-                  href: `/marketplace?risk=${encodeURIComponent(r)}`,
+                  href: `/vega-financial/marketplace?risk=${encodeURIComponent(r)}`,
                   label: r,
                 })),
               ]}
-              activeHref={risk ? `/marketplace?risk=${encodeURIComponent(risk)}` : "/marketplace"}
+              activeHref={risk ? `/vega-financial/marketplace?risk=${encodeURIComponent(risk)}` : "/vega-financial/marketplace"}
             />
           </div>
         </div>
       </details>
 
-      {/* Active filters + result count */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-2">
+      {/* Active filters + result count — clear alignment */}
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+        <div className="flex flex-wrap items-center gap-2 min-w-0">
           {activeFilters.length > 0 && (
             <>
               {activeFilters.map(({ key, label }) => (
                 <span
                   key={key}
-                  className="inline-flex items-center gap-1 rounded-md border border-[rgba(51,51,51,0.18)] bg-muted/50 px-2 py-1 text-xs"
+                  className="inline-flex items-center gap-1 rounded-md border border-primary/25 bg-primary/10 px-2.5 py-1 text-xs text-foreground transition-[background-color,border-color] duration-[200ms] focus-within:border-primary/40 focus-within:ring-2 focus-within:ring-primary/20"
                 >
                   {label}
                   <button
                     type="button"
                     onClick={() => setParam(key, null)}
-                    className="rounded p-0.5 hover:bg-muted focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
+                    className="rounded p-0.5 transition-colors duration-150 hover:bg-primary/20 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
                     aria-label={`Remove ${label}`}
                   >
                     <X className="size-3" />
@@ -185,14 +185,14 @@ export function MarketplaceFilterBar({
               <button
                 type="button"
                 onClick={clearAll}
-                className="text-xs text-muted-foreground hover:text-foreground font-medium focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded"
+                className="text-xs text-muted-foreground hover:text-foreground font-medium transition-colors duration-150 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 rounded px-1"
               >
                 Clear all
               </button>
             </>
           )}
         </div>
-        <p className="text-sm text-muted-foreground tabular-nums">
+        <p className="text-sm text-muted-foreground tabular-nums shrink-0">
           Showing {resultCount} of {totalCount}
         </p>
       </div>

@@ -24,17 +24,17 @@ export const TOUR_STEPS: TourStepConfig[] = [
     body: "Use Marketplace to browse algorithms, Portfolio to track holdings.",
   },
   {
-    route: "/marketplace",
+    route: "/vega-financial/marketplace",
     selector: "[data-tour=\"mp-demo-banner\"]",
     body: "Demo mode: simulated performance only. Paper trading only.",
   },
   {
-    route: "/marketplace",
+    route: "/vega-financial/marketplace",
     selector: "[data-tour=\"mp-filters\"]",
     body: "Filter by style and risk. Start with Low or Low Risk if you are unsure.",
   },
   {
-    route: "/marketplace",
+    route: "/vega-financial/marketplace",
     selector: "[data-tour=\"mp-card-alpha\"]",
     body: "Open an algorithm to see its metrics and run a backtest.",
   },

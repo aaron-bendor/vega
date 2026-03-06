@@ -1,15 +1,18 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { X } from "lucide-react";
 
 export function FilterChips() {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
+  const base = pathname?.startsWith("/vega-financial/marketplace") ? "/vega-financial/marketplace" : "/vega-financial";
   const risk = searchParams.get("risk");
   const verified = searchParams.get("verified") === "true";
   const sort = searchParams.get("sort");
   const tab = searchParams.get("tab");
+  const tag = searchParams.get("tag");
   const minTrackRecord = searchParams.get("minTrackRecord");
   const maxCorrelation = searchParams.get("maxCorrelation");
   const minRiskStability = searchParams.get("minRiskStability");
@@ -20,6 +23,7 @@ export function FilterChips() {
     verified ||
     sort ||
     tab ||
+    tag ||
     minTrackRecord ||
     maxCorrelation ||
     minRiskStability ||
@@ -27,29 +31,37 @@ export function FilterChips() {
 
   const clearAll = () => {
     const params = new URLSearchParams(searchParams.toString());
-    ["risk", "verified", "sort", "tab", "minTrackRecord", "maxCorrelation", "minRiskStability", "minRiskAdjustment"].forEach(
+    ["risk", "verified", "sort", "tab", "tag", "minTrackRecord", "maxCorrelation", "minRiskStability", "minRiskAdjustment"].forEach(
       (k) => params.delete(k)
     );
-    router.push(`/vega-financial?${params.toString()}`);
+    const q = params.toString();
+    router.push(q ? `${base}?${q}` : base);
   };
 
   const remove = (key: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.delete(key);
-    router.push(`/vega-financial?${params.toString()}`);
+    const q = params.toString();
+    router.push(q ? `${base}?${q}` : base);
   };
 
   if (!hasFilters) return null;
 
+  const chipClass =
+    "inline-flex items-center gap-1 rounded-md border border-primary/25 bg-primary/10 px-2.5 py-1 text-xs text-foreground transition-[background-color,border-color,box-shadow] duration-[200ms] ease-[cubic-bezier(0.2,0.8,0.2,1)] focus-within:border-primary/40 focus-within:ring-2 focus-within:ring-primary/20";
+
+  const removeBtnClass =
+    "rounded min-w-[44px] min-h-[44px] flex items-center justify-center -m-1 transition-colors duration-150 hover:bg-primary/20 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1";
+
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-wrap items-center gap-2 min-w-0">
       {risk && (
-        <span className="inline-flex items-center gap-1 rounded-md border border-[rgba(51,51,51,0.18)] bg-[rgba(51,51,51,0.04)] px-2 py-0.5 text-xs text-foreground">
+        <span className={chipClass}>
           Risk: {risk}
           <button
             type="button"
             onClick={() => remove("risk")}
-            className="rounded hover:bg-[rgba(51,51,51,0.08)] p-0.5"
+            className={removeBtnClass}
             aria-label="Remove risk filter"
           >
             <X className="size-3" />
@@ -57,12 +69,12 @@ export function FilterChips() {
         </span>
       )}
       {verified && (
-        <span className="inline-flex items-center gap-1 rounded-md border border-[rgba(51,51,51,0.18)] bg-[rgba(51,51,51,0.04)] px-2 py-0.5 text-xs text-foreground">
+        <span className={chipClass}>
           Verified only
           <button
             type="button"
             onClick={() => remove("verified")}
-            className="rounded hover:bg-[rgba(51,51,51,0.08)] p-0.5"
+            className={removeBtnClass}
             aria-label="Remove verified filter"
           >
             <X className="size-3" />
@@ -70,13 +82,26 @@ export function FilterChips() {
         </span>
       )}
       {sort && (
-        <span className="inline-flex items-center gap-1 rounded-md border border-[rgba(51,51,51,0.18)] bg-[rgba(51,51,51,0.04)] px-2 py-0.5 text-xs text-foreground">
+        <span className={chipClass}>
           Sort: {sort}
           <button
             type="button"
             onClick={() => remove("sort")}
-            className="rounded hover:bg-[rgba(51,51,51,0.08)] p-0.5"
+            className={removeBtnClass}
             aria-label="Remove sort"
+          >
+            <X className="size-3" />
+          </button>
+        </span>
+      )}
+      {tag && (
+        <span className={chipClass}>
+          Tag: {tag}
+          <button
+            type="button"
+            onClick={() => remove("tag")}
+            className={removeBtnClass}
+            aria-label="Remove tag filter"
           >
             <X className="size-3" />
           </button>
@@ -86,7 +111,7 @@ export function FilterChips() {
         <button
           type="button"
           onClick={clearAll}
-          className="text-xs text-muted-foreground hover:text-foreground"
+          className="text-xs text-muted-foreground hover:text-foreground font-medium transition-colors duration-150 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 rounded min-h-[44px] flex items-center px-2"
         >
           Clear all
         </button>

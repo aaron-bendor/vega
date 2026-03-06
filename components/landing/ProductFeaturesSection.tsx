@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimateOnScroll } from "./AnimateOnScroll";
@@ -8,18 +9,34 @@ import { TypingEffect } from "./TypingEffect";
 const features = [
   "Full performance history and more metrics",
   "Curated collections built for your risk appetite",
-  "Invest any amount \u2014 no minimum, no lock-in",
-  "Algorithm source code stays private \u2014 your edge is protected",
+  "Invest any amount — no minimum, no lock-in",
+  "Algorithm source code stays private — your edge is protected",
   "All algorithms reviewed by our team before going live",
 ];
 
 export function ProductFeaturesSection() {
+  const listRef = useRef<HTMLUListElement>(null);
+  const [listInView, setListInView] = useState(false);
+
+  useEffect(() => {
+    const el = listRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) setListInView(true);
+      },
+      { threshold: 0.15 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   return (
     <section id="built-for" className="relative z-0 w-full overflow-hidden py-16 md:py-24">
       <div className="pointer-events-none absolute inset-0 z-0 bg-white" aria-hidden />
       <div className="relative z-10 max-w-[1200px] mx-auto px-4 md:px-8">
         <AnimateOnScroll>
-          <h2 className="font-maven-pro font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-[-2px] leading-[1.25] min-h-[2.6em] sm:min-h-[2.2em] md:min-h-[1.35em]">
+          <h2 className="font-maven-pro font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-[-2px] leading-[1.25] min-h-[2.6em]">
             <span className="text-black font-extrabold">Built for </span>
             <TypingEffect
               className="font-maven-pro text-[#531cb3] font-black md:tracking-[-2px] tracking-[2px]"
@@ -34,7 +51,7 @@ export function ProductFeaturesSection() {
             <div className="relative w-full max-w-[600px]">
               <Image
                 src="/builtforPhones.png"
-                alt="Built for everyone \u2014 multiple phone mockups"
+                alt="Built for everyone — multiple phone mockups"
                 width={600}
                 height={450}
                 className="w-full h-auto object-contain"
@@ -54,13 +71,22 @@ export function ProductFeaturesSection() {
             </AnimateOnScroll>
 
             <AnimateOnScroll delay={0.15}>
-              <ul className="mt-6 space-y-2.5">
-                {features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-3 group">
-                    <span className="font-dm-mono text-[#531cb3] text-sm mt-0.5 shrink-0 group-hover:translate-x-1 transition-transform duration-300 ease-out">
+              <ul
+                ref={listRef}
+                className={`mt-6 space-y-2.5 ${listInView ? "feature-list-in-view" : ""}`}
+              >
+                {features.map((feature, i) => (
+                  <li
+                    key={feature}
+                    className="feature-list-item group flex items-start gap-3 rounded-lg px-3 py-2 -mx-3 transition-all duration-300 ease-out hover:bg-[#531cb3]/10 hover:translate-x-1 cursor-default"
+                    style={{
+                      animationDelay: `${0.1 + i * 0.08}s`,
+                    }}
+                  >
+                    <span className="font-dm-mono text-sm mt-0.5 shrink-0 transition-all duration-300 ease-out text-[#531cb3] group-hover:translate-x-1 group-hover:text-[#7c3aed] group-hover:scale-110">
                       →
                     </span>
-                    <p className="font-dm-sans font-light text-[#333] text-base md:text-lg leading-[1.4]">
+                    <p className="font-dm-sans font-light text-base md:text-lg leading-[1.4] text-[#333] transition-colors duration-300 ease-out group-hover:text-[#531cb3]">
                       {feature}
                     </p>
                   </li>

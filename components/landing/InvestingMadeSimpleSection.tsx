@@ -9,11 +9,13 @@ const PHONE_HEIGHT = 820;
 // Reserve space for full screenshot (440×820) so nothing is cropped
 const PHONE_ASPECT = PHONE_WIDTH / PHONE_HEIGHT;
 
+// Preferred fix for bottom crop: pad the first 3 PNGs in Figma/Photoshop with transparent space at the bottom (same width, more canvas height). Optional code fallback below uses phoneClass only if you cannot edit the assets.
 const steps = [
   {
     num: "1.",
     title: "Browse & Discover",
     phone: "/investingmadesimple2.png",
+    phoneClass: "scale-[0.94] translate-y-[6px]" as const, // temporary until PNG is padded
     description: (
       <>
         Explore trading strategies verified by our own experienced developers.
@@ -26,6 +28,7 @@ const steps = [
     num: "2.",
     title: "View performance",
     phone: "/investingmadesimple3.png",
+    phoneClass: "scale-[0.94] translate-y-[6px]" as const,
     description: (
       <>
         See plain-English descriptions, past returns, developer background, etc.
@@ -38,6 +41,7 @@ const steps = [
     num: "3.",
     title: "Invest any amount",
     phone: "/investingmadesimple3.png",
+    phoneClass: "scale-[0.94] translate-y-[6px]" as const,
     description: (
       <>
         Start from as little as £1.
@@ -49,7 +53,7 @@ const steps = [
   {
     num: "4.",
     title: "Watch it grow",
-    phone: "/investingmadesimple2.png",
+    phone: "/investingmadesimple5.png",
     description: (
       <>
         The strategy trades for you automatically. Check your returns at any time in the app.
@@ -85,12 +89,12 @@ export function InvestingMadeSimpleSection() {
   return (
     <section
       id="investing-made-simple"
-      className="relative w-full bg-cover bg-center bg-no-repeat"
+      className="relative w-full overflow-visible bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: "url(/backgroundInvestingMadesimple.png)" }}
     >
       <div className="absolute inset-0 bg-black/10 pointer-events-none" aria-hidden />
 
-      <div className="relative max-w-[1200px] mx-auto px-4 md:px-8">
+      <div className="relative max-w-[1200px] mx-auto px-4 md:px-8 overflow-visible">
         <AnimateOnScroll>
           <div className="pt-16 md:pt-24 pb-8 md:pb-12 text-center">
             <h2 className="font-maven-pro font-extrabold text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-[-2px] leading-tight">
@@ -102,7 +106,7 @@ export function InvestingMadeSimpleSection() {
           </div>
         </AnimateOnScroll>
 
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 pb-20 md:pb-28">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 pb-20 md:pb-28 overflow-visible">
           {/* Desktop: one image in flow (active); others absolute + hidden. Column height = image height, no crop. */}
           <div className="hidden lg:block lg:w-[45%] flex justify-center overflow-visible">
             <div className="sticky top-24 w-[280px] xl:w-[320px] overflow-visible">
@@ -131,7 +135,7 @@ export function InvestingMadeSimpleSection() {
                       alt={step.title}
                       width={PHONE_WIDTH}
                       height={PHONE_HEIGHT}
-                      className="w-full h-full object-contain object-top drop-shadow-2xl block"
+                      className={`w-full h-full object-contain object-top drop-shadow-2xl block ${"phoneClass" in step && step.phoneClass ? step.phoneClass : ""}`}
                       style={{ objectFit: "contain", objectPosition: "top" }}
                     />
                   </div>
@@ -170,7 +174,7 @@ export function InvestingMadeSimpleSection() {
                     alt={step.title}
                     width={PHONE_WIDTH}
                     height={PHONE_HEIGHT}
-                    className="w-[220px] sm:w-[260px] h-auto object-contain object-top drop-shadow-xl"
+                    className={`w-[220px] sm:w-[260px] h-auto object-contain object-top drop-shadow-xl ${"phoneClass" in step && step.phoneClass ? step.phoneClass : ""}`}
                     sizes="260px"
                   />
                 </div>

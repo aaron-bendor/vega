@@ -14,6 +14,12 @@ import { RunBacktestPanel } from "@/app/(app)/algo/[id]/RunBacktestPanel";
 import { InvestPanel } from "@/app/(app)/algo/[id]/InvestPanel";
 import { DataStatusCard } from "@/app/(app)/algo/[id]/DataStatusCard";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
+import {
+  STRATEGY_OVERVIEW_COPY,
+  METRICS_EXPLAINER_COPY,
+  METHODOLOGY_NOTE_COPY,
+  ALLOCATION_NOTE_COPY,
+} from "@/lib/vega-financial/strategy-copy";
 
 function riskVariant(level: string) {
   if (level === "Low") return "success" as const;
@@ -63,6 +69,16 @@ export default async function AlgorithmDetailPage({
   const riskScore = demoAlgo?.riskScore ?? (displayRisk === "Low" ? 3 : displayRisk === "High" ? 8 : 5);
   const var95MonthlyPct = demoAlgo?.var95MonthlyPct;
   const standardised = demoAlgo?.standardised;
+  const overviewCopy = id ? STRATEGY_OVERVIEW_COPY[id] : null;
+  const hasAnyMetric =
+    (metricMap.cumulativeReturn ?? version?.cachedReturn) != null ||
+    (metricMap.sharpeRatio ?? version?.cachedSharpe) != null ||
+    (metricMap.maxDrawdown ?? version?.cachedMaxDrawdown) != null ||
+    (metricMap.annualisedVolatility ?? version?.cachedVolatility) != null;
+  const metricsFallbackMessage =
+    !hasAnyMetric && overviewCopy?.metricsUnavailableNote
+      ? overviewCopy.metricsUnavailableNote
+      : undefined;
 
   return (
     <div className="p-6 lg:p-8 max-w-4xl mx-auto">
@@ -123,21 +139,77 @@ export default async function AlgorithmDetailPage({
         />
       )}
 
-      <div data-tour="algo-metrics">
-      <MetricsCards
-        cumulativeReturn={
-          (metricMap.cumulativeReturn ?? version?.cachedReturn) ?? undefined
-        }
-        sharpeRatio={
-          (metricMap.sharpeRatio ?? version?.cachedSharpe) ?? undefined
-        }
-        maxDrawdown={
-          (metricMap.maxDrawdown ?? version?.cachedMaxDrawdown) ?? undefined
-        }
-        annualisedVolatility={
-          (metricMap.annualisedVolatility ?? version?.cachedVolatility) ?? undefined
-        }
-      />
+      {overviewCopy && (
+        <Card className="rounded-2xl border-primary/20 bg-primary/[0.03]">
+          <CardHeader>
+            <CardTitle className="font-syne text-base font-semibold">Overview</CardTitle>
+            <p className="text-xs text-muted-foreground">
+              What this strategy is trying to do, when it tends to work, and where it may struggle.
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-4 text-sm">
+            <p className="text-muted-foreground leading-relaxed">{overviewCopy.overview}</p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div>
+                <p className="font-medium text-foreground text-xs mb-1">Why this exists</p>
+                <p className="text-muted-foreground text-xs leading-relaxed">{overviewCopy.whyExists}</p>
+              </div>
+              <div>
+                <p className="font-medium text-foreground text-xs mb-1">When it tends to work</p>
+                <p className="text-muted-foreground text-xs leading-relaxed">{overviewCopy.whenWorks}</p>
+              </div>
+              <div>
+                <p className="font-medium text-foreground text-xs mb-1">When it struggles</p>
+                <p className="text-muted-foreground text-xs leading-relaxed">{overviewCopy.whenStruggles}</p>
+              </div>
+              <div>
+                <p className="font-medium text-foreground text-xs mb-1">Who it may fit</p>
+                <p className="text-muted-foreground text-xs leading-relaxed">{overviewCopy.whoFits}</p>
+              </div>
+              <div>
+                <p className="font-medium text-foreground text-xs mb-1">Who it may not fit</p>
+                <p className="text-muted-foreground text-xs leading-relaxed">{overviewCopy.whoNotFit}</p>
+              </div>
+              <div>
+                <p className="font-medium text-foreground text-xs mb-1">Suggested role in portfolio</p>
+                <p className="text-muted-foreground text-xs leading-relaxed">{overviewCopy.suggestedRole}</p>
+              </div>
+              <div>
+                <p className="font-medium text-foreground text-xs mb-1">Suggested allocation range</p>
+                <p className="text-muted-foreground text-xs leading-relaxed">{overviewCopy.suggestedAllocationRange}</p>
+              </div>
+            </div>
+            {overviewCopy.extraNote && (
+              <div className="rounded-lg border border-amber-200 bg-amber-50/80 dark:border-amber-800 dark:bg-amber-950/30 px-3 py-2 text-xs text-muted-foreground leading-relaxed">
+                {overviewCopy.extraNote}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      <div data-tour="algo-metrics" className="mt-8">
+        <h3 className="font-syne text-base font-semibold text-foreground mb-2">Performance</h3>
+        <p className="text-xs text-muted-foreground mb-3">
+          Historical simulated results from the latest backtest. These figures are useful for
+          comparison, but they are not forecasts.
+        </p>
+        <MetricsCards
+          cumulativeReturn={
+            (metricMap.cumulativeReturn ?? version?.cachedReturn) ?? undefined
+          }
+          sharpeRatio={
+            (metricMap.sharpeRatio ?? version?.cachedSharpe) ?? undefined
+          }
+          maxDrawdown={
+            (metricMap.maxDrawdown ?? version?.cachedMaxDrawdown) ?? undefined
+          }
+          annualisedVolatility={
+            (metricMap.annualisedVolatility ?? version?.cachedVolatility) ?? undefined
+          }
+          fallbackMessage={metricsFallbackMessage}
+          explainerText={METRICS_EXPLAINER_COPY}
+        />
       </div>
 
       <div className="mt-8 space-y-8">
@@ -187,9 +259,34 @@ export default async function AlgorithmDetailPage({
             startDate={(version?.startDate as string | undefined) ?? demoAlgo?.startDate}
             endDate={(version?.endDate as string | undefined) ?? demoAlgo?.endDate}
           />
-          {(version || demoAlgo) && <InvestPanel versionId={id} />}
+          {(version || demoAlgo) && (
+            <>
+              <div className="mt-6 pt-6 border-t border-[rgba(51,51,51,0.12)]">
+                <h4 className="font-syne text-sm font-semibold text-foreground mb-1">Allocation</h4>
+                <p className="text-xs text-muted-foreground mb-3">
+                  How this strategy might fit into a broader portfolio and what a paper allocation would change.
+                </p>
+                <p className="text-xs text-muted-foreground mb-4">{ALLOCATION_NOTE_COPY}</p>
+                <InvestPanel versionId={id} />
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
+
+      {(version || demoAlgo) && (
+        <Card className="mt-6 rounded-2xl border-primary/20 bg-primary/[0.03]">
+          <CardHeader>
+            <CardTitle className="font-syne text-base font-semibold">Methodology</CardTitle>
+            <p className="text-xs text-muted-foreground">
+              How this backtest was run, what data was used, and what assumptions sit behind the results.
+            </p>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground leading-relaxed">{METHODOLOGY_NOTE_COPY}</p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

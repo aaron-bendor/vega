@@ -23,7 +23,13 @@ html {
   --motion-duration-fast: 120ms;
   --motion-duration-normal: 180ms;
   --motion-duration-slow: 240ms;
+  --motion-duration-chip: 200ms;
+  --motion-duration-card: 280ms;
+  --motion-duration-section: 500ms;
+  --motion-duration-countup: 1000ms;
   --motion-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --motion-ease-out: cubic-bezier(0.33, 1, 0.68, 1);
+  --motion-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -32,6 +38,29 @@ html {
   *::after {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
+  }
+}
+
+/* Shared state classes for consistent interactive states */
+.state-hover-subtle {
+  transition: color var(--motion-duration-fast) var(--motion-ease),
+    background-color var(--motion-duration-fast) var(--motion-ease),
+    border-color var(--motion-duration-fast) var(--motion-ease),
+    box-shadow var(--motion-duration-normal) var(--motion-ease);
+}
+.state-press {
+  transition: transform var(--motion-duration-chip) var(--motion-ease-spring);
+}
+.state-press:active {
+  transform: scale(0.98);
+}
+@media (prefers-reduced-motion: reduce) {
+  .state-hover-subtle,
+  .state-press {
+    transition: none;
+  }
+  .state-press:active {
+    transform: none;
   }
 }
 
@@ -208,6 +237,14 @@ html {
   animation: scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* Product features: stagger when list scrolls into view */
+.feature-list-item {
+  opacity: 0;
+}
+.feature-list-in-view .feature-list-item {
+  animation: fade-in-up 0.5s ease-out forwards;
+}
+
 /* Smooth focus and hover transitions for interactive elements */
 .smooth-focus {
   transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
@@ -268,7 +305,8 @@ html {
   }
   .animate-fade-in-up,
   .animate-scale-in,
-  .animate-fade-in-left {
+  .animate-fade-in-left,
+  .feature-list-item {
     animation-duration: 0.01ms !important;
   }
 }

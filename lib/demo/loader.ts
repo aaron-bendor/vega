@@ -33,6 +33,16 @@ export interface DemoAlgorithm {
   attributes?: InvestableAttributes;
   /** Developer id for follow/feed. */
   developerId?: string;
+  /** One-line thesis for cards. */
+  thesis?: string;
+  /** Best for (short). */
+  bestFor?: string;
+  /** May not suit (short). */
+  mayNotSuit?: string;
+  /** Status badge text (e.g. "Simulated • Medium risk • Equity momentum"). */
+  statusBadgeText?: string;
+  /** Card footer microcopy / regime note. */
+  cardFooterMicrocopy?: string;
 }
 
 export interface DemoDeveloper {

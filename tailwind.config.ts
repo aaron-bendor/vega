@@ -12,9 +12,24 @@ const config: Config = {
         "motion-fast": "120ms",
         "motion-normal": "180ms",
         "motion-slow": "240ms",
+        "motion-chip": "200ms",
+        "motion-card": "280ms",
+        "motion-section": "500ms",
+        "motion-countup": "1000ms",
       },
       transitionTimingFunction: {
         "motion": "cubic-bezier(0.2, 0.8, 0.2, 1)",
+        "motion-out": "cubic-bezier(0.33, 1, 0.68, 1)",
+        "motion-spring": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+      },
+      animation: {
+        "count-up": "count-up var(--motion-duration-countup, 1000ms) var(--motion-ease-out, cubic-bezier(0.33, 1, 0.68, 1)) forwards",
+      },
+      keyframes: {
+        "count-up": {
+          from: { opacity: "0", transform: "translateY(4px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
       },
       fontFamily: {
         syne: ["var(--font-syne)", "system-ui", "sans-serif"],

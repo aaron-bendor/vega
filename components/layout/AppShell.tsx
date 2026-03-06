@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { ProfileSidebar } from "@/components/vega-financial/ProfileSidebar";
 import { Button } from "@/components/ui/button";
-import { TextLink } from "@/components/ui/TextLink";
-import { Menu, ChevronLeft, HelpCircle } from "lucide-react";
+import { Menu, HelpCircle } from "lucide-react";
 import { clearTourForReplay, TOUR_START_SESSION_KEY, setTourStep } from "@/lib/tour/storage";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
 
 interface AppShellProps {
   children: ReactNode;
@@ -20,12 +20,20 @@ interface AppShellProps {
 
 /**
  * App layout for /vega-financial/* and (app) routes (marketplace, portfolio, etc.).
- * Top bar (product name, Back to Vega, user) + sidebar (Dashboard, Marketplace, Portfolio) + optional toolbar + main.
+ * Top bar (menu, tour, user) + sidebar (Dashboard, Marketplace, Portfolio) + optional toolbar + main.
  * No marketing header (SiteHeader/PillNav).
  */
 export function AppShell({ children, toolbar, naturalScroll }: AppShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    const onScroll = () => setScrolled((window.scrollY ?? 0) > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const handleReplayTour = () => {
     clearTourForReplay();
@@ -39,7 +47,12 @@ export function AppShell({ children, toolbar, naturalScroll }: AppShellProps) {
   return (
     <div className={naturalScroll ? "bg-white" : "min-h-screen flex flex-col bg-white"}>
       <header
-        className="shrink-0 border-b border-[rgba(51,51,51,0.12)] bg-white h-12 flex items-center justify-between px-4 lg:px-6"
+        className={cn(
+          "sticky top-0 z-50 shrink-0 border-b bg-white flex items-center justify-between px-4 lg:px-6 transition-[height,background-color,box-shadow,border-color] duration-200 ease-out",
+          scrolled
+            ? "h-11 border-[rgba(51,51,51,0.12)] bg-white/90 backdrop-blur-md shadow-[0_1px_0_0_rgba(51,51,51,0.06)]"
+            : "h-12 border-[rgba(51,51,51,0.12)]"
+        )}
         role="banner"
       >
         <div className="flex items-center gap-3">
@@ -48,31 +61,22 @@ export function AppShell({ children, toolbar, naturalScroll }: AppShellProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="lg:hidden shrink-0 -ml-2"
+                className="lg:hidden shrink-0 -ml-2 min-w-[44px] min-h-[44px]"
                 aria-label="Open navigation menu"
               >
                 <Menu className="size-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="p-0 w-64">
+            <SheetContent side="left" className="p-0 w-64 max-w-[85vw]">
               <ProfileSidebar />
             </SheetContent>
           </Sheet>
-          <span className="font-semibold text-foreground text-sm lg:text-base">Vega Financial</span>
-          <TextLink
-            href="/"
-            className="text-muted-foreground hover:text-foreground text-xs lg:text-sm flex items-center gap-1 rounded focus-visible:outline-none"
-            aria-label="Back to Vega home"
-          >
-            <ChevronLeft className="size-3.5 shrink-0" aria-hidden />
-            Back to Vega
-          </TextLink>
         </div>
         <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={handleReplayTour}
-            className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
+            className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
             aria-label="Replay guided tour"
             title="Replay tour"
           >
@@ -89,15 +93,17 @@ export function AppShell({ children, toolbar, naturalScroll }: AppShellProps) {
       </header>
 
       {naturalScroll ? (
-        <div className="lg:flex">
+        <div className="lg:flex min-w-0">
           <div className="hidden lg:block shrink-0 self-start sticky top-[5.25rem]">
             <ProfileSidebar naturalScroll />
           </div>
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 overflow-x-hidden">
             {toolbar != null ? (
-              <div className="border-b border-primary/10 bg-primary/[0.02]">{toolbar}</div>
+              <div className="sticky top-[5.25rem] z-10 border-b border-primary/10 bg-primary/[0.02] bg-white">
+                {toolbar}
+              </div>
             ) : null}
-            <main>{children}</main>
+            <main className="min-w-0">{children}</main>
           </div>
         </div>
       ) : (

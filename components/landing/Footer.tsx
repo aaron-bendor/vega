@@ -3,7 +3,7 @@ import Image from "next/image";
 
 const footerLinks = [
   { href: "/#built-for", label: "About" },
-  { href: "#", label: "FAQ" },
+  { href: "/faq", label: "FAQ" },
   { href: "mailto:aaron@vegafinancial.uk", label: "Contact" },
 ];
 

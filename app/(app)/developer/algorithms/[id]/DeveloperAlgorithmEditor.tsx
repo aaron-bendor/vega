@@ -219,7 +219,7 @@ export function DeveloperAlgorithmEditor({ algorithm }: { algorithm: Algorithm }
                 >
                   <div>
                     <Link
-                      href={`/algo/${v.id}`}
+                      href={`/vega-financial/algorithms/${v.id}`}
                       className="font-medium hover:underline"
                     >
                       View in marketplace

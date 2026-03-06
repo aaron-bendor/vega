@@ -71,7 +71,7 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
   }, [algorithms, search, sort]);
 
   return (
-    <>
+    <div className="space-y-6">
       <MarketplaceFilterBar
         tagOptions={tagOptions}
         totalCount={algorithms.length}
@@ -80,22 +80,34 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
         onSearchChange={setSearch}
       />
       {filtered.length === 0 ? (
-        <p className="text-muted-foreground py-8">
-          {algorithms.length === 0
-            ? "No algorithms yet. Run the database seed to populate the marketplace."
-            : "No algorithms match your filters."}
-        </p>
+        <div className="rounded-2xl border border-[rgba(51,51,51,0.12)] bg-muted/30 py-12 px-6 text-center">
+          <p className="text-muted-foreground mb-4">
+            {algorithms.length === 0
+              ? "No algorithms yet. Run the database seed to populate the marketplace."
+              : "No algorithms match your filters."}
+          </p>
+          {algorithms.length > 0 && (
+            <p className="text-sm text-muted-foreground mb-4">
+              Try adjusting filters or search to see more results.
+            </p>
+          )}
+        </div>
       ) : useDemo ? (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((v) => (
-            <Link key={v.id} href={`/vega-financial/algorithms/${v.id}`}>
-              <Card className="h-full rounded-2xl border-primary/20 bg-primary/[0.03] transition-colors hover:border-primary/30 hover:bg-primary/5 focus-within:ring-2 focus-within:ring-ring" data-tour={v.id === "demo-1" ? "mp-card-alpha" : undefined}>
-                <CardHeader className="pb-2">
-                  <CardTitle className="font-syne text-sm font-semibold">{v.name}</CardTitle>
-                  <CardDescription className="line-clamp-2">{v.shortDesc}</CardDescription>
+        <div className="grid gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {filtered.map((v, i) => (
+            <Link
+              key={v.id}
+              href={`/vega-financial/algorithms/${v.id}`}
+              className="block transition-opacity duration-300 ease-out min-w-0"
+              style={{ animationDelay: `${i * 40}ms` }}
+            >
+              <Card className="h-full min-h-[180px] flex flex-col rounded-2xl border-primary/20 bg-primary/[0.03] transition-[border-color,background-color,box-shadow,transform] duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:border-primary/30 hover:bg-primary/5 hover:shadow-md hover:shadow-primary/5 hover:-translate-y-0.5 focus-within:ring-2 focus-within:ring-ring focus-within:outline-none motion-reduce:transition-none" data-tour={v.id === "demo-1" ? "mp-card-alpha" : undefined}>
+                <CardHeader className="pb-2 flex-shrink-0">
+                  <CardTitle className="font-syne text-sm font-semibold leading-tight">{v.name}</CardTitle>
+                  <CardDescription className="line-clamp-2 text-xs mt-1">{v.shortDesc}</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex flex-wrap gap-1">
+                <CardContent className="space-y-3 flex-1 flex flex-col justify-end pt-0">
+                  <div className="flex flex-wrap gap-1.5">
                     {(v as DemoAlgo).tags.map((tag) => (
                       <Badge key={tag} variant="secondary" className="text-xs">
                         {tag}
@@ -103,7 +115,7 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
                     ))}
                   </div>
                   {(v as DemoAlgo).riskLevel && (
-                    <Badge variant="outline">{(v as DemoAlgo).riskLevel}</Badge>
+                    <Badge variant="outline" className="text-xs">{(v as DemoAlgo).riskLevel}</Badge>
                   )}
                   <p className="text-xs text-muted-foreground">Demo mode · Run backtest to see metrics</p>
                 </CardContent>
@@ -112,23 +124,28 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
           ))}
         </div>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((v) => (
-            <Link key={v.id} href={`/vega-financial/algorithms/${v.id}`}>
-              <Card className="h-full rounded-2xl border-primary/20 bg-primary/[0.03] transition-colors hover:border-primary/30 hover:bg-primary/5 focus-within:ring-2 focus-within:ring-ring" data-tour={v.id === "demo-1" ? "mp-card-alpha" : undefined}>
-                <CardHeader className="pb-2">
+        <div className="grid gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {filtered.map((v, i) => (
+            <Link
+              key={v.id}
+              href={`/vega-financial/algorithms/${v.id}`}
+              className="block transition-opacity duration-300 ease-out min-w-0"
+              style={{ animationDelay: `${i * 40}ms` }}
+            >
+              <Card className="h-full min-h-[180px] flex flex-col rounded-2xl border-primary/20 bg-primary/[0.03] transition-[border-color,background-color,box-shadow,transform] duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:border-primary/30 hover:bg-primary/5 hover:shadow-md hover:shadow-primary/5 hover:-translate-y-0.5 focus-within:ring-2 focus-within:ring-ring focus-within:outline-none motion-reduce:transition-none" data-tour={v.id === "demo-1" ? "mp-card-alpha" : undefined}>
+                <CardHeader className="pb-2 flex-shrink-0">
                   <div className="flex items-start justify-between gap-2">
-                    <CardTitle className="font-syne text-sm font-semibold">{v.name}</CardTitle>
+                    <CardTitle className="font-syne text-sm font-semibold leading-tight">{v.name}</CardTitle>
                     {isDbVersion(v) && v.verificationStatus === "verified" && (
-                      <ShieldCheck className="size-4 text-primary shrink-0" aria-hidden />
+                      <ShieldCheck className="size-4 text-primary shrink-0 mt-0.5" aria-hidden />
                     )}
                   </div>
-                  <CardDescription className="line-clamp-2">
+                  <CardDescription className="line-clamp-2 text-xs mt-1">
                     {v.shortDesc ?? (v as DbVersion).description ?? ""}
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex flex-wrap gap-1">
+                <CardContent className="space-y-3 flex-1 flex flex-col justify-end pt-0">
+                  <div className="flex flex-wrap gap-1.5">
                     {isDbVersion(v)
                       ? v.tags.map(({ tag }, i) => (
                           <Badge key={(tag as { id?: string }).id ?? `${tag.name}-${i}`} variant="secondary" className="text-xs">
@@ -141,16 +158,16 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
                           </Badge>
                         ))}
                   </div>
-                  {v.riskLevel && <Badge variant="outline">{v.riskLevel}</Badge>}
-                  <div className="grid grid-cols-2 gap-2 text-sm">
+                  {v.riskLevel && <Badge variant="outline" className="text-xs">{v.riskLevel}</Badge>}
+                  <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs text-muted-foreground">
                     {isDbVersion(v) && v.cachedReturn != null && (
-                      <span>Return: {formatPercent(v.cachedReturn)}</span>
+                      <span><span className="text-foreground">Return:</span> {formatPercent(v.cachedReturn)}</span>
                     )}
                     {isDbVersion(v) && v.cachedSharpe != null && (
-                      <span>Sharpe: {v.cachedSharpe.toFixed(2)}</span>
+                      <span><span className="text-foreground">Sharpe:</span> {v.cachedSharpe.toFixed(2)}</span>
                     )}
                     {isDbVersion(v) && v.cachedMaxDrawdown != null && (
-                      <span>Max DD: {formatPercent(v.cachedMaxDrawdown)}</span>
+                      <span><span className="text-foreground">Max DD:</span> {formatPercent(v.cachedMaxDrawdown)}</span>
                     )}
                   </div>
                 </CardContent>
@@ -159,6 +176,6 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
           ))}
         </div>
       )}
-    </>
+    </div>
   );
 }

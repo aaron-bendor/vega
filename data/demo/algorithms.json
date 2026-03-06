@@ -26,7 +26,12 @@
     "category": "trending",
     "verified": true,
     "minInvestment": 1000,
-    "inceptionDate": "2023-06-15"
+    "inceptionDate": "2023-06-15",
+    "thesis": "A momentum strategy that adjusts its lookback window to follow persistent market strength without relying on a fixed setting.",
+    "bestFor": "Investors looking for equity exposure with a rules-based momentum tilt.",
+    "mayNotSuit": "Investors who want low turnover or strong protection in sharp reversals.",
+    "statusBadgeText": "Simulated • Medium risk • Equity momentum",
+    "cardFooterMicrocopy": "Momentum strategies can perform strongly in sustained trends and struggle when leadership changes quickly."
   },
   {
     "id": "demo-2",
@@ -55,7 +60,12 @@
     "category": "low_risk",
     "verified": true,
     "minInvestment": 500,
-    "inceptionDate": "2023-03-01"
+    "inceptionDate": "2023-03-01",
+    "thesis": "A simple trend-following strategy that stays with broad market direction rather than trying to predict short-term reversals.",
+    "bestFor": "Investors who want a straightforward rules-based trend approach.",
+    "mayNotSuit": "Investors who interpret \"low risk\" as low drawdown in every market environment.",
+    "statusBadgeText": "Simulated • Trend following • Equity",
+    "cardFooterMicrocopy": "Trend-following can lag in choppy markets and still experience meaningful drawdowns during unstable transitions."
   },
   {
     "id": "demo-3",
@@ -84,7 +94,12 @@
     "category": "trending",
     "verified": false,
     "minInvestment": 2000,
-    "inceptionDate": "2024-01-10"
+    "inceptionDate": "2024-01-10",
+    "thesis": "A mean-reversion strategy that looks for temporary moves away from a normal trading range and positions for a return towards it.",
+    "bestFor": "Investors looking for a different return profile from pure trend strategies.",
+    "mayNotSuit": "Investors who prefer simple long-only trend exposure or very low trading activity.",
+    "statusBadgeText": "Simulated • Medium risk • Mean reversion",
+    "cardFooterMicrocopy": "Mean-reversion often works best in range-bound markets and can struggle when strong trends persist."
   },
   {
     "id": "demo-4",
@@ -113,7 +128,12 @@
     "category": "new",
     "verified": false,
     "minInvestment": 1000,
-    "inceptionDate": "2024-09-01"
+    "inceptionDate": "2024-09-01",
+    "thesis": "A signal-driven strategy using RSI thresholds to react to oversold and overbought conditions.",
+    "bestFor": "Investors who want a more tactical and indicator-based strategy.",
+    "mayNotSuit": "Investors looking for steadier long-term behaviour or stronger historical risk-adjusted performance.",
+    "statusBadgeText": "Simulated • High risk • Tactical momentum",
+    "cardFooterMicrocopy": "Oscillator-based strategies can be sensitive to parameter choices and may whipsaw in noisy markets."
   },
   {
     "id": "demo-5",
@@ -142,7 +162,12 @@
     "category": "verified",
     "verified": true,
     "minInvestment": 500,
-    "inceptionDate": "2023-01-15"
+    "inceptionDate": "2023-01-15",
+    "thesis": "A diversified multi-asset strategy designed to spread risk across different exposures rather than depend on a single market.",
+    "bestFor": "Investors who want a steadier, more diversified starting point.",
+    "mayNotSuit": "Investors seeking concentrated upside from one style or one asset class.",
+    "statusBadgeText": "Simulated • Low risk • Multi-asset",
+    "cardFooterMicrocopy": "Diversification can reduce concentration risk, but it does not remove the possibility of losses."
   },
   {
     "id": "demo-6",
@@ -171,6 +196,11 @@
     "category": "low_risk",
     "verified": true,
     "minInvestment": 500,
-    "inceptionDate": "2023-04-20"
+    "inceptionDate": "2023-04-20",
+    "thesis": "A defensive allocation overlay using gold exposure to help offset periods when risk assets are under pressure.",
+    "bestFor": "Investors looking to reduce portfolio concentration to equities.",
+    "mayNotSuit": "Investors expecting high growth from a defensive allocation on its own.",
+    "statusBadgeText": "Simulated • Defensive • Commodities",
+    "cardFooterMicrocopy": "Defensive allocations can help with diversification, but they may lag when equity markets are strong."
   }
 ]

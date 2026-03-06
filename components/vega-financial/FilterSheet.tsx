@@ -64,14 +64,23 @@ export function FilterSheet() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline" size="sm" aria-label="Open filters">
-          <Filter className="size-4 mr-1" aria-hidden />
-          Filters
+        <Button
+          variant="outline"
+          size="sm"
+          aria-label="Open filters"
+          className="min-h-[44px] min-w-[44px] sm:min-w-0"
+        >
+          <Filter className="size-4 mr-1 shrink-0" aria-hidden />
+          <span className="hidden sm:inline">Filters</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-80">
+      <SheetContent side="right" className="w-[min(20rem,85vw)] max-w-full">
         <SheetHeader>
           <SheetTitle>Filters</SheetTitle>
+          <p className="text-xs text-muted-foreground font-normal mt-1">
+            Use filters to narrow by style, asset class, and risk. For better decisions, compare
+            strategies with different behaviours rather than picking only the highest return.
+          </p>
         </SheetHeader>
         <div className="space-y-6 py-6">
           <div>

@@ -14,8 +14,8 @@ import { TextLink } from "@/components/ui/TextLink";
 
 const mainNav = [
   { href: "/vega-financial", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { href: "/marketplace", label: "Marketplace", icon: Store },
-  { href: "/portfolio", label: "Portfolio", icon: Wallet },
+  { href: "/vega-financial/marketplace", label: "Marketplace", icon: Store },
+  { href: "/vega-financial/portfolio", label: "Portfolio", icon: Wallet },
 ];
 
 export function ProfileSidebar({ naturalScroll }: { naturalScroll?: boolean } = {}) {
@@ -108,9 +108,9 @@ export function ProfileSidebar({ naturalScroll }: { naturalScroll?: boolean } = 
               onMouseLeave={() => setHoveredIndex(null)}
             >
               <Link
-                href={href}
-                className={cn(
-                  "relative flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-[transform,background-color,color] duration-motion-normal ease-motion active:scale-[0.98]",
+                  href={href}
+                  className={cn(
+                  "relative flex items-center gap-2 rounded-lg px-3 py-2.5 min-h-[44px] text-sm transition-[transform,background-color,color] duration-motion-normal ease-motion active:scale-[0.98]",
                   active
                     ? "bg-[rgba(51,51,51,0.04)] text-foreground"
                     : "text-muted-foreground hover:bg-[rgba(51,51,51,0.04)] hover:text-foreground"
@@ -126,7 +126,7 @@ export function ProfileSidebar({ naturalScroll }: { naturalScroll?: boolean } = 
       </nav>
 
       <div className="p-2 border-t border-[rgba(51,51,51,0.12)]">
-        <TextLink href="/" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:text-foreground">
+        <TextLink href="/" className="flex items-center gap-2 rounded-lg px-3 py-2.5 min-h-[44px] text-sm text-muted-foreground hover:text-foreground">
           <ChevronLeft className="size-4" />
           Back to Vega
         </TextLink>

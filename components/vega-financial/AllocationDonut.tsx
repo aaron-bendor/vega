@@ -17,7 +17,7 @@ interface AllocationDonutProps {
 export function AllocationDonut({ data }: AllocationDonutProps) {
   if (!data.length) {
     return (
-      <div className="h-[200px] flex items-center justify-center text-sm text-muted-foreground">
+      <div className="h-[180px] sm:h-[200px] flex items-center justify-center text-sm text-muted-foreground min-w-0">
         No allocation yet
       </div>
     );
@@ -29,7 +29,8 @@ export function AllocationDonut({ data }: AllocationDonutProps) {
   }));
 
   return (
-    <ResponsiveContainer width="100%" height={260}>
+    <div className="w-full min-w-0 h-[200px] sm:h-[260px]">
+      <ResponsiveContainer width="100%" height="100%">
       <PieChart margin={{ top: 8, right: 8, bottom: 56, left: 8 }}>
         <Pie
           data={chartData}
@@ -39,6 +40,9 @@ export function AllocationDonut({ data }: AllocationDonutProps) {
           outerRadius={68}
           paddingAngle={2}
           dataKey="value"
+          animationBegin={0}
+          animationDuration={600}
+          animationEasing="ease-out"
         >
           {chartData.map((entry) => (
             <Cell key={entry.name} fill={entry.color} />
@@ -61,5 +65,6 @@ export function AllocationDonut({ data }: AllocationDonutProps) {
         />
       </PieChart>
     </ResponsiveContainer>
+    </div>
   );
 }

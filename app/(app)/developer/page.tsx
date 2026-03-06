@@ -23,7 +23,7 @@ export default async function DeveloperPage() {
         <h1 className="text-2xl font-bold">Developer Portal</h1>
         {!dbAvailable && (
           <div className="rounded-lg border border-[rgba(51,51,51,0.12)] bg-[rgba(51,51,51,0.04)] px-4 py-2 text-sm text-muted-foreground">
-            Database not configured. Run migrations and seed to see your algorithms.
+            Set <code className="rounded bg-[rgba(51,51,51,0.06)] px-1">DATABASE_URL</code> in <code className="rounded bg-[rgba(51,51,51,0.06)] px-1">.env</code>, run migrations and seed to see your algorithms.
           </div>
         )}
         <Button asChild>

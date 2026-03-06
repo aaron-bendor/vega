@@ -1,3 +1,4 @@
+import { DashboardIntro } from "@/components/vega-financial/DashboardIntro";
 import { PortfolioOverview } from "@/components/vega-financial/PortfolioOverview";
 import { AlgorithmCategoryTabs } from "@/components/vega-financial/AlgorithmCategoryTabs";
 import { getInvestmentsForUser } from "@/lib/db/portfolio";
@@ -94,6 +95,11 @@ async function getAlgorithmsData() {
         volatility: undefined as number | undefined,
         maxDrawdown: undefined as number | undefined,
         sparklineData: [] as number[],
+        thesis: a.thesis,
+        bestFor: a.bestFor,
+        mayNotSuit: a.mayNotSuit,
+        statusBadgeText: a.statusBadgeText,
+        cardFooterMicrocopy: a.cardFooterMicrocopy,
       }))
     : versions.map((v) => ({
         id: v.id,
@@ -122,22 +128,49 @@ export default async function VegaFinancialPage() {
   ]);
 
   return (
-    <div className="max-w-5xl mx-auto p-6 lg:p-8 space-y-12">
-      <section>
-        <div className="flex items-baseline justify-between gap-4 mb-4">
-          <h2 className="font-syne text-xl font-semibold text-foreground">Portfolio overview</h2>
+    <div className="w-full max-w-5xl min-w-0 mx-auto px-4 py-6 sm:p-6 lg:p-8 space-y-8 sm:space-y-12">
+      <DashboardIntro />
+
+      <section className="min-w-0">
+        <div className="flex items-baseline justify-between gap-2 sm:gap-4 mb-3 sm:mb-4">
+          <h2 className="font-syne text-lg sm:text-xl font-semibold text-foreground">Portfolio overview</h2>
         </div>
+        <p className="text-xs text-muted-foreground mb-3">
+          This portfolio uses paper money and demo strategy data. Values update from your simulated
+          allocations, not from live brokerage activity.
+        </p>
         <PortfolioOverview account={account} />
       </section>
 
-      <section id="marketplace" data-tour="vf-algo-list">
-        <div className="flex items-baseline justify-between gap-4 mb-4">
-          <h2 className="font-syne text-xl font-semibold text-foreground">Algorithms</h2>
-          <span className="text-sm text-muted-foreground tabular-nums">
-            {algorithms.length} algorithm{algorithms.length !== 1 ? "s" : ""}
-          </span>
+      <section
+        id="marketplace"
+        data-tour="vf-algo-list"
+        className="relative rounded-2xl bg-cover bg-center bg-no-repeat -mx-4 px-4 py-5 sm:py-6 md:-mx-4 md:px-6 md:py-8 min-w-0"
+        style={{ backgroundImage: "url(/images/backgrounds/mesh-gradient-1.png)" }}
+      >
+        <div className="absolute inset-0 rounded-2xl bg-white/85 pointer-events-none" aria-hidden />
+        <div className="relative min-w-0">
+          <p className="text-xs text-muted-foreground mb-3">
+            These are demo strategy pages designed to show how Vega could help investors compare
+            systematic strategies. Start with risk, drawdown, and portfolio fit, not just headline
+            return.
+          </p>
+          <div className="flex flex-wrap items-baseline justify-between gap-2 sm:gap-4 mb-3 sm:mb-4">
+            <h2 className="font-syne text-lg sm:text-xl font-semibold text-foreground">Algorithms</h2>
+            <span className="flex items-center gap-3">
+              <span className="text-xs sm:text-sm text-muted-foreground tabular-nums">
+                {algorithms.length} algorithm{algorithms.length !== 1 ? "s" : ""}
+              </span>
+              <a
+                href="/vega-financial/marketplace"
+                className="text-xs sm:text-sm font-medium text-primary hover:underline focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded"
+              >
+                View all in Marketplace
+              </a>
+            </span>
+          </div>
+          <AlgorithmCategoryTabs algorithms={algorithms} />
         </div>
-        <AlgorithmCategoryTabs algorithms={algorithms} />
       </section>
     </div>
   );

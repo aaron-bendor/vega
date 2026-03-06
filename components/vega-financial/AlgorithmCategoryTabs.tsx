@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsListWithIndicator, TabsTrigger } from "@/components/ui/tabs";
 import { AlgorithmCard } from "./AlgorithmCard";
 import type { InvestableAttributes } from "@/lib/vega-financial/types";
 
@@ -20,6 +20,11 @@ export interface AlgorithmForCard {
   volatility?: number;
   maxDrawdown?: number;
   sparklineData?: number[];
+  thesis?: string;
+  bestFor?: string;
+  mayNotSuit?: string;
+  statusBadgeText?: string;
+  cardFooterMicrocopy?: string;
 }
 
 interface AlgorithmCategoryTabsProps {
@@ -82,7 +87,7 @@ export function AlgorithmCategoryTabs({
   const forYouList = filterList(forYou.length ? forYou : algorithms);
 
   const renderGrid = (items: AlgorithmForCard[]) => (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 min-w-0">
       {items.map((algo) => (
         <AlgorithmCard
           key={algo.id}
@@ -99,6 +104,11 @@ export function AlgorithmCategoryTabs({
           volatility={algo.volatility}
           maxDrawdown={algo.maxDrawdown}
           sparklineData={algo.sparklineData}
+          thesis={algo.thesis}
+          bestFor={algo.bestFor}
+          mayNotSuit={algo.mayNotSuit}
+          statusBadgeText={algo.statusBadgeText}
+          cardFooterMicrocopy={algo.cardFooterMicrocopy}
         />
       ))}
     </div>
@@ -111,27 +121,50 @@ export function AlgorithmCategoryTabs({
     router.push(`/vega-financial?${params.toString()}`);
   };
 
+  const tabClass =
+    "min-h-[44px] min-w-[44px] shrink-0 px-3 py-2 text-xs sm:text-sm rounded-lg";
+
   return (
-    <Tabs value={tab} onValueChange={setTab} className="w-full">
-      <TabsList className="mb-4 rounded-xl border border-primary/20 bg-primary/[0.03] p-1">
-        <TabsTrigger value="trending">Trending</TabsTrigger>
-        <TabsTrigger value="low-risk">Low risk</TabsTrigger>
-        <TabsTrigger value="verified">Verified</TabsTrigger>
-        <TabsTrigger value="new">New</TabsTrigger>
-        <TabsTrigger value="for-you">For you</TabsTrigger>
-      </TabsList>
-      <div className="text-xs text-muted-foreground mb-3">
+    <Tabs value={tab} onValueChange={setTab} className="w-full min-w-0">
+      <TabsListWithIndicator className="mb-4 rounded-xl border border-primary/20 bg-primary/[0.03] p-1 w-full overflow-x-auto overflow-y-hidden flex flex-nowrap justify-start gap-0 min-h-[44px]">
+        <TabsTrigger value="trending" className={tabClass}>
+          Trending
+        </TabsTrigger>
+        <TabsTrigger value="low-risk" className={tabClass}>
+          Low risk
+        </TabsTrigger>
+        <TabsTrigger value="verified" className={tabClass}>
+          Verified
+        </TabsTrigger>
+        <TabsTrigger value="new" className={tabClass}>
+          New
+        </TabsTrigger>
+        <TabsTrigger value="for-you" className={tabClass}>
+          For you
+        </TabsTrigger>
+      </TabsListWithIndicator>
+      <div className="text-xs text-muted-foreground mb-3 min-w-0">
         {tab === "trending" && `${trendingList.length} algorithm${trendingList.length !== 1 ? "s" : ""}`}
         {tab === "low-risk" && `${lowRiskList.length} algorithm${lowRiskList.length !== 1 ? "s" : ""}`}
         {tab === "verified" && `${verifiedList.length} algorithm${verifiedList.length !== 1 ? "s" : ""}`}
         {tab === "new" && `${newList.length} algorithm${newList.length !== 1 ? "s" : ""}`}
         {tab === "for-you" && `${forYouList.length} algorithm${forYouList.length !== 1 ? "s" : ""}`}
       </div>
-      <TabsContent value="trending">{renderGrid(trendingList)}</TabsContent>
-      <TabsContent value="low-risk">{renderGrid(lowRiskList)}</TabsContent>
-      <TabsContent value="verified">{renderGrid(verifiedList)}</TabsContent>
-      <TabsContent value="new">{renderGrid(newList)}</TabsContent>
-      <TabsContent value="for-you">{renderGrid(forYouList)}</TabsContent>
+      <TabsContent value="trending" className="transition-opacity duration-200">
+        {renderGrid(trendingList)}
+      </TabsContent>
+      <TabsContent value="low-risk" className="transition-opacity duration-200">
+        {renderGrid(lowRiskList)}
+      </TabsContent>
+      <TabsContent value="verified" className="transition-opacity duration-200">
+        {renderGrid(verifiedList)}
+      </TabsContent>
+      <TabsContent value="new" className="transition-opacity duration-200">
+        {renderGrid(newList)}
+      </TabsContent>
+      <TabsContent value="for-you" className="transition-opacity duration-200">
+        {renderGrid(forYouList)}
+      </TabsContent>
     </Tabs>
   );
 }

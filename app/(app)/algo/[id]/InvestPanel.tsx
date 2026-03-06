@@ -34,7 +34,7 @@ export function InvestPanel({ versionId }: { versionId: string }) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error ?? "Failed to invest");
       }
-      router.push("/portfolio");
+      router.push("/vega-financial/portfolio");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to invest");
     } finally {

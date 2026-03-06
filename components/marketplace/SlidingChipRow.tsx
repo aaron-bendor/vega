@@ -67,8 +67,8 @@ export function SlidingChipRow({ chips, activeHref, className }: SlidingChipRowP
       <span
         aria-hidden
         className={cn(
-          "absolute rounded-md bg-primary pointer-events-none ease-motion",
-          "transition-[transform,opacity] duration-motion-normal motion-reduce:!duration-0"
+          "absolute rounded-md bg-primary/90 pointer-events-none ease-motion",
+          "transition-[transform,width,height,opacity] duration-[200ms] motion-reduce:!duration-0"
         )}
         style={{
           transform: `translate(${pill.left}px, ${pill.top}px)`,
@@ -90,12 +90,12 @@ export function SlidingChipRow({ chips, activeHref, className }: SlidingChipRowP
             onMouseLeave={() => setHoveredIndex(null)}
             className={cn(
               "relative z-10 inline-block px-2.5 py-1 rounded-md text-sm",
-              "transition-[transform,color,box-shadow] duration-motion-normal ease-motion",
+              "transition-[transform,color,background-color,border-color,box-shadow] duration-[200ms] ease-[cubic-bezier(0.2,0.8,0.2,1)]",
               "focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
-              "active:scale-[0.98] active:duration-100 motion-reduce:active:scale-100",
+              "active:scale-[0.98] motion-reduce:active:scale-100",
               isActive
-                ? "text-primary-foreground border border-primary"
-                : "bg-transparent text-foreground border border-transparent hover:bg-muted/50"
+                ? "text-primary-foreground border border-primary bg-primary/95"
+                : "bg-transparent text-foreground border border-transparent hover:bg-muted/50 hover:border-[rgba(51,51,51,0.08)]"
             )}
             aria-selected={isActive}
             aria-current={isActive ? "page" : undefined}

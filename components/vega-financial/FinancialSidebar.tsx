@@ -62,7 +62,7 @@ export function FinancialSidebar({ account }: FinancialSidebarProps) {
 
       <div className="pt-2">
         <Button variant="outline" size="sm" className="w-full" asChild>
-          <Link href="/portfolio">View full portfolio</Link>
+          <Link href="/vega-financial/portfolio">View full portfolio</Link>
         </Button>
       </div>
     </div>

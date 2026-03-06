@@ -20,9 +20,9 @@ type NavEntry =
 
 const mainNav: NavEntry[] = [
   { type: "link", href: "/", label: "Home", exact: true },
-  { type: "link", href: "/#investing-made-simple", label: "How it Works" },
   { type: "link", href: "/vega-developer", label: "Developer" },
-  { type: "link", href: "/#get-started", label: "Get Started" },
+  { type: "link", href: "/faq", label: "FAQ" },
+  { type: "link", href: "/admin", label: "Admin" },
 ];
 
 type PillNavVariant = "hero" | "standalone";
@@ -182,7 +182,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
         ? prev
         : { left, top, width, height }
     );
-  }, [displayIndex, pathname, navItems.length]);
+  }, [displayIndex, navItems.length]);
 
   useLayoutEffect(() => {
     const raf = requestAnimationFrame(() => updateIndicator());
@@ -243,9 +243,10 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
         <div className="flex justify-center px-4">
           <div
             className={cn(
-              "nav-pill-glass w-full max-w-[1400px] h-14 md:h-16 flex rounded-full shrink-0 transition-[background-color,box-shadow] duration-motion-normal ease-motion",
+              "nav-pill-glass w-full max-w-[1400px] flex rounded-full shrink-0 transition-[height,background-color,box-shadow,border-color] duration-motion-slow ease-motion border-b border-transparent",
               pillBg,
-              isScrolled && "bg-black/50 shadow-lg shadow-black/20"
+              isScrolled && "h-12 md:h-14 bg-black/60 backdrop-blur-xl shadow-lg shadow-black/25 border-white/10",
+              !isScrolled && "h-14 md:h-16"
             )}
           >
             <nav
@@ -325,9 +326,10 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                 <Link
                   href="/vega-financial"
                   className={cn(
-                    "flex items-center justify-center ml-2 px-5 h-9 md:h-10 font-bold text-sm md:text-base transition-[transform,background-color,border-color] duration-motion-normal ease-motion hover:scale-[1.02] active:scale-[0.98] shrink-0",
+                    "flex items-center justify-center gap-1.5 ml-2 px-5 h-9 md:h-10 font-bold text-sm md:text-base transition-[transform,background-color,border-color,box-shadow] duration-motion-chip ease-motion hover:scale-[1.02] active:scale-[0.98] shrink-0 focus-visible:outline focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
                     isStandalone ? "rounded-full" : "rounded-[30px]",
-                    ctaClass
+                    ctaClass,
+                    isScrolled && !isStandalone && "bg-primary text-primary-foreground border-primary hover:bg-primary/90 hover:border-primary/90 shadow-md shadow-primary/20"
                   )}
                   data-tour="try-it-now"
                   onClick={handleTryItNow}
@@ -341,7 +343,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                   type="button"
                   onClick={() => setMobileMenuOpen((o) => !o)}
                   className={cn(
-                    "flex items-center justify-center size-10 rounded-full transition-colors",
+                    "flex items-center justify-center min-w-[44px] min-h-[44px] rounded-full transition-colors",
                     isStandalone
                       ? "text-foreground hover:bg-muted"
                       : "text-white hover:bg-white/20"
@@ -358,7 +360,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                 <Link
                   href="/vega-financial"
                   className={cn(
-                    "flex items-center justify-center min-w-[90px] h-9 font-bold text-sm transition-[transform,background-color,border-color] duration-motion-normal ease-motion hover:scale-[1.02] active:scale-[0.98]",
+                    "flex items-center justify-center min-w-[90px] min-h-[44px] px-4 font-bold text-sm transition-[transform,background-color,border-color] duration-motion-chip ease-motion hover:scale-[1.02] active:scale-[0.98] focus-visible:outline focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2",
                     isStandalone ? "rounded-full" : "rounded-[30px]",
                     ctaClass
                   )}
@@ -428,7 +430,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
             <Link
               href="/vega-financial"
               className={cn(
-                "flex items-center justify-center h-11 font-bold text-sm transition-[background-color,border-color] duration-motion-normal ease-motion",
+                "flex items-center justify-center min-h-[44px] w-full font-bold text-sm transition-[background-color,border-color] duration-motion-normal ease-motion",
                 isStandalone
                   ? "rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
                   : "rounded-[30px] bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30",
