@@ -10,10 +10,10 @@ interface AlgoCardProps {
   algo: MockAlgorithm;
 }
 
-function riskVariant(level: string) {
-  if (level === "Low") return "success" as const;
-  if (level === "High") return "destructive" as const;
-  return "outline" as const;
+function riskVariant(level: string): "success" | "warning" | "destructive" {
+  if (level === "Low") return "success";
+  if (level === "High") return "destructive";
+  return "warning";
 }
 
 export function AlgoCard({ algo }: AlgoCardProps) {

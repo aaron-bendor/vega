@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
-import { Search, Home, Wallet, LayoutDashboard, Store, Code2, Lock, BarChart3 } from "lucide-react";
+import { Search, Home, Wallet, LayoutDashboard, Store, Code2, Lock, BarChart3, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface AlgorithmOption {
@@ -16,6 +16,7 @@ const PAGES: { href: string; label: string; icon: React.ComponentType<{ classNam
   { href: "/vega-financial", label: "Vega Financial", icon: Wallet },
   { href: "/vega-financial/portfolio", label: "Portfolio", icon: LayoutDashboard },
   { href: "/vega-financial/marketplace", label: "Marketplace", icon: Store },
+  { href: "/vega-financial/profile", label: "Profile", icon: User },
   { href: "/vega-developer", label: "Developer", icon: Code2 },
   { href: "/private", label: "Private", icon: Lock },
 ];

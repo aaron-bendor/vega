@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Search, X, ChevronDown } from "lucide-react";
 import {
@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SlidingChipRow } from "@/components/marketplace/SlidingChipRow";
+import { cn } from "@/lib/utils";
 
 const SORT_OPTIONS = [
   { value: "trending", label: "Trending" },
@@ -77,11 +78,25 @@ export function MarketplaceFilterBar({
 
   const categories = tagOptions.length > 0 ? tagOptions : CATEGORY_OPTIONS;
 
+  const [filtersOpen, setFiltersOpen] = useState(true);
+  const filtersContentRef = useRef<HTMLDivElement>(null);
+  const [contentHeight, setContentHeight] = useState<number | null>(null);
+
+  useLayoutEffect(() => {
+    const el = filtersContentRef.current;
+    if (!el) return;
+    const measure = () => setContentHeight(el.scrollHeight);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [categories]);
+
   return (
     <div className="space-y-5" data-tour="mp-filters">
-      {/* Search + Sort row — aligned on one line on sm+ */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-        <div className="relative flex-1 min-w-0 max-w-md">
+      {/* Search + Sort row — single aligned row */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+        <div className="relative flex-1 min-w-0 max-w-md w-full sm:max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" aria-hidden />
           <Input
             type="search"
@@ -92,7 +107,7 @@ export function MarketplaceFilterBar({
             aria-label="Search algorithms"
           />
         </div>
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-2 shrink-0 self-start sm:self-center">
           <span className="text-sm text-muted-foreground whitespace-nowrap">Sort</span>
           <Select
             value={sort}
@@ -115,15 +130,32 @@ export function MarketplaceFilterBar({
         </div>
       </div>
 
-      {/* Category / Risk filters — single row of chips where possible */}
-      <details className="rounded-xl border border-[rgba(51,51,51,0.12)] bg-muted/30 overflow-hidden group" open>
-        <summary className="flex items-center justify-between px-4 py-3 cursor-pointer list-none text-sm font-medium text-foreground focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded-xl [&::-webkit-details-marker]:hidden">
+      {/* Category / Risk filters — single row of chips where possible; animated expand/collapse */}
+      <div className="rounded-xl border border-[rgba(51,51,51,0.12)] bg-muted/30 overflow-hidden">
+        <button
+          type="button"
+          onClick={() => setFiltersOpen((o) => !o)}
+          className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium text-foreground focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded-xl"
+          aria-expanded={filtersOpen}
+          aria-controls="filters-content"
+          id="filters-summary"
+        >
           Filters
-          <ChevronDown className="size-4 shrink-0 transition-transform group-open:rotate-180 text-muted-foreground" aria-hidden />
-        </summary>
-        <div className="px-4 pb-4 pt-1 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 border-t border-[rgba(51,51,51,0.08)]">
-          <div className="min-w-0">
-            <p className="text-xs font-medium text-muted-foreground mb-2">Category</p>
+          <ChevronDown
+            className={cn("size-4 shrink-0 text-muted-foreground transition-transform duration-200 ease-out", filtersOpen && "rotate-180")}
+            aria-hidden
+          />
+        </button>
+        <div
+          id="filters-content"
+          ref={filtersContentRef}
+          role="region"
+          aria-labelledby="filters-summary"
+          className="grid gap-6 sm:gap-x-8 sm:grid-cols-2 lg:grid-cols-3 border-t border-[rgba(51,51,51,0.08)] px-4 pb-4 pt-3 transition-[max-height] duration-200 ease-out overflow-hidden motion-reduce:transition-none"
+          style={{ maxHeight: contentHeight != null ? (filtersOpen ? contentHeight : 0) : undefined }}
+        >
+          <div className="min-w-0 space-y-2">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Category</p>
             <SlidingChipRow
               chips={[
                 { href: "/vega-financial/marketplace", label: "All" },
@@ -135,8 +167,8 @@ export function MarketplaceFilterBar({
               activeHref={tag ? `/vega-financial/marketplace?tag=${encodeURIComponent(tag)}` : "/vega-financial/marketplace"}
             />
           </div>
-          <div className="min-w-0">
-            <p className="text-xs font-medium text-muted-foreground mb-2">Asset</p>
+          <div className="min-w-0 space-y-2">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Asset</p>
             <SlidingChipRow
               chips={ASSET_OPTIONS.map((name) => ({
                 href: `/vega-financial/marketplace?tag=${encodeURIComponent(name)}`,
@@ -145,8 +177,8 @@ export function MarketplaceFilterBar({
               activeHref={tag ? `/vega-financial/marketplace?tag=${encodeURIComponent(tag)}` : "/vega-financial/marketplace"}
             />
           </div>
-          <div className="min-w-0 sm:col-span-2 lg:col-span-1">
-            <p className="text-xs font-medium text-muted-foreground mb-2">Risk</p>
+          <div className="min-w-0 space-y-2 sm:col-span-2 lg:col-span-1">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Risk</p>
             <SlidingChipRow
               chips={[
                 { href: "/vega-financial/marketplace", label: "All" },
@@ -159,7 +191,7 @@ export function MarketplaceFilterBar({
             />
           </div>
         </div>
-      </details>
+      </div>
 
       {/* Active filters + result count — clear alignment */}
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">

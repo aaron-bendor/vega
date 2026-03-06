@@ -23,9 +23,9 @@ export function PortfolioOverview({ account }: PortfolioOverviewProps) {
 
   if (!hasHoldings) {
     return (
-      <Card className="rounded-2xl border-primary/20 bg-primary/[0.03] min-w-0 overflow-hidden transition-colors duration-200" data-tour="vf-overview">
+      <Card className="rounded-2xl border border-border bg-card min-w-0 overflow-hidden transition-colors duration-200" data-tour="vf-overview">
         <CardContent className="py-8 sm:py-12 px-4 sm:px-6 text-center">
-          <div className="size-14 rounded-full bg-primary/5 border border-primary/10 flex items-center justify-center mx-auto mb-5 transition-transform duration-300 hover:scale-105 motion-reduce:hover:scale-100">
+          <div className="size-14 rounded-full bg-muted border border-border flex items-center justify-center mx-auto mb-5 transition-transform duration-300 hover:scale-105 motion-reduce:hover:scale-100">
             <PiggyBank className="size-7 text-primary/60" aria-hidden />
           </div>
           <h3 className="font-semibold mb-2 text-foreground text-base sm:text-lg">No paper allocations yet</h3>
@@ -57,7 +57,7 @@ export function PortfolioOverview({ account }: PortfolioOverviewProps) {
   }));
 
   return (
-    <Card className="rounded-2xl border-primary/20 bg-primary/[0.03] min-w-0 overflow-hidden transition-colors duration-200" data-tour="vf-overview">
+    <Card className="rounded-2xl border border-border bg-card min-w-0 overflow-hidden transition-colors duration-200" data-tour="vf-overview">
       <div className="p-4 sm:p-5 min-w-0">
         {/* Top row: metrics — 2 cols mobile, 4 cols desktop */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 min-w-0">

@@ -8,6 +8,7 @@ import {
 } from "@/lib/tour/config";
 import {
   getTourCompleted,
+  getTourDismissed,
   getTourStep,
   setTourCompleted,
   setTourStep,
@@ -32,12 +33,9 @@ export function TourRunner() {
   const router = useRouter();
   const [step, setStep] = useState(-1);
 
-  // Sync step from storage and handle "Try it now" start request
+  // Sync step from storage. Run tour only once (or when explicitly replayed via Help / Profile).
   useEffect(() => {
-    if (getTourCompleted()) {
-      setStep(-1);
-      return;
-    }
+    // Explicit replay: user clicked "Replay tour" or "Reset tutorial"
     if (getTourStartRequested()) {
       clearTourStartRequested();
       setTourStep(0);
@@ -45,6 +43,12 @@ export function TourRunner() {
       setStep(0);
       return;
     }
+    // Already completed or dismissed: don't auto-show again
+    if (getTourCompleted() || getTourDismissed()) {
+      setStep(-1);
+      return;
+    }
+    // First time or resuming mid-tour
     const stored = getTourStep();
     setStep(stored);
   }, [pathname]);

@@ -41,10 +41,9 @@ const TabsListWithIndicator = React.forwardRef<
       setIndicator((prev) => (prev.width === 0 ? prev : { left: 0, width: 0 }));
       return;
     }
-    const r = active.getBoundingClientRect();
-    const cr = list.getBoundingClientRect();
-    const left = r.left - cr.left;
-    const width = r.width;
+    // Use offsetLeft/offsetWidth so the indicator stays aligned when the list scrolls (overflow-x-auto)
+    const left = active.offsetLeft;
+    const width = active.offsetWidth;
     setIndicator((prev) => (prev.left === left && prev.width === width ? prev : { left, width }));
   }, []);
 

@@ -25,13 +25,26 @@ const mainNav: NavEntry[] = [
   { type: "link", href: "/admin", label: "Admin" },
 ];
 
-type PillNavVariant = "hero" | "standalone";
+const investorNav: NavEntry[] = [
+  { type: "link", href: "/vega-financial", label: "Dashboard", exact: true },
+  { type: "link", href: "/vega-financial/marketplace", label: "Marketplace" },
+  { type: "link", href: "/vega-financial/portfolio", label: "Portfolio" },
+];
+
+const investorAppNav: NavEntry[] = [
+  { type: "link", href: "/vega-financial", label: "Home", exact: true },
+];
+
+type PillNavVariant = "hero" | "standalone" | "investor" | "investorApp";
 
 export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [bannerHidden, setBannerHidden] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+  const isInvestor = variant === "investor";
+  const isInvestorApp = variant === "investorApp";
+  const navItems = isInvestorApp ? investorAppNav : isInvestor ? investorNav : mainNav;
 
   const handleTryItNow = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -43,7 +56,8 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
     }
     router.push("/vega-financial");
   };
-  const isStandalone = variant === "standalone";
+  const isStandalone = variant === "standalone" || variant === "investor" || variant === "investorApp";
+  const isInInvestorApp = pathname?.startsWith("/vega-financial");
   const bannerRef = useRef<HTMLDivElement>(null);
   const spacerRef = useRef<HTMLDivElement>(null);
 
@@ -143,14 +157,13 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
 
   const isHome = pathname === "/";
 
-  const navItems = mainNav;
   const [hoveredNavIndex, setHoveredNavIndex] = useState<number | null>(null);
   const [focusedNavIndex, setFocusedNavIndex] = useState<number | null>(null);
   const [indicator, setIndicator] = useState({ left: 0, top: 0, width: 0, height: 0 });
   const navContainerRef = useRef<HTMLDivElement>(null);
   const navItemRefs = useRef<(HTMLDivElement | HTMLButtonElement | null)[]>([]);
 
-  const activeNavIndex = navItems.findIndex((entry) => {
+  const activeNavIndex = navItems.findIndex((entry: NavEntry) => {
     if (entry.type !== "link") return false;
     const { href, exact } = entry;
     return exact === true ? pathname === href : !href.startsWith("/#") && pathname?.startsWith(href);
@@ -223,8 +236,8 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
           isHome
             ? { height: 0, minHeight: 0 }
             : {
-                height: "var(--banner-height, 5.25rem)",
-                minHeight: "var(--banner-height, 5.25rem)",
+                height: "var(--banner-height, 5.5rem)",
+                minHeight: "var(--banner-height, 5.5rem)",
                 ...(pathname?.startsWith("/vega-developer")
                   ? { backgroundColor: "#000" }
                   : {}),
@@ -256,7 +269,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
               <Link
                 href="/"
                 className="flex items-center shrink-0 hover:opacity-90 transition-opacity duration-200 ease-out"
-                aria-label="Vega Financial Home"
+                aria-label="Vega Financial home"
               >
                 <Image
                   src="/logo.png"
@@ -268,114 +281,122 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                 />
               </Link>
 
-              <div
-                ref={navContainerRef}
-                className="hidden md:flex relative items-center gap-1 lg:gap-2"
-              >
-                {/* Single shared highlight: glides to hovered/focused link, returns to active on mouseleave/blur. Transform/opacity only; respects prefers-reduced-motion (snaps). */}
-                <span
-                  aria-hidden
-                  className="absolute left-0 top-0 rounded-full bg-white/15 pointer-events-none ease-motion transition-[transform,width,height,opacity] duration-motion-slow motion-reduce:!duration-0"
-                  style={{
-                    transform: `translate(${indicator.left}px, ${indicator.top}px)`,
-                    width: `${indicator.width}px`,
-                    height: indicator.height > 0 ? `${indicator.height}px` : 0,
-                    opacity: indicator.width > 0 ? 1 : 0,
-                  }}
-                />
-                {navItems.map((entry, i) => (
+              {!isInvestorApp ? (
+                <>
                   <div
-                    key={entry.type === "link" ? entry.href : entry.label}
-                    ref={(el) => {
-                      navItemRefs.current[i] = el;
-                    }}
-                    onMouseEnter={() => setHoveredNavIndex(i)}
-                    onMouseLeave={() => setHoveredNavIndex(null)}
-                    onFocus={(e) => {
-                      if (e.target !== e.currentTarget && navContainerRef.current?.contains(e.target as Node)) {
-                        setFocusedNavIndex(i);
-                      }
-                    }}
-                    onBlur={(e) => {
-                      if (!navContainerRef.current?.contains(e.relatedTarget as Node)) {
-                        setFocusedNavIndex(null);
-                      }
-                    }}
-                    className="relative"
+                    ref={navContainerRef}
+                    className="hidden md:flex relative items-center gap-1 lg:gap-2"
                   >
-                    {entry.type === "link" ? (
-                      <NavLink
-                        href={entry.href}
-                        variant="light"
-                        noUnderline
-                        className="text-sm lg:text-base whitespace-nowrap font-normal"
+                    {/* Single shared highlight: glides to hovered/focused link, returns to active on mouseleave/blur. */}
+                    <span
+                      aria-hidden
+                      className="absolute left-0 top-0 rounded-full bg-white/15 pointer-events-none ease-motion transition-[transform,width,height,opacity] duration-motion-slow motion-reduce:!duration-0"
+                      style={{
+                        transform: `translate(${indicator.left}px, ${indicator.top}px)`,
+                        width: `${indicator.width}px`,
+                        height: indicator.height > 0 ? `${indicator.height}px` : 0,
+                        opacity: indicator.width > 0 ? 1 : 0,
+                      }}
+                    />
+                    {navItems.map((entry: NavEntry, i: number) => (
+                      <div
+                        key={entry.type === "link" ? entry.href : entry.label}
+                        ref={(el) => {
+                          navItemRefs.current[i] = el;
+                        }}
+                        onMouseEnter={() => setHoveredNavIndex(i)}
+                        onMouseLeave={() => setHoveredNavIndex(null)}
+                        onFocus={(e) => {
+                          if (e.target !== e.currentTarget && navContainerRef.current?.contains(e.target as Node)) {
+                            setFocusedNavIndex(i);
+                          }
+                        }}
+                        onBlur={(e) => {
+                          if (!navContainerRef.current?.contains(e.relatedTarget as Node)) {
+                            setFocusedNavIndex(null);
+                          }
+                        }}
+                        className="relative"
                       >
-                        {entry.label}
-                      </NavLink>
-                    ) : (
-                      <NavDropdown
-                        label={entry.label}
-                        items={entry.items}
-                        variant="light"
-                        onFocus={() => setFocusedNavIndex(i)}
-                        onBlur={() => setFocusedNavIndex(null)}
-                      />
+                        {entry.type === "link" ? (
+                          <NavLink
+                            href={entry.href}
+                            variant="light"
+                            noUnderline
+                            className="text-sm lg:text-base whitespace-nowrap font-normal"
+                          >
+                            {entry.label}
+                          </NavLink>
+                        ) : (
+                          <NavDropdown
+                            label={entry.label}
+                            items={entry.items}
+                            variant="light"
+                            onFocus={() => setFocusedNavIndex(i)}
+                            onBlur={() => setFocusedNavIndex(null)}
+                          />
+                        )}
+                      </div>
+                    ))}
+                    {!isInvestor && (
+                      <Link
+                        href="/vega-financial"
+                        className={cn(
+                          "flex items-center justify-center gap-1.5 ml-2 px-5 h-9 md:h-10 font-bold text-sm md:text-base transition-[transform,background-color,border-color,box-shadow] duration-motion-chip ease-motion hover:scale-[1.02] active:scale-[0.98] shrink-0 focus-visible:outline focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
+                          isStandalone ? "rounded-full" : "rounded-[30px]",
+                          ctaClass,
+                          isScrolled && !isStandalone && "bg-primary text-primary-foreground border-primary hover:bg-primary/90 hover:border-primary/90 shadow-md shadow-primary/20"
+                        )}
+                        data-tour="try-it-now"
+                        onClick={handleTryItNow}
+                      >
+                        Get Started
+                      </Link>
                     )}
                   </div>
-                ))}
-                <Link
-                  href="/vega-financial"
-                  className={cn(
-                    "flex items-center justify-center gap-1.5 ml-2 px-5 h-9 md:h-10 font-bold text-sm md:text-base transition-[transform,background-color,border-color,box-shadow] duration-motion-chip ease-motion hover:scale-[1.02] active:scale-[0.98] shrink-0 focus-visible:outline focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
-                    isStandalone ? "rounded-full" : "rounded-[30px]",
-                    ctaClass,
-                    isScrolled && !isStandalone && "bg-primary text-primary-foreground border-primary hover:bg-primary/90 hover:border-primary/90 shadow-md shadow-primary/20"
-                  )}
-                  data-tour="try-it-now"
-                  onClick={handleTryItNow}
-                >
-                  Try it now
-                </Link>
-              </div>
 
-              <div className="flex md:hidden items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setMobileMenuOpen((o) => !o)}
-                  className={cn(
-                    "flex items-center justify-center min-w-[44px] min-h-[44px] rounded-full transition-colors",
-                    isStandalone
-                      ? "text-foreground hover:bg-muted"
-                      : "text-white hover:bg-white/20"
-                  )}
-                  aria-expanded={mobileMenuOpen}
-                  aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-                >
-                  {mobileMenuOpen ? (
-                    <X className="size-5" />
-                  ) : (
-                    <Menu className="size-5" />
-                  )}
-                </button>
-                <Link
-                  href="/vega-financial"
-                  className={cn(
-                    "flex items-center justify-center min-w-[90px] min-h-[44px] px-4 font-bold text-sm transition-[transform,background-color,border-color] duration-motion-chip ease-motion hover:scale-[1.02] active:scale-[0.98] focus-visible:outline focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2",
-                    isStandalone ? "rounded-full" : "rounded-[30px]",
-                    ctaClass
-                  )}
-                  data-tour="try-it-now"
-                  onClick={handleTryItNow}
-                >
-                  Try it now
-                </Link>
-              </div>
+                  <div className="flex md:hidden items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setMobileMenuOpen((o) => !o)}
+                      className={cn(
+                        "flex items-center justify-center min-w-[44px] min-h-[44px] rounded-full transition-colors",
+                        isStandalone
+                          ? "text-foreground hover:bg-muted"
+                          : "text-white hover:bg-white/20"
+                      )}
+                      aria-expanded={mobileMenuOpen}
+                      aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+                    >
+                      {mobileMenuOpen ? (
+                        <X className="size-5" />
+                      ) : (
+                        <Menu className="size-5" />
+                      )}
+                    </button>
+                    {!isInvestor && (
+                      <Link
+                        href="/vega-financial"
+                        className={cn(
+                          "flex items-center justify-center min-w-[90px] min-h-[44px] px-4 font-bold text-sm transition-[transform,background-color,border-color] duration-motion-chip ease-motion hover:scale-[1.02] active:scale-[0.98] focus-visible:outline focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2",
+                          isStandalone ? "rounded-full" : "rounded-[30px]",
+                          ctaClass
+                        )}
+                        data-tour="try-it-now"
+                        onClick={handleTryItNow}
+                      >
+                        Get Started
+                      </Link>
+                    )}
+                  </div>
+                </>
+              ) : null}
             </nav>
           </div>
         </div>
       </div>
 
-      {mobileMenuOpen && (
+      {!isInvestorApp && mobileMenuOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/50 md:hidden animate-in fade-in duration-200"
           aria-hidden="true"
@@ -383,17 +404,18 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
         />
       )}
 
-      <div
-        className={cn(
-          "md:hidden fixed top-20 left-4 right-4 z-50 rounded-2xl shadow-2xl overflow-hidden border transition-[transform,opacity] duration-motion-normal ease-motion",
-          mobileMenuBg,
-          mobileMenuOpen
-            ? "opacity-100 visible translate-y-0 scale-100"
-            : "opacity-0 invisible -translate-y-2 scale-[0.98] pointer-events-none"
-        )}
-      >
-        <nav className="py-3" aria-label="Mobile navigation">
-          {mainNav.map((entry) =>
+      {!isInvestorApp && (
+        <div
+          className={cn(
+            "md:hidden fixed top-20 left-4 right-4 z-50 rounded-2xl shadow-2xl overflow-hidden border transition-[transform,opacity] duration-motion-normal ease-motion",
+            mobileMenuBg,
+            mobileMenuOpen
+              ? "opacity-100 visible translate-y-0 scale-100"
+              : "opacity-0 invisible -translate-y-2 scale-[0.98] pointer-events-none"
+          )}
+        >
+          <nav className="py-3" aria-label="Mobile navigation">
+          {navItems.map((entry: NavEntry) =>
             entry.type === "link" ? (
               <Link
                 key={entry.href}
@@ -426,27 +448,30 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
               ))
             )
           )}
-          <div className="px-5 pt-2 pb-3">
-            <Link
-              href="/vega-financial"
-              className={cn(
-                "flex items-center justify-center min-h-[44px] w-full font-bold text-sm transition-[background-color,border-color] duration-motion-normal ease-motion",
-                isStandalone
-                  ? "rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
-                  : "rounded-[30px] bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30",
-                "hover:scale-[1.02] active:scale-[0.98]"
-              )}
-              onClick={(e) => {
-                setMobileMenuOpen(false);
-                handleTryItNow(e);
-              }}
-              data-tour="try-it-now"
-            >
-              Try it now
-            </Link>
-          </div>
+          {!isInvestor && (
+            <div className="px-5 pt-2 pb-3">
+              <Link
+                href="/vega-financial"
+                className={cn(
+                  "flex items-center justify-center min-h-[44px] w-full font-bold text-sm transition-[background-color,border-color] duration-motion-normal ease-motion",
+                  isStandalone
+                    ? "rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
+                    : "rounded-[30px] bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30",
+                  "hover:scale-[1.02] active:scale-[0.98]"
+                )}
+                onClick={(e) => {
+                  setMobileMenuOpen(false);
+                  handleTryItNow(e);
+                }}
+                data-tour="try-it-now"
+              >
+                Get Started
+              </Link>
+            </div>
+          )}
         </nav>
-      </div>
+        </div>
+      )}
     </>
   );
 

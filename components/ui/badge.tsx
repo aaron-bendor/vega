@@ -18,6 +18,8 @@ const badgeVariants = cva(
           "border-[rgba(51,51,51,0.18)] text-foreground",
         success:
           "border-brand-green/40 bg-transparent text-brand-green",
+        warning:
+          "border-brand-orange/40 bg-transparent text-brand-orange",
       },
     },
     defaultVariants: {

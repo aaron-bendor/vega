@@ -9,7 +9,7 @@ const KEY_STEP = `vega_tour_${TOUR_VERSION}_step`;
 const KEY_STARTED_AT = `vega_tour_${TOUR_VERSION}_startedAt`;
 const KEY_DISMISSED = `vega_tour_${TOUR_VERSION}_dismissed`;
 
-/** Session-only: set by "Try it now" to start tour on next VF load. */
+/** Session-only: set by "Get Started" to start tour on next VF load. */
 export const TOUR_START_SESSION_KEY = "vega_tour_start";
 
 export function getTourCompleted(): boolean {

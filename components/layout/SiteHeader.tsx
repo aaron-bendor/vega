@@ -8,7 +8,7 @@
  */
 import { PillNav } from "./PillNav";
 
-type SiteHeaderVariant = "hero" | "standalone";
+type SiteHeaderVariant = "hero" | "standalone" | "investor" | "investorApp";
 
 export function SiteHeader({ variant = "standalone" }: { variant?: SiteHeaderVariant }) {
   return <PillNav variant={variant} />;

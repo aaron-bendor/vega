@@ -15,7 +15,7 @@ export default function VegaFinancialLayout({
 }) {
   return (
     <>
-      <SiteHeader variant="standalone" />
+      <SiteHeader variant="investorApp" />
       <TourRunner />
       <Suspense fallback={<VegaFinancialFallback />}>
         <VegaFinancialShell>{children}</VegaFinancialShell>

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { formatPercent } from "@/lib/utils/format";
 import { HOW_SCORES_CALCULATED } from "@/lib/vega-financial/strategy-copy";
@@ -20,7 +19,7 @@ function MetricCard({ label, value, format = "percent", tooltip }: MetricCardPro
         ? formatPercent(value)
         : value.toFixed(2);
   return (
-    <Card className="rounded-2xl border-primary/20 bg-primary/[0.03] transition-colors duration-200">
+    <Card className="rounded-2xl border border-border bg-card transition-colors duration-200">
       <CardHeader className="pb-1">
         <span className="text-xs font-medium text-muted-foreground inline-flex items-center gap-1">
           {label}
@@ -39,72 +38,6 @@ function MetricCard({ label, value, format = "percent", tooltip }: MetricCardPro
         <span className="text-xl font-semibold text-foreground tabular-nums">{display}</span>
       </CardContent>
     </Card>
-  );
-}
-
-function ScoresHelpTrigger() {
-  const [open, setOpen] = useState(false);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const show = () => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => setOpen(true), 150);
-  };
-  const hide = () => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    timeoutRef.current = null;
-    setOpen(false);
-  };
-
-  useEffect(() => () => { if (timeoutRef.current) clearTimeout(timeoutRef.current); }, []);
-
-  return (
-    <div className="relative inline-flex">
-      <span
-        role="img"
-        aria-label="How scores are calculated"
-        className="inline-flex size-5 rounded-full bg-muted items-center justify-center text-[11px] text-muted-foreground cursor-help border border-[rgba(51,51,51,0.12)] hover:bg-muted/80"
-        onMouseEnter={show}
-        onMouseLeave={hide}
-      >
-        ?
-      </span>
-      {open && (
-        <div
-          className="absolute right-0 top-full z-50 mt-1.5 w-[min(320px,85vw)] rounded-lg border border-[rgba(51,51,51,0.12)] bg-popover p-4 text-popover-foreground shadow-md"
-          onMouseEnter={show}
-          onMouseLeave={hide}
-        >
-          <p className="font-syne text-sm font-semibold text-foreground mb-2">
-            How scores are calculated
-          </p>
-          <p className="text-xs leading-relaxed text-muted-foreground mb-3">
-            {HOW_SCORES_CALCULATED.intro}
-          </p>
-          <dl className="space-y-2 text-xs text-muted-foreground">
-            <div>
-              <dt className="font-medium text-foreground">Market correlation</dt>
-              <dd className="leading-relaxed mt-0.5">{HOW_SCORES_CALCULATED.marketCorrelation}</dd>
-            </div>
-            <div>
-              <dt className="font-medium text-foreground">Risk stability</dt>
-              <dd className="leading-relaxed mt-0.5">{HOW_SCORES_CALCULATED.riskStability}</dd>
-            </div>
-            <div>
-              <dt className="font-medium text-foreground">Risk-adjusted</dt>
-              <dd className="leading-relaxed mt-0.5">{HOW_SCORES_CALCULATED.riskAdjusted}</dd>
-            </div>
-            <div>
-              <dt className="font-medium text-foreground">Performance</dt>
-              <dd className="leading-relaxed mt-0.5">{HOW_SCORES_CALCULATED.performance}</dd>
-            </div>
-          </dl>
-          <p className="text-xs font-medium text-foreground pt-2 mt-2 border-t border-[rgba(51,51,51,0.12)]">
-            {HOW_SCORES_CALCULATED.importantNote}
-          </p>
-        </div>
-      )}
-    </div>
   );
 }
 
@@ -150,7 +83,6 @@ export function MetricsCards({
     <div className="space-y-2">
       <div className="flex items-center justify-between gap-2">
         <span className="text-sm font-medium text-muted-foreground">Performance metrics</span>
-        <ScoresHelpTrigger />
       </div>
       {hasAnyMetric ? (
         <>
@@ -188,9 +120,41 @@ export function MetricsCards({
           <p id="metrics-explainer" className="text-xs text-muted-foreground mt-2">
             {explainerText ?? defaultExplainer}
           </p>
+          <details className="mt-4 rounded-xl border border-border bg-muted/30 overflow-hidden group">
+            <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-medium text-foreground hover:bg-muted/50 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset [&::-webkit-details-marker]:hidden">
+              More analytics
+              <span className="inline-block size-4 shrink-0 transition-transform group-open:rotate-180" aria-hidden>▼</span>
+            </summary>
+            <div className="border-t border-border px-4 pb-4 pt-2">
+              <p className="text-xs leading-relaxed text-muted-foreground mb-3">
+                {HOW_SCORES_CALCULATED.intro}
+              </p>
+              <dl className="space-y-2 text-xs text-muted-foreground">
+                <div>
+                  <dt className="font-medium text-foreground">Market correlation</dt>
+                  <dd className="leading-relaxed mt-0.5">{HOW_SCORES_CALCULATED.marketCorrelation}</dd>
+                </div>
+                <div>
+                  <dt className="font-medium text-foreground">Risk stability</dt>
+                  <dd className="leading-relaxed mt-0.5">{HOW_SCORES_CALCULATED.riskStability}</dd>
+                </div>
+                <div>
+                  <dt className="font-medium text-foreground">Risk-adjusted</dt>
+                  <dd className="leading-relaxed mt-0.5">{HOW_SCORES_CALCULATED.riskAdjusted}</dd>
+                </div>
+                <div>
+                  <dt className="font-medium text-foreground">Performance</dt>
+                  <dd className="leading-relaxed mt-0.5">{HOW_SCORES_CALCULATED.performance}</dd>
+                </div>
+              </dl>
+              <p className="text-xs font-medium text-foreground pt-2 mt-2 border-t border-border">
+                {HOW_SCORES_CALCULATED.importantNote}
+              </p>
+            </div>
+          </details>
         </>
       ) : (
-        <div className="rounded-2xl border border-primary/20 bg-primary/[0.03] px-4 py-5">
+        <div className="rounded-2xl border border-border bg-card px-4 py-5">
           <p className="text-sm text-muted-foreground">
             {fallbackMessage ?? "No backtest metrics yet. Run a backtest to see results."}
           </p>

@@ -56,7 +56,7 @@ export function HeroVideoSection() {
               <span className="hero-tagline-reveal inline-block">
                 finally for
                 <br />
-                everyone.
+                you.
               </span>
             </h1>
 

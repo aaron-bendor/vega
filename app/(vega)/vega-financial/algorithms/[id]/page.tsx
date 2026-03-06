@@ -8,23 +8,25 @@ import { MetricsCards } from "@/components/charts/MetricsCards";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ShieldCheck } from "lucide-react";
-import { RiskBadge } from "@/components/vega-financial/RiskBadge";
 import { InvestableAttributesStrip } from "@/components/vega-financial/InvestableAttributesStrip";
-import { RunBacktestPanel } from "@/app/(app)/algo/[id]/RunBacktestPanel";
 import { InvestPanel } from "@/app/(app)/algo/[id]/InvestPanel";
-import { DataStatusCard } from "@/app/(app)/algo/[id]/DataStatusCard";
+import { MethodologyAssumptionsSection } from "@/components/vega-financial/MethodologyAssumptionsSection";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import {
   STRATEGY_OVERVIEW_COPY,
   METRICS_EXPLAINER_COPY,
-  METHODOLOGY_NOTE_COPY,
   ALLOCATION_NOTE_COPY,
 } from "@/lib/vega-financial/strategy-copy";
 
-function riskVariant(level: string) {
-  if (level === "Low") return "success" as const;
-  if (level === "High") return "destructive" as const;
-  return "outline" as const;
+function riskVariant(level: string): "success" | "warning" | "destructive" {
+  if (level === "Low") return "success";
+  if (level === "High") return "destructive";
+  return "warning";
+}
+
+function formatSymbol(symbol: string) {
+  if (symbol === "^spx") return "S&P 500 (^spx)";
+  return symbol;
 }
 
 export default async function AlgorithmDetailPage({
@@ -66,9 +68,6 @@ export default async function AlgorithmDetailPage({
   const displayDesc = version?.shortDesc ?? demoAlgo?.shortDesc ?? "";
   const displayTags = version?.tags?.map((t) => t.tag.name) ?? demoAlgo?.tags ?? [];
   const displayRisk = version?.riskLevel ?? demoAlgo?.riskLevel ?? null;
-  const riskScore = demoAlgo?.riskScore ?? (displayRisk === "Low" ? 3 : displayRisk === "High" ? 8 : 5);
-  const var95MonthlyPct = demoAlgo?.var95MonthlyPct;
-  const standardised = demoAlgo?.standardised;
   const overviewCopy = id ? STRATEGY_OVERVIEW_COPY[id] : null;
   const hasAnyMetric =
     (metricMap.cumulativeReturn ?? version?.cachedReturn) != null ||
@@ -80,8 +79,14 @@ export default async function AlgorithmDetailPage({
       ? overviewCopy.metricsUnavailableNote
       : undefined;
 
+  const symbols = (version?.symbols as string[] | null) ?? demoAlgo?.symbols ?? ["^spx"];
+  const startDate = (version?.startDate as string) ?? demoAlgo?.startDate ?? "2019-01-01";
+  const endDate = (version?.endDate as string) ?? demoAlgo?.endDate ?? "2024-12-31";
+  const trackRecordMonths = demoAlgo?.attributes?.experience ?? 18;
+  const versionLabel = demoAlgo ? "Demo v1" : (version?.name ?? "v1");
+
   return (
-    <div className="p-6 lg:p-8 max-w-4xl mx-auto">
+    <div className="p-6 lg:p-8 max-w-4xl mx-auto bg-background">
       <div className="mb-6">
         <Breadcrumb
           items={[
@@ -91,108 +96,103 @@ export default async function AlgorithmDetailPage({
         />
       </div>
 
-      <div
+      <p className="text-xs text-muted-foreground mb-6" role="status">
+        Simulated strategy page. Paper allocation only.
+      </p>
+
+      <header
         className="flex flex-wrap items-start justify-between gap-4 mb-8"
         style={{ viewTransitionName: `algo-card-${id}` }}
         data-tour="algo-title"
       >
-        <div>
-          <h1 className="font-syne text-2xl md:text-3xl font-bold text-foreground flex items-center gap-2">
+        <div className="min-w-0">
+          <h1 className="font-syne text-2xl md:text-3xl font-bold text-foreground flex items-center gap-2 flex-wrap">
             {displayName}
             {version?.verificationStatus === "verified" && (
-              <ShieldCheck className="size-6 text-primary" />
-            )}
-            {demoAlgo && (
-              <span className="text-xs font-normal text-muted-foreground">(Demo)</span>
+              <ShieldCheck className="size-6 text-primary shrink-0" />
             )}
           </h1>
           {displayDesc && (
             <p className="text-muted-foreground mt-1 text-sm">{displayDesc}</p>
           )}
+          <p className="text-xs text-muted-foreground mt-2">
+            Built for comparing strategy behaviour in a demo portfolio.
+          </p>
           <div className="flex flex-wrap items-center gap-2 mt-3" data-tour="algo-scores">
-            <RiskBadge
-              score={riskScore}
-              var95MonthlyPct={var95MonthlyPct}
-              standardised={standardised}
-              variant="default"
-            />
-            {displayTags.map((tag) => (
+            <Badge variant="secondary">Simulated</Badge>
+            {displayRisk && (
+              <Badge variant={riskVariant(displayRisk)}>{displayRisk} risk</Badge>
+            )}
+            {displayTags.slice(0, 3).map((tag) => (
               <Badge key={tag} variant="secondary">
                 {tag}
               </Badge>
             ))}
-            {displayRisk && (
-              <Badge variant={riskVariant(displayRisk)}>{displayRisk}</Badge>
-            )}
+            <Badge variant="outline">{trackRecordMonths} mo track record</Badge>
             {demoAlgo?.attributes && (
               <InvestableAttributesStrip attributes={demoAlgo.attributes} variant="default" className="w-full mt-2" />
             )}
           </div>
         </div>
-      </div>
+      </header>
 
-      {(version || demoAlgo) && (
-        <DataStatusCard
-          symbols={(version?.symbols as string[] | null) ?? demoAlgo?.symbols ?? ["^spx"]}
-          startDate={(version?.startDate as string) ?? demoAlgo?.startDate ?? "2019-01-01"}
-          endDate={(version?.endDate as string) ?? demoAlgo?.endDate ?? "2024-12-31"}
-        />
+      {overviewCopy && "whatItDoes" in overviewCopy && (
+        <section className="space-y-6 mb-8" aria-labelledby="strategy-overview-heading">
+          <h2 id="strategy-overview-heading" className="font-syne text-lg font-semibold text-foreground">
+            Strategy overview
+          </h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Card className="rounded-2xl border border-border bg-card">
+              <CardHeader className="pb-2">
+                <CardTitle className="font-syne text-sm font-semibold">What this strategy does</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground leading-relaxed">{overviewCopy.whatItDoes}</p>
+              </CardContent>
+            </Card>
+            <Card className="rounded-2xl border border-border bg-card">
+              <CardHeader className="pb-2">
+                <CardTitle className="font-syne text-sm font-semibold">Where it tends to work</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
+                  {overviewCopy.whereWorks.map((item, i) => (
+                    <li key={i}>{item}</li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+            <Card className="rounded-2xl border border-border bg-card">
+              <CardHeader className="pb-2">
+                <CardTitle className="font-syne text-sm font-semibold">Where it can struggle</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
+                  {overviewCopy.whereStruggles.map((item, i) => (
+                    <li key={i}>{item}</li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+            <Card className="rounded-2xl border border-border bg-card sm:col-span-2">
+              <CardHeader className="pb-2">
+                <CardTitle className="font-syne text-sm font-semibold">Portfolio fit</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 text-sm text-muted-foreground">
+                <p><span className="font-medium text-foreground">Best used as:</span> {overviewCopy.bestUsedAs}</p>
+                <p><span className="font-medium text-foreground">Suggested size:</span> {overviewCopy.suggestedSize}</p>
+                <p><span className="font-medium text-foreground">May suit you if:</span> {overviewCopy.maySuitYouIf}</p>
+                <p><span className="font-medium text-foreground">May not suit you if:</span> {overviewCopy.mayNotSuitYouIf}</p>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
       )}
 
-      {overviewCopy && (
-        <Card className="rounded-2xl border-primary/20 bg-primary/[0.03]">
-          <CardHeader>
-            <CardTitle className="font-syne text-base font-semibold">Overview</CardTitle>
-            <p className="text-xs text-muted-foreground">
-              What this strategy is trying to do, when it tends to work, and where it may struggle.
-            </p>
-          </CardHeader>
-          <CardContent className="space-y-4 text-sm">
-            <p className="text-muted-foreground leading-relaxed">{overviewCopy.overview}</p>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <div>
-                <p className="font-medium text-foreground text-xs mb-1">Why this exists</p>
-                <p className="text-muted-foreground text-xs leading-relaxed">{overviewCopy.whyExists}</p>
-              </div>
-              <div>
-                <p className="font-medium text-foreground text-xs mb-1">When it tends to work</p>
-                <p className="text-muted-foreground text-xs leading-relaxed">{overviewCopy.whenWorks}</p>
-              </div>
-              <div>
-                <p className="font-medium text-foreground text-xs mb-1">When it struggles</p>
-                <p className="text-muted-foreground text-xs leading-relaxed">{overviewCopy.whenStruggles}</p>
-              </div>
-              <div>
-                <p className="font-medium text-foreground text-xs mb-1">Who it may fit</p>
-                <p className="text-muted-foreground text-xs leading-relaxed">{overviewCopy.whoFits}</p>
-              </div>
-              <div>
-                <p className="font-medium text-foreground text-xs mb-1">Who it may not fit</p>
-                <p className="text-muted-foreground text-xs leading-relaxed">{overviewCopy.whoNotFit}</p>
-              </div>
-              <div>
-                <p className="font-medium text-foreground text-xs mb-1">Suggested role in portfolio</p>
-                <p className="text-muted-foreground text-xs leading-relaxed">{overviewCopy.suggestedRole}</p>
-              </div>
-              <div>
-                <p className="font-medium text-foreground text-xs mb-1">Suggested allocation range</p>
-                <p className="text-muted-foreground text-xs leading-relaxed">{overviewCopy.suggestedAllocationRange}</p>
-              </div>
-            </div>
-            {overviewCopy.extraNote && (
-              <div className="rounded-lg border border-amber-200 bg-amber-50/80 dark:border-amber-800 dark:bg-amber-950/30 px-3 py-2 text-xs text-muted-foreground leading-relaxed">
-                {overviewCopy.extraNote}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
-
-      <div data-tour="algo-metrics" className="mt-8">
+      <div data-tour="algo-metrics" className="mb-8">
         <h3 className="font-syne text-base font-semibold text-foreground mb-2">Performance</h3>
         <p className="text-xs text-muted-foreground mb-3">
-          Historical simulated results from the latest backtest. These figures are useful for
-          comparison, but they are not forecasts.
+          Historical simulated results from the latest backtest. Useful for comparison, not forecasts.
         </p>
         <MetricsCards
           cumulativeReturn={
@@ -212,13 +212,13 @@ export default async function AlgorithmDetailPage({
         />
       </div>
 
-      <div className="mt-8 space-y-8">
+      <div className="space-y-8 mb-8">
         {equityPoints.length > 0 && (
-          <Card className="rounded-2xl border-primary/20 bg-primary/[0.03]">
+          <Card className="rounded-2xl border border-border bg-card">
             <CardHeader>
               <CardTitle className="font-syne text-base font-semibold">Equity curve</CardTitle>
               <p className="text-xs text-muted-foreground">
-                Simulated backtest performance. Not investment advice.
+                Historical simulated results for this strategy version. Useful for comparison, not a forecast.
               </p>
             </CardHeader>
             <CardContent>
@@ -228,7 +228,7 @@ export default async function AlgorithmDetailPage({
         )}
 
         {equityPoints.length > 0 && (
-          <Card className="rounded-2xl border-primary/20 bg-primary/[0.03]">
+          <Card className="rounded-2xl border border-border bg-card">
             <CardHeader>
               <CardTitle className="font-syne text-base font-semibold">Drawdown</CardTitle>
               <p className="text-xs text-muted-foreground">
@@ -242,50 +242,31 @@ export default async function AlgorithmDetailPage({
         )}
       </div>
 
-      <Card className="mt-8 rounded-2xl border-primary/20 bg-primary/[0.03]" data-tour="algo-backtest-form">
-        <CardHeader>
-          <CardTitle className="font-syne text-base font-semibold">Run backtest</CardTitle>
-          <p className="text-xs text-muted-foreground">
-            Configure and run a backtest against this algorithm version.
-            Simulated performance only.
-          </p>
-        </CardHeader>
-        <CardContent>
-          <RunBacktestPanel
-            versionId={version ? id : undefined}
-            templateId={(version?.strategyTemplateId as string) ?? demoAlgo?.templateId}
-            defaultParams={demoAlgo?.defaultParams}
-            symbols={(version?.symbols as string[] | undefined) ?? demoAlgo?.symbols}
-            startDate={(version?.startDate as string | undefined) ?? demoAlgo?.startDate}
-            endDate={(version?.endDate as string | undefined) ?? demoAlgo?.endDate}
-          />
-          {(version || demoAlgo) && (
-            <>
-              <div className="mt-6 pt-6 border-t border-[rgba(51,51,51,0.12)]">
-                <h4 className="font-syne text-sm font-semibold text-foreground mb-1">Allocation</h4>
-                <p className="text-xs text-muted-foreground mb-3">
-                  How this strategy might fit into a broader portfolio and what a paper allocation would change.
-                </p>
-                <p className="text-xs text-muted-foreground mb-4">{ALLOCATION_NOTE_COPY}</p>
-                <InvestPanel versionId={id} />
-              </div>
-            </>
-          )}
-        </CardContent>
-      </Card>
-
       {(version || demoAlgo) && (
-        <Card className="mt-6 rounded-2xl border-primary/20 bg-primary/[0.03]">
+        <Card className="mb-8 rounded-2xl border border-border bg-card" data-tour="algo-add-paper">
           <CardHeader>
-            <CardTitle className="font-syne text-base font-semibold">Methodology</CardTitle>
-            <p className="text-xs text-muted-foreground">
-              How this backtest was run, what data was used, and what assumptions sit behind the results.
+            <CardTitle className="font-syne text-base font-semibold">Paper allocation</CardTitle>
+            <p className="text-sm text-muted-foreground">
+              Try this strategy in your demo portfolio.
             </p>
           </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground leading-relaxed">{METHODOLOGY_NOTE_COPY}</p>
+          <CardContent className="space-y-4">
+            <InvestPanel versionId={id} />
+            <p className="text-xs text-muted-foreground">{ALLOCATION_NOTE_COPY}</p>
           </CardContent>
         </Card>
+      )}
+
+      {(version || demoAlgo) && (
+        <div className="space-y-4">
+          <MethodologyAssumptionsSection
+            dataSource="Stooq daily OHLC"
+            symbol={formatSymbol(symbols[0] ?? "^spx")}
+            testedPeriod={`${startDate} to ${endDate}`}
+            version={versionLabel}
+            note="Historical data helps compare strategies, but simulated results are not forecasts."
+          />
+        </div>
       )}
     </div>
   );

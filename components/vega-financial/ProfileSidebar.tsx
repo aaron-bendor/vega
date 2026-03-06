@@ -9,6 +9,7 @@ import {
   Wallet,
   Store,
   ChevronLeft,
+  Star,
 } from "lucide-react";
 import { TextLink } from "@/components/ui/TextLink";
 
@@ -16,6 +17,7 @@ const mainNav = [
   { href: "/vega-financial", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/vega-financial/marketplace", label: "Marketplace", icon: Store },
   { href: "/vega-financial/portfolio", label: "Portfolio", icon: Wallet },
+  { href: "/vega-financial/profile#watchlist", label: "Watchlist", icon: Star },
 ];
 
 export function ProfileSidebar({ naturalScroll }: { naturalScroll?: boolean } = {}) {
@@ -68,20 +70,9 @@ export function ProfileSidebar({ naturalScroll }: { naturalScroll?: boolean } = 
       "w-64 shrink-0 border-r border-[rgba(51,51,51,0.12)] bg-white flex flex-col",
       naturalScroll ? "h-auto" : "h-screen sticky top-0"
     )}>
-      <div className="p-4 border-b border-[rgba(51,51,51,0.12)]">
-        <div className="flex items-center gap-3">
-          <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center">
-            <span className="text-sm font-medium text-primary">VF</span>
-          </div>
-          <div>
-            <p className="font-medium text-sm text-foreground">Demo User</p>
-          </div>
-        </div>
-      </div>
-
       <nav
         ref={navRef}
-        className="relative p-2 flex-1"
+        className="relative p-2 pt-4 flex-1"
         style={{ "--indicator-top": "0px", "--indicator-height": "0px" } as React.CSSProperties}
         data-tour="vf-tabs"
       >
@@ -96,8 +87,12 @@ export function ProfileSidebar({ naturalScroll }: { naturalScroll?: boolean } = 
         <p className="px-3 pt-2 pb-1.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/70">
           Investor
         </p>
+        <div className="flex flex-col gap-y-0.5">
         {mainNav.map(({ href, label, icon: Icon, exact }, i) => {
-          const active = isActive(href, exact);
+          const active =
+            href.startsWith("/vega-financial/profile")
+              ? pathname === "/vega-financial/profile"
+              : isActive(href, exact);
           return (
             <div
               key={href}
@@ -123,14 +118,17 @@ export function ProfileSidebar({ naturalScroll }: { naturalScroll?: boolean } = 
             </div>
           );
         })}
+        </div>
       </nav>
 
-      <div className="p-2 border-t border-[rgba(51,51,51,0.12)]">
-        <TextLink href="/" className="flex items-center gap-2 rounded-lg px-3 py-2.5 min-h-[44px] text-sm text-muted-foreground hover:text-foreground">
-          <ChevronLeft className="size-4" />
-          Back to Vega
-        </TextLink>
-      </div>
+      {!pathname?.startsWith("/vega-financial") && (
+        <div className="p-2 border-t border-[rgba(51,51,51,0.12)]">
+          <TextLink href="/" className="flex items-center gap-2 rounded-lg px-3 py-2.5 min-h-[44px] text-sm text-muted-foreground hover:text-foreground">
+            <ChevronLeft className="size-4" />
+            Back to Vega
+          </TextLink>
+        </div>
+      )}
     </aside>
   );
 }

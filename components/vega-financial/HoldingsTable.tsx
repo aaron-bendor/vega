@@ -29,6 +29,7 @@ interface HoldingsTableProps {
 function riskLabel(level: string) {
   if (level === "Low") return "text-brand-green";
   if (level === "High") return "text-brand-red";
+  if (level === "Medium") return "text-brand-orange";
   return "text-muted-foreground";
 }
 

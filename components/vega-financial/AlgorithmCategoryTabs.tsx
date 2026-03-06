@@ -126,7 +126,7 @@ export function AlgorithmCategoryTabs({
 
   return (
     <Tabs value={tab} onValueChange={setTab} className="w-full min-w-0">
-      <TabsListWithIndicator className="mb-4 rounded-xl border border-primary/20 bg-primary/[0.03] p-1 w-full overflow-x-auto overflow-y-hidden flex flex-nowrap justify-start gap-0 min-h-[44px]">
+      <TabsListWithIndicator className="mb-4 rounded-xl border border-border bg-muted/30 p-1 w-full overflow-x-auto overflow-y-hidden flex flex-nowrap justify-start gap-0 min-h-[44px]">
         <TabsTrigger value="trending" className={tabClass}>
           Trending
         </TabsTrigger>

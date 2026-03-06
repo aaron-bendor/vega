@@ -8,8 +8,6 @@ import Link from "next/link";
 import { Wallet } from "lucide-react";
 import { formatCurrency, formatPercent } from "@/lib/utils/format";
 
-const isProduction = process.env.NODE_ENV === "production";
-
 export default async function VegaFinancialPortfolioPage() {
   const { data: investments, dbAvailable } = await withDbOrThrow(
     () => getInvestmentsForUser(),
@@ -36,28 +34,16 @@ export default async function VegaFinancialPortfolioPage() {
           Paper portfolio
         </h1>
         {!dbAvailable && (
-          <Card className="mb-6 rounded-2xl border-primary/20 bg-primary/[0.03] transition-colors duration-200">
+          <Card className="mb-6 rounded-2xl border border-border bg-card transition-colors duration-200">
             <CardContent className="py-8 px-6">
               <div className="flex flex-col sm:flex-row sm:items-start gap-4">
-                <div className="size-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
-                  <span className="text-primary/70 text-lg font-semibold" aria-hidden>!</span>
-                </div>
                 <div>
                   <p className="text-foreground font-semibold mb-1">
-                    {isProduction
-                      ? "Paper portfolio is unavailable right now"
-                      : "Portfolio requires database"}
+                    Paper portfolio is unavailable right now
                   </p>
-                  {isProduction ? (
-                    <p className="text-muted-foreground text-sm mb-4">
-                      You can still browse the marketplace and explore algorithms.
-                    </p>
-                  ) : (
-                    <p className="text-muted-foreground text-sm mb-4">
-                      Set <code className="rounded bg-[rgba(51,51,51,0.06)] px-1">DATABASE_URL</code> in{" "}
-                      <code className="rounded bg-[rgba(51,51,51,0.06)] px-1">.env</code>, run migrations and seed to use the portfolio.
-                    </p>
-                  )}
+                  <p className="text-muted-foreground text-sm mb-4">
+                    You can still browse the marketplace and explore algorithms.
+                  </p>
                   <Link
                     href="/vega-financial/marketplace"
                     className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded transition-colors duration-150"
@@ -72,9 +58,9 @@ export default async function VegaFinancialPortfolioPage() {
         <p className="text-muted-foreground mb-8">Simulated holdings. Not investment advice.</p>
 
         {holdingsWithValue.length === 0 ? (
-          <Card className="rounded-2xl border-primary/20 bg-primary/[0.03] transition-colors duration-200">
+          <Card className="rounded-2xl border border-border bg-card transition-colors duration-200">
             <CardContent className="py-12 px-6 text-center">
-              <div className="size-14 rounded-full bg-primary/5 border border-primary/10 flex items-center justify-center mx-auto mb-4">
+              <div className="size-14 rounded-full bg-muted border border-border flex items-center justify-center mx-auto mb-4">
                 <Wallet className="size-7 text-primary/50" aria-hidden />
               </div>
               <p className="text-muted-foreground mb-2 font-medium text-foreground">No holdings yet</p>
@@ -92,7 +78,7 @@ export default async function VegaFinancialPortfolioPage() {
         ) : (
           <>
             <div className="grid gap-4 md:grid-cols-2 mb-8">
-              <Card className="rounded-2xl border-primary/20 bg-primary/[0.03]">
+              <Card className="rounded-2xl border border-border bg-card">
                 <CardHeader>
                   <CardTitle className="font-syne text-base font-semibold">Total value</CardTitle>
                 </CardHeader>
@@ -100,7 +86,7 @@ export default async function VegaFinancialPortfolioPage() {
                   <span className="text-2xl font-bold">{formatCurrency(totalValue)}</span>
                 </CardContent>
               </Card>
-              <Card className="rounded-2xl border-primary/20 bg-primary/[0.03]">
+              <Card className="rounded-2xl border border-border bg-card">
                 <CardHeader>
                   <CardTitle className="font-syne text-base font-semibold">Total invested</CardTitle>
                 </CardHeader>
@@ -118,7 +104,7 @@ export default async function VegaFinancialPortfolioPage() {
             <h2 className="font-syne text-lg font-semibold mb-4 text-foreground">Holdings</h2>
             <div className="space-y-4">
               {holdingsWithValue.map((holding) => (
-                <Card key={holding.id} className="rounded-2xl border-primary/20 bg-primary/[0.03]">
+                <Card key={holding.id} className="rounded-2xl border border-border bg-card">
                   <CardHeader>
                     <div className="flex justify-between items-start">
                       <div>

@@ -44,23 +44,11 @@ export default async function VegaFinancialMarketplacePage({
     : tags.map((t) => t.name);
 
   return (
-    <div className="w-full max-w-5xl min-w-0 mx-auto px-4 py-6 sm:px-6 sm:py-8 lg:px-8 space-y-6">
-      <header className="min-w-0 space-y-1">
+    <div className="w-full max-w-5xl min-w-0 mx-auto px-4 pt-6 pb-6 sm:px-6 sm:pt-8 sm:pb-8 lg:px-8 space-y-6">
+      <header className="min-w-0 scroll-mt-32" id="marketplace-heading">
         <h1 className="font-syne text-2xl md:text-3xl font-bold text-foreground">
           Marketplace
         </h1>
-        {!dbAvailable && (
-          <p className="text-sm text-muted-foreground" data-tour="mp-demo-banner">
-            {useDemo ? (
-              <>Using demo data. Set <code className="rounded bg-[rgba(51,51,51,0.06)] px-1">DATABASE_URL</code> in <code className="rounded bg-[rgba(51,51,51,0.06)] px-1">.env</code>, run migrations and seed to use the full marketplace.</>
-            ) : (
-              <>Set <code className="rounded bg-[rgba(51,51,51,0.06)] px-1">DATABASE_URL</code> in <code className="rounded bg-[rgba(51,51,51,0.06)] px-1">.env</code>, run migrations and seed to see seeded data.</>
-            )}
-          </p>
-        )}
-        <p className="text-muted-foreground text-sm" data-tour="mp-demo-banner">
-          Browse published algorithms. Simulated performance only. Paper trading only.
-        </p>
       </header>
       <div className="min-w-0">
         <MarketplaceContent

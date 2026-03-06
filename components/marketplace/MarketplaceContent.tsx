@@ -101,7 +101,7 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
               className="block transition-opacity duration-300 ease-out min-w-0"
               style={{ animationDelay: `${i * 40}ms` }}
             >
-              <Card className="h-full min-h-[180px] flex flex-col rounded-2xl border-primary/20 bg-primary/[0.03] transition-[border-color,background-color,box-shadow,transform] duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:border-primary/30 hover:bg-primary/5 hover:shadow-md hover:shadow-primary/5 hover:-translate-y-0.5 focus-within:ring-2 focus-within:ring-ring focus-within:outline-none motion-reduce:transition-none" data-tour={v.id === "demo-1" ? "mp-card-alpha" : undefined}>
+              <Card className="h-full min-h-[180px] flex flex-col rounded-2xl border border-border bg-card transition-[box-shadow,border-color] duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:border-muted-foreground/20 hover:shadow-md hover:-translate-y-0.5 focus-within:ring-2 focus-within:ring-ring focus-within:outline-none motion-reduce:transition-none" data-tour={v.id === "demo-1" ? "mp-card-alpha" : undefined}>
                 <CardHeader className="pb-2 flex-shrink-0">
                   <CardTitle className="font-syne text-sm font-semibold leading-tight">{v.name}</CardTitle>
                   <CardDescription className="line-clamp-2 text-xs mt-1">{v.shortDesc}</CardDescription>
@@ -132,7 +132,7 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
               className="block transition-opacity duration-300 ease-out min-w-0"
               style={{ animationDelay: `${i * 40}ms` }}
             >
-              <Card className="h-full min-h-[180px] flex flex-col rounded-2xl border-primary/20 bg-primary/[0.03] transition-[border-color,background-color,box-shadow,transform] duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:border-primary/30 hover:bg-primary/5 hover:shadow-md hover:shadow-primary/5 hover:-translate-y-0.5 focus-within:ring-2 focus-within:ring-ring focus-within:outline-none motion-reduce:transition-none" data-tour={v.id === "demo-1" ? "mp-card-alpha" : undefined}>
+              <Card className="h-full min-h-[180px] flex flex-col rounded-2xl border border-border bg-card transition-[box-shadow,border-color] duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:border-muted-foreground/20 hover:shadow-md hover:-translate-y-0.5 focus-within:ring-2 focus-within:ring-ring focus-within:outline-none motion-reduce:transition-none" data-tour={v.id === "demo-1" ? "mp-card-alpha" : undefined}>
                 <CardHeader className="pb-2 flex-shrink-0">
                   <div className="flex items-start justify-between gap-2">
                     <CardTitle className="font-syne text-sm font-semibold leading-tight">{v.name}</CardTitle>

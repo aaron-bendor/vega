@@ -1,4 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { ViewTransitionLink } from "@/components/ui/ViewTransitionLink";
 import { ShieldCheck, ChevronRight } from "lucide-react";
 import { formatPercent } from "@/lib/utils/format";
@@ -29,6 +30,12 @@ function riskLevelToScore(level: string): number {
   if (level === "Low") return 3;
   if (level === "High") return 8;
   return 5;
+}
+
+function riskBadgeVariant(level: string): "success" | "warning" | "destructive" {
+  if (level === "Low") return "success";
+  if (level === "High") return "destructive";
+  return "warning";
 }
 
 export function AlgorithmCard({
@@ -65,12 +72,7 @@ export function AlgorithmCard({
         className="h-full min-w-0"
         style={id ? { viewTransitionName: `algo-card-${id}` } : undefined}
       >
-        <Card className="group/card h-full rounded-2xl border-primary/20 bg-primary/[0.03] transition-[box-shadow,border-color,background-color,transform] duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:border-primary/30 hover:bg-primary/5 hover:shadow-md hover:shadow-primary/5 hover:-translate-y-0.5 motion-reduce:transition-none relative overflow-visible">
-          {/* Left accent bar: scales in on hover/focus-visible */}
-          <span
-            aria-hidden
-            className="absolute left-0 top-4 bottom-4 w-0.5 rounded-full bg-primary/50 origin-bottom scale-y-0 transition-transform duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] group-hover/card:scale-y-100 group-focus-within/card:scale-y-100 motion-reduce:transition-none"
-          />
+        <Card className="group/card h-full rounded-2xl border border-border bg-card transition-[box-shadow,border-color] duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:border-muted-foreground/20 hover:shadow-md hover:-translate-y-0.5 motion-reduce:transition-none relative overflow-visible">
         <CardContent className="p-5 relative">
           {/* Risk badge: fixed top-right so all cards align */}
           <div className="absolute top-5 right-5 flex items-center gap-1">
@@ -111,8 +113,8 @@ export function AlgorithmCard({
                   {statusBadgeText}
                 </p>
               ) : (
-                <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-2 text-[10px] text-muted-foreground min-h-[1.25rem]">
-                  <span>Risk: <span className="text-foreground font-medium">{riskLevel}</span></span>
+                <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-2 text-[10px] text-muted-foreground min-h-[1.25rem] items-center">
+                  <span className="flex items-center gap-1.5">Risk: <Badge variant={riskBadgeVariant(riskLevel)} className="text-[10px] font-medium px-2 py-0">{riskLevel}</Badge></span>
                   <span>Style: <span className="text-foreground truncate max-w-[6rem] inline-block align-bottom" title={visibleTags[0]}>{visibleTags[0] ?? "—"}</span></span>
                   <span>Asset: <span className="text-foreground truncate max-w-[6rem] inline-block align-bottom" title={visibleTags[1] ?? tags[2]}>{visibleTags[1] ?? tags[2] ?? "—"}</span></span>
                 </div>
@@ -122,7 +124,7 @@ export function AlgorithmCard({
               {visibleTags.map((tag) => (
                 <span
                   key={tag}
-                  className="text-[10px] px-2 py-0.5 rounded-md border border-primary/20 text-muted-foreground"
+                  className="text-[10px] px-2 py-0.5 rounded-md border border-border text-muted-foreground"
                   title={tag}
                 >
                   {tag}
@@ -186,7 +188,7 @@ export function AlgorithmCard({
                 </p>
               ) : (
                 <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1.5 text-[10px] text-muted-foreground min-h-[1.25rem] items-baseline">
-                  <span>Risk: <span className="text-foreground font-medium">{riskLevel}</span></span>
+                  <span className="flex items-center gap-1.5">Risk: <Badge variant={riskBadgeVariant(riskLevel)} className="text-[10px] font-medium px-2 py-0">{riskLevel}</Badge></span>
                   <span className="min-w-0">Style: <span className="text-foreground truncate max-w-[5.5rem] inline-block align-baseline" title={visibleTags[0]}>{visibleTags[0] ?? "—"}</span></span>
                   <span className="min-w-0">Asset: <span className="text-foreground truncate max-w-[5.5rem] inline-block align-baseline" title={visibleTags[1] ?? tags[2]}>{visibleTags[1] ?? tags[2] ?? "—"}</span></span>
                 </div>
@@ -196,7 +198,7 @@ export function AlgorithmCard({
               {visibleTags.map((tag) => (
                 <span
                   key={tag}
-                  className="text-[10px] px-2 py-0.5 rounded-md border border-primary/20 text-muted-foreground max-w-[7rem] truncate"
+                  className="text-[10px] px-2 py-0.5 rounded-md border border-border text-muted-foreground max-w-[7rem] truncate"
                   title={tag}
                 >
                   {tag}

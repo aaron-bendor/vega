@@ -77,6 +77,7 @@ const config: Config = {
           "333": "rgb(var(--c-333) / <alpha-value>)",
           red: "rgb(var(--c-red) / <alpha-value>)",
           green: "rgb(var(--c-green) / <alpha-value>)",
+          orange: "rgb(var(--c-orange) / <alpha-value>)",
           p1: "rgb(var(--c-p1) / <alpha-value>)",
           p2: "rgb(var(--c-p2) / <alpha-value>)",
           p3: "rgb(var(--c-p3) / <alpha-value>)",
