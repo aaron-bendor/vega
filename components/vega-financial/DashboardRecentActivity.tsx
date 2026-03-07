@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { formatCurrency } from "@/lib/utils/format";
 import { EMPTY_STATES } from "@/lib/vega-financial/investor-copy";
-import { loadPortfolioState } from "@/lib/vega-financial/portfolio-store";
+import { loadPortfolioState, subscribePortfolioUpdate } from "@/lib/vega-financial/portfolio-store";
 
 interface ActivityEntry {
   algorithmName: string;
@@ -17,19 +17,25 @@ interface ActivityEntry {
 export function DashboardRecentActivity() {
   const [activity, setActivity] = useState<ActivityEntry[]>([]);
 
-  useEffect(() => {
+  const refresh = useCallback(() => {
     const state = loadPortfolioState();
     const recent = state.activityLog.slice(-5).reverse();
     setActivity(
       recent.map((e) => ({
         algorithmName: e.algorithmName,
-        type: e.type,
+        type: e.type === "allocate" ? "Demo allocation made" : e.type,
         amount: e.amount,
         algorithmId: e.algorithmId,
         at: e.at,
       }))
     );
   }, []);
+
+  useEffect(() => {
+    refresh();
+    const unsub = subscribePortfolioUpdate(refresh);
+    return unsub;
+  }, [refresh]);
 
   if (activity.length === 0) {
     return (

@@ -54,11 +54,11 @@ export function AccountBreakdownCard({
           <dd className="font-medium tabular-nums text-foreground">{numberOfHoldings}</dd>
         </div>
         <div className="flex justify-between items-baseline gap-2">
-          <dt className="text-muted-foreground">Risk mix</dt>
+          <dt className="text-muted-foreground">Portfolio risk level</dt>
           <dd className="font-medium text-foreground">{riskMix}</dd>
         </div>
         <div className="flex justify-between items-baseline gap-2">
-          <dt className="text-muted-foreground">Diversification</dt>
+          <dt className="text-muted-foreground">Diversification status</dt>
           <dd className="font-medium text-foreground text-right max-w-[140px]">{diversification}</dd>
         </div>
       </dl>

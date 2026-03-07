@@ -4,7 +4,6 @@ import Link from "next/link";
 import { formatCurrency, formatPercent } from "@/lib/utils/format";
 import { cn } from "@/lib/utils";
 import type { MockHolding } from "@/lib/mock/portfolio";
-import { TrendBadge, trendFromReturnPct } from "@/components/vega-financial/TrendBadge";
 import { RiskExplainerSheet } from "@/components/vega-financial/RiskExplainerSheet";
 import { useState } from "react";
 import { ArrowUpRight } from "lucide-react";
@@ -28,6 +27,14 @@ function strategySubtitle(tags: string[]): string {
   if (lower === "trend following") return "Trend-following strategy";
   if (lower === "momentum" || lower === "equity") return "Momentum strategy";
   return `${first} strategy`;
+}
+
+function roleFromTags(tags: string[]): string {
+  const first = (tags[0] ?? "").toLowerCase();
+  if (first.includes("mean reversion")) return "Diversifier";
+  if (first.includes("trend")) return "Growth";
+  if (first.includes("momentum") || first.includes("equity")) return "Growth";
+  return "Growth";
 }
 
 /** Desktop: full table with Strategy, Allocated, Return, Risk, Trend, Actions */
@@ -58,7 +65,7 @@ function HoldingsTableDesktop({
                 Risk
               </th>
               <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">
-                Trend
+                Role
               </th>
               <th className="text-right py-3 px-4 text-xs font-medium text-muted-foreground w-[140px]">
                 Actions
@@ -100,7 +107,6 @@ function HoldingsTableDesktop({
                         h.returnPct >= 0 ? "text-brand-green" : "text-brand-red"
                       )}
                     >
-                      {h.returnPct >= 0 ? "+" : ""}
                       {formatPercent(h.returnPct / 100)}
                     </span>
                     <span className="text-xs text-muted-foreground block mt-0.5">since allocation</span>
@@ -117,7 +123,9 @@ function HoldingsTableDesktop({
                     </button>
                   </td>
                   <td className="py-3 px-4 align-middle">
-                    <TrendBadge status={trendFromReturnPct(h.returnPct)} />
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                      {roleFromTags(h.tags)}
+                    </span>
                   </td>
                   <td className="py-3 px-4 align-middle text-right">
                     <div className="flex items-center justify-end gap-2 flex-wrap">
@@ -199,7 +207,6 @@ function HoldingCardMobile({
               holding.returnPct >= 0 ? "text-brand-green" : "text-brand-red"
             )}
           >
-            {holding.returnPct >= 0 ? "+" : ""}
             {formatPercent(holding.returnPct / 100)}
           </p>
           <p className="text-xs text-muted-foreground">since allocation</p>
@@ -216,8 +223,10 @@ function HoldingCardMobile({
           </button>
         </div>
         <div>
-          <p className="text-xs text-muted-foreground">Trend</p>
-          <TrendBadge status={trendFromReturnPct(holding.returnPct)} />
+          <p className="text-xs text-muted-foreground">Role</p>
+          <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+            {roleFromTags(holding.tags)}
+          </span>
         </div>
       </div>
       <div className="flex flex-wrap gap-3 pt-2 border-t border-border">

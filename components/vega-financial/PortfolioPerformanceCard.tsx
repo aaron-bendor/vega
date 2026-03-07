@@ -42,11 +42,10 @@ export function PortfolioPerformanceCard({
   const [range, setRange] = useState<(typeof RANGES)[number]>("All");
 
   const hasRealHistory = dataPoints && dataPoints.length >= 2;
-  const effectiveStart = startValue ?? currentValue;
   const chartData: { label: string; value: number }[] = hasRealHistory
     ? dataPoints!
     : [
-        { label: "Start", value: effectiveStart },
+        { label: "Start", value: currentValue },
         { label: "Now", value: currentValue },
       ];
 
@@ -113,6 +112,10 @@ export function PortfolioPerformanceCard({
                     border: "1px solid rgba(51,51,51,0.12)",
                     borderRadius: 8,
                     fontSize: 12,
+                    minWidth: "16rem",
+                    maxWidth: "22rem",
+                    lineHeight: 1.45,
+                    padding: "10px 14px",
                   }}
                   formatter={(value: number | undefined) => [
                     value != null
@@ -141,7 +144,7 @@ export function PortfolioPerformanceCard({
       ) : (
         <div className="flex flex-col items-center justify-center flex-1 min-h-[240px] sm:min-h-[280px] px-4 pb-6 text-center">
           <p className="text-sm text-muted-foreground">
-            Your performance history will appear here after your first allocation.
+            Portfolio history will appear here once performance data is available for your current holdings.
           </p>
           <p className="text-[11px] text-muted-foreground/80 mt-2">
             Includes invested strategies and available cash · Simulated data

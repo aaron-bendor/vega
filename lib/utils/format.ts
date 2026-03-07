@@ -20,10 +20,13 @@ const currencyFormatter = new Intl.NumberFormat("en-GB", {
   maximumFractionDigits: 2,
 });
 
-/** Format a decimal as percent (e.g. 0.1233 → "+12.33%"). Value must be decimal, not already a percentage. */
+/** Format a decimal as percent (e.g. 0.1233 → "+12.33%"). Value must be decimal, not already a percentage. Do not prepend "+" at call sites. */
 export function formatPercent(value: number): string {
   return percentFormatter.format(value);
 }
+
+/** Placeholder when a metric is not available in the demo. Use instead of "—" for trust. */
+export const UNAVAILABLE_IN_DEMO = "Unavailable in current demo";
 
 /** Format a number as GBP (e.g. 12450 → "£12,450.00"). */
 export function formatCurrency(value: number): string {

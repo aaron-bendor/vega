@@ -19,6 +19,8 @@ interface AppShellProps {
   bottomNav?: ReactNode;
   /** When true, show minimal app top bar with brand + Back to website + user menu (single nav system). */
   minimalTopBar?: boolean;
+  /** When true, do not render the app top bar (e.g. when layout already provides SiteHeader). Sidebar uses top-14 to sit under external banner. */
+  hideTopBar?: boolean;
   /** When set, replaces the default header. Receives openSidebar for mobile nav. Sidebar uses top-[6.5rem] when header is logo + main bar. */
   customHeader?: (props: { openSidebar: () => void }) => ReactNode;
 }
@@ -28,7 +30,7 @@ interface AppShellProps {
  * Top bar (menu, tour, user) + sidebar (Dashboard, Marketplace, Portfolio) + optional toolbar + main.
  * No marketing header (SiteHeader/PillNav).
  */
-export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalTopBar, customHeader }: AppShellProps) {
+export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalTopBar, hideTopBar, customHeader }: AppShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -40,12 +42,32 @@ export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalT
   }, []);
 
   const useCustomHeader = Boolean(customHeader);
-  /** When using custom header: logo bar (h-12) + main bar (h-14) = 6.5rem */
-  const stickyTop = useCustomHeader ? "top-[6.5rem]" : minimalTopBar ? "top-12" : "top-[5.25rem]";
+  /** When using custom header: logo bar (h-12) + main bar (h-14) = 6.5rem. When hideTopBar: external banner (e.g. SiteHeader) provides top bar, use top-14. */
+  const stickyTop = useCustomHeader ? "top-[6.5rem]" : hideTopBar ? "top-14" : minimalTopBar ? "top-12" : "top-[5.25rem]";
 
   return (
     <div className={naturalScroll ? "bg-white" : "min-h-screen flex flex-col bg-white"}>
-      {useCustomHeader && customHeader ? (
+      {hideTopBar ? (
+        <>
+          <div className="lg:hidden sticky top-14 z-40 shrink-0 h-11 flex items-center px-4 border-b border-[rgba(51,51,51,0.12)] bg-white">
+            <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="-ml-2 min-w-[44px] min-h-[44px]"
+                  aria-label="Open navigation menu"
+                >
+                  <Menu className="size-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="p-0 w-64 max-w-[85vw]">
+                <ProfileSidebar />
+              </SheetContent>
+            </Sheet>
+          </div>
+        </>
+      ) : useCustomHeader && customHeader ? (
         <>
           <div className="sticky top-0 z-50 shrink-0 bg-white">
             {customHeader({ openSidebar: () => setSidebarOpen(true) })}
@@ -106,7 +128,7 @@ export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalT
         <div className="lg:flex min-w-0">
           <div
             className={cn(
-              "hidden lg:block shrink-0 self-start sticky",
+              "hidden lg:block shrink-0 self-start sticky z-10",
               stickyTop
             )}
           >
@@ -117,7 +139,7 @@ export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalT
               <div
                 className={cn(
                   "sticky z-10 border-b border-border bg-muted/30",
-                  useCustomHeader ? "top-[6.5rem]" : minimalTopBar ? "top-12" : "top-[5.25rem]"
+                  useCustomHeader ? "top-[6.5rem]" : hideTopBar ? "top-14" : minimalTopBar ? "top-12" : "top-[5.25rem]"
                 )}
               >
                 {toolbar}

@@ -48,7 +48,7 @@ export default async function VegaFinancialMarketplacePage({
   return (
     <div className="w-full max-w-6xl min-w-0 mx-auto px-4 pt-6 pb-6 sm:px-6 sm:pt-8 sm:pb-8 lg:px-8 space-y-6">
       <PageHeader
-        title="Explore algorithms"
+        title="Explore strategies"
         subtitle={PAGE_SUBTITLES.explore}
       />
       <div className="min-w-0">

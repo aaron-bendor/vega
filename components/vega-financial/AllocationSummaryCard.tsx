@@ -1,6 +1,6 @@
 "use client";
 
-import { formatPercent } from "@/lib/utils/format";
+import { formatPercent, UNAVAILABLE_IN_DEMO } from "@/lib/utils/format";
 import { cn } from "@/lib/utils";
 import { METRIC_LABELS } from "@/lib/vega-financial/investor-copy";
 import { ALLOCATION_NOTE_COPY } from "@/lib/vega-financial/strategy-copy";
@@ -23,7 +23,7 @@ interface AllocationSummaryCardProps {
 }
 
 export function AllocationSummaryCard({
-  title = "Allocation summary",
+  title = "Strategy snapshot",
   returnPct,
   maxDrawdown,
   riskLevel,
@@ -49,7 +49,7 @@ export function AllocationSummaryCard({
             <InfoTooltip content="Total change in value over the tested period." />
           </div>
           <p className={cn("text-base font-semibold tabular-nums", returnPct != null && (returnPct >= 0 ? "text-brand-green" : "text-brand-red"))}>
-            {returnPct != null ? `${returnPct >= 0 ? "+" : ""}${formatPercent(returnPct)}` : "—"}
+            {returnPct != null ? formatPercent(returnPct) : UNAVAILABLE_IN_DEMO}
           </p>
         </div>
         <div>
@@ -58,7 +58,7 @@ export function AllocationSummaryCard({
             <InfoTooltip content="Largest peak-to-trough fall before recovering." />
           </div>
           <p className="text-base font-semibold tabular-nums text-foreground">
-            {maxDrawdown != null ? formatPercent(maxDrawdown) : "—"}
+            {maxDrawdown != null ? formatPercent(maxDrawdown) : UNAVAILABLE_IN_DEMO}
           </p>
         </div>
         <div>
@@ -66,14 +66,14 @@ export function AllocationSummaryCard({
             <p className="text-[11px] font-medium text-muted-foreground">Risk level</p>
             <InfoTooltip content="Strategy classification for comparison." />
           </div>
-          <p className="text-base font-semibold text-foreground">{riskLevel ?? "—"}</p>
+          <p className="text-base font-semibold text-foreground">{riskLevel ?? UNAVAILABLE_IN_DEMO}</p>
         </div>
         <div>
           <div className="flex items-center gap-1.5">
             <p className="text-[11px] font-medium text-muted-foreground">{METRIC_LABELS.similarityToMarket}</p>
             <InfoTooltip content="How closely the strategy moved with the market benchmark." />
           </div>
-          <p className="text-base font-semibold text-foreground">{marketSimilarity ?? "—"}</p>
+          <p className="text-base font-semibold text-foreground">{marketSimilarity ?? UNAVAILABLE_IN_DEMO}</p>
         </div>
       </div>
 

@@ -17,9 +17,9 @@ const mainNav = [
   { href: "/vega-financial", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/vega-financial/marketplace", label: "Explore", icon: Store },
   { href: "/vega-financial/portfolio", label: "Portfolio", icon: Wallet },
-  { href: "/vega-financial/profile#watchlist", label: "Watchlist", icon: Star },
-  { href: "/vega-financial/profile#activity", label: "Activity", icon: Activity },
-  { href: "/faq", label: "Learn", icon: BookOpen },
+  { href: "/vega-financial/watchlist", label: "Watchlist", icon: Star },
+  { href: "/vega-financial/activity", label: "Activity", icon: Activity },
+  { href: "/vega-financial/learn", label: "Learn", icon: BookOpen },
   { href: "/vega-financial/profile", label: "Settings", icon: Settings },
 ];
 

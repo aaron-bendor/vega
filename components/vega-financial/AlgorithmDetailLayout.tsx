@@ -31,9 +31,9 @@ export interface AlgorithmDetailLayoutProps {
     overview: ReactNode;
     performance: ReactNode;
     risk: ReactNode;
+    portfolioFit: ReactNode;
     developer: ReactNode;
-    howItWorks: ReactNode;
-    advanced: ReactNode;
+    methodology: ReactNode;
   };
   /** Optional mobile sticky CTA bar (e.g. "Add to portfolio" that scrolls to form) */
   mobileStickyBar?: ReactNode;
@@ -118,14 +118,14 @@ export function AlgorithmDetailLayout({
           <TabsContent value="risk" className="mt-0 focus-visible:outline-none">
             {tabPanels.risk}
           </TabsContent>
+          <TabsContent value="portfolio-fit" className="mt-0 focus-visible:outline-none">
+            {tabPanels.portfolioFit}
+          </TabsContent>
           <TabsContent value="developer" className="mt-0 focus-visible:outline-none">
             {tabPanels.developer}
           </TabsContent>
-          <TabsContent value="how-it-works" className="mt-0 focus-visible:outline-none">
-            {tabPanels.howItWorks}
-          </TabsContent>
-          <TabsContent value="advanced" className="mt-0 focus-visible:outline-none">
-            {tabPanels.advanced}
+          <TabsContent value="methodology" className="mt-0 focus-visible:outline-none">
+            {tabPanels.methodology}
           </TabsContent>
         </div>
       </Tabs>

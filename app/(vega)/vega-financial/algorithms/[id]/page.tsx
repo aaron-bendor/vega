@@ -133,10 +133,10 @@ export default async function AlgorithmDetailPage({
       returnPct={returnPct ?? undefined}
       maxDrawdown={maxDrawdown ?? undefined}
       riskLevel={displayRisk ?? undefined}
-      marketSimilarity="—"
+      marketSimilarity={undefined}
       actionInsight={overviewCopy?.actionInsight ?? undefined}
     >
-      <AlgorithmAllocationForm versionId={id} showAllocationHelper />
+      <AlgorithmAllocationForm versionId={id} strategyName={displayName} showAllocationHelper />
     </AllocationSummaryCard>
   ) : null;
 
@@ -365,6 +365,45 @@ export default async function AlgorithmDetailPage({
             </div>
           </div>
         ),
+        portfolioFit: (
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              How this strategy may fit with the rest of your portfolio.
+            </p>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Card className="rounded-xl border border-border bg-card">
+                <CardContent className="pt-4">
+                  <p className="text-xs font-medium text-muted-foreground mb-1">Role in a portfolio</p>
+                  <p className="text-sm text-foreground">{overviewCopy?.bestRole ?? "Growth"}</p>
+                </CardContent>
+              </Card>
+              <Card className="rounded-xl border border-border bg-card">
+                <CardContent className="pt-4">
+                  <p className="text-xs font-medium text-muted-foreground mb-1">Expected diversification benefit</p>
+                  <p className="text-sm text-foreground">May help reduce concentration when combined with strategies that behave differently.</p>
+                </CardContent>
+              </Card>
+              <Card className="rounded-xl border border-border bg-card">
+                <CardContent className="pt-4">
+                  <p className="text-xs font-medium text-muted-foreground mb-1">Overlap with equity market</p>
+                  <p className="text-sm text-foreground">Simulated correlation and overlap are shown in the snapshot. Use to judge diversification.</p>
+                </CardContent>
+              </Card>
+              <Card className="rounded-xl border border-border bg-card">
+                <CardContent className="pt-4">
+                  <p className="text-xs font-medium text-muted-foreground mb-1">Suggested allocation range</p>
+                  <p className="text-sm text-foreground">{overviewCopy?.suggestedSize ?? overviewCopy?.suggestedAllocationRange ?? "5–20% of portfolio, depending on risk tolerance."}</p>
+                </CardContent>
+              </Card>
+            </div>
+            <Card className="rounded-xl border border-border bg-card">
+              <CardContent className="pt-4">
+                <p className="text-xs font-medium text-muted-foreground mb-2">Works best alongside</p>
+                <p className="text-sm text-foreground">{overviewCopy?.bestUsedAs ?? "Strategies with different styles (e.g. trend and mean reversion) to smooth returns."}</p>
+              </CardContent>
+            </Card>
+          </div>
+        ),
         developer: (
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
@@ -373,7 +412,13 @@ export default async function AlgorithmDetailPage({
             <Card className="rounded-xl border border-border bg-card">
               <CardContent className="pt-4 space-y-4">
                 <div>
-                  <p className="text-sm font-medium text-foreground">Review status</p>
+                  <p className="text-sm font-medium text-foreground">Developer background</p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Strategy provider and verification status are shown. Source code is not disclosed to protect intellectual property and reduce strategy cloning.
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-foreground">Verification status</p>
                   <p className="text-sm text-muted-foreground mt-1">
                     {version?.verificationStatus === "verified"
                       ? "Reviewed before publication. Monitored for risk and data quality."
@@ -381,28 +426,22 @@ export default async function AlgorithmDetailPage({
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-foreground">What was reviewed</p>
+                  <p className="text-sm font-medium text-foreground">Strategy review status</p>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Methodology and assumptions are reviewed before publication. Advanced diagnostics are available in the Advanced tab.
+                    Methodology and assumptions are reviewed before publication.
                   </p>
                 </div>
               </CardContent>
             </Card>
           </div>
         ),
-        howItWorks: (
+        methodology: (
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              High-level logic, data sources and limitations. No proprietary detail.
+              Tested period, assumptions, data source and advanced metrics. No proprietary code or trade timing.
             </p>
             {(version || demoAlgo) && (
               <>
-                <div className="rounded-xl border border-border bg-card p-4">
-                  <h3 className="text-sm font-semibold text-foreground mb-2">Strategy logic summary</h3>
-                  <p className="text-sm text-muted-foreground leading-snug">
-                    The strategy looks for assets with persistent relative strength and adjusts the lookback window based on recent conditions. Exact code and trade-level details are hidden to protect proprietary logic.
-                  </p>
-                </div>
                 <MethodologyAssumptionsSection
                   dataSource="Stooq daily OHLC"
                   symbol={formatSymbol(symbols[0] ?? "^spx")}
@@ -410,16 +449,15 @@ export default async function AlgorithmDetailPage({
                   version={versionLabel}
                   note="Historical data helps compare strategies. Simulated results are not forecasts."
                 />
+                <div className="rounded-xl border border-border bg-card p-4">
+                  <h3 className="text-sm font-semibold text-foreground mb-2">Assumptions</h3>
+                  <p className="text-sm text-muted-foreground leading-snug">
+                    Backtest uses historical data. Slippage and costs may apply in live trading. Exact code and trade-level details are not shown.
+                  </p>
+                </div>
               </>
             )}
-          </div>
-        ),
-        advanced: (
-          <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Technical metrics and backtest settings for experienced users.
-            </p>
-            <AdvancedDisclosure summary="How scores are calculated">
+            <AdvancedDisclosure summary="How to read these metrics">
               <p className="mb-3">{METRICS_EXPLAINER_COPY}</p>
               <dl className="space-y-2 text-muted-foreground text-sm">
                 <div>
@@ -436,6 +474,16 @@ export default async function AlgorithmDetailPage({
                 </div>
               </dl>
             </AdvancedDisclosure>
+            <Card className="rounded-xl border border-border bg-card">
+              <CardContent className="pt-4 space-y-3">
+                <p className="text-xs font-semibold text-foreground">What we show</p>
+                <p className="text-sm text-muted-foreground">Aggregate exposure, performance, risk, and methodology summary.</p>
+                <p className="text-xs font-semibold text-foreground">What we do not show</p>
+                <p className="text-sm text-muted-foreground">Source code, exact trade timing, broker identifiers.</p>
+                <p className="text-xs font-semibold text-foreground">Why</p>
+                <p className="text-sm text-muted-foreground">IP protection and to reduce strategy cloning.</p>
+              </CardContent>
+            </Card>
           </div>
         ),
       }}

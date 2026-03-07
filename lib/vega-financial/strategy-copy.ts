@@ -404,7 +404,7 @@ export const METHODOLOGY_NOTE_COPY =
   "This strategy page keeps the code private, but the data source, tested date range, and headline assumptions should still be visible so investors can judge the result with context.";
 
 export const ALLOCATION_NOTE_COPY =
-  "This is a paper allocation only. It changes your demo portfolio, not a real investment account.";
+  "This is a simulated allocation for the demo portfolio only. No real money is invested.";
 
 export const HOW_SCORES_CALCULATED = {
   intro:

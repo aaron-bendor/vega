@@ -20,7 +20,7 @@ export function PortfolioInsightCard({ account, className }: PortfolioInsightCar
   if (!hasHoldings) {
     body = "Your portfolio is empty. Add a strategy to get started.";
   } else if (account.holdings.length === 1) {
-    body = "Adding a lower-correlation strategy could improve diversification.";
+    body = "Your portfolio is moderately concentrated. Adding a lower-correlation strategy may improve diversification.";
   } else {
     const topHolding = account.holdings.reduce((a, b) =>
       a.currentValue > b.currentValue ? a : b
@@ -32,7 +32,7 @@ export function PortfolioInsightCard({ account, className }: PortfolioInsightCar
     } else if (topHolding && totalAllocated > 0 && topHolding.currentValue / totalAllocated > 0.4) {
       body = `Most of your gains are coming from ${topHolding.name}.`;
     } else {
-      body = "Adding a lower-correlation strategy could improve diversification.";
+      body = "Your portfolio is moderately concentrated. Adding a lower-correlation strategy may improve diversification.";
     }
   }
 
@@ -46,10 +46,10 @@ export function PortfolioInsightCard({ account, className }: PortfolioInsightCar
       <h3 className="text-sm font-semibold text-foreground">Portfolio insight</h3>
       <p className="text-sm text-muted-foreground leading-snug">{body}</p>
       <Link
-        href="/vega-financial/portfolio"
+        href="/vega-financial/marketplace"
         className="text-sm font-medium text-primary hover:underline focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded self-start"
       >
-        Review allocation
+        Explore diversifiers
       </Link>
     </div>
   );

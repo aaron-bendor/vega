@@ -1,5 +1,5 @@
 import { LandingLayoutClient } from "@/components/landing/LandingLayoutClient";
-import { Footer } from "@/components/landing/Footer";
+import { ConditionalLandingFooter } from "@/components/landing/ConditionalLandingFooter";
 
 export default function LandingLayout({
   children,
@@ -10,7 +10,7 @@ export default function LandingLayout({
     <div className="min-h-screen flex flex-col bg-white overflow-visible">
       <LandingLayoutClient>{children}</LandingLayoutClient>
       <div className="mt-auto">
-        <Footer />
+        <ConditionalLandingFooter />
       </div>
     </div>
   );

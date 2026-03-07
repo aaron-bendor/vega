@@ -9,7 +9,7 @@ export function VegaFinancialShell({
   children: React.ReactNode;
 }) {
   return (
-    <AppShell naturalScroll bottomNav={<VegaFinancialBottomNav />}>
+    <AppShell naturalScroll hideTopBar bottomNav={<VegaFinancialBottomNav />}>
       {children}
     </AppShell>
   );

@@ -54,6 +54,10 @@ export function AllocationDonut({ data }: AllocationDonutProps) {
             border: "1px solid rgba(51,51,51,0.18)",
             borderRadius: 8,
             fontSize: 13,
+            minWidth: "16rem",
+            maxWidth: "22rem",
+            lineHeight: 1.45,
+            padding: "10px 14px",
           }}
           formatter={(value: number | undefined) => [`${(value ?? 0).toFixed(1)}%`, "Allocation"]}
         />

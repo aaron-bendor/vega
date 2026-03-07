@@ -37,8 +37,9 @@ interface MarketplaceContentProps {
 
 export function MarketplaceContent({ algorithms, tagOptions, useDemo }: MarketplaceContentProps) {
   const searchParams = useSearchParams();
-  const sort = searchParams.get("sort") ?? "trending";
+  const sort = searchParams.get("sort") ?? "newest";
   const [search, setSearch] = useState("");
+  const [compareIds, setCompareIds] = useState<Set<string>>(new Set());
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -53,11 +54,25 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
     if (sort === "newest") {
       list = [...list].reverse();
     }
-    if (sort === "drawdown" && list.some((a) => isDbVersion(a) && (a as DbVersion).cachedMaxDrawdown != null)) {
+    if (sort === "drawdown") {
       list = [...list].sort((a, b) => {
         const da = isDbVersion(a) ? (a.cachedMaxDrawdown ?? 1) : 1;
         const db = isDbVersion(b) ? (b.cachedMaxDrawdown ?? 1) : 1;
         return da - db;
+      });
+    }
+    if (sort === "risk") {
+      list = [...list].sort((a, b) => {
+        const ra = (a.riskLevel === "Low" ? 1 : a.riskLevel === "High" ? 3 : 2);
+        const rb = (b.riskLevel === "Low" ? 1 : b.riskLevel === "High" ? 3 : 2);
+        return ra - rb;
+      });
+    }
+    if (sort === "return" && list.some((a) => isDbVersion(a) && (a as DbVersion).cachedReturn != null)) {
+      list = [...list].sort((a, b) => {
+        const ra = isDbVersion(a) ? (a.cachedReturn ?? -1) : -1;
+        const rb = isDbVersion(b) ? (b.cachedReturn ?? -1) : -1;
+        return rb - ra;
       });
     }
     if (sort === "sharpe" && list.some((a) => isDbVersion(a) && (a as DbVersion).cachedSharpe != null)) {
@@ -67,8 +82,31 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
         return sb - sa;
       });
     }
+    if (sort === "best-fit") {
+      list = [...list];
+    }
     return list;
   }, [algorithms, search, sort]);
+
+  const toggleCompare = (id: string) => {
+    setCompareIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else if (next.size < 3) next.add(id);
+      return next;
+    });
+  };
+  const compareArray = Array.from(compareIds);
+  const compareHref = compareArray.length >= 2
+    ? `/vega-financial/marketplace?compare=${compareArray.join(",")}`
+    : null;
+
+  const COLLECTIONS = [
+    { label: "Low risk starters", href: "/vega-financial/marketplace?risk=Low", desc: "Strategies with lower volatility." },
+    { label: "Diversifiers", href: "/vega-financial/marketplace?tag=Mean%20Reversion", desc: "May help balance your portfolio." },
+    { label: "Longer track records", href: "/vega-financial/marketplace?sort=newest", desc: "Strategies with more history." },
+    { label: "Verified strategies", href: "/vega-financial/marketplace", desc: "Reviewed by the platform." },
+  ];
 
   return (
     <div className="space-y-6">
@@ -79,12 +117,27 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
         search={search}
         onSearchChange={setSearch}
       />
+
+      {/* Collections strip */}
+      <div className="flex flex-wrap gap-2">
+        {COLLECTIONS.map((c) => (
+          <Link
+            key={c.label}
+            href={c.href}
+            className="rounded-lg border border-border bg-card px-3 py-2 text-sm hover:bg-muted/30 transition-colors focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <span className="font-medium text-foreground">{c.label}</span>
+            <span className="text-muted-foreground text-xs block mt-0.5">{c.desc}</span>
+          </Link>
+        ))}
+      </div>
+
       {filtered.length === 0 ? (
         <div className="rounded-2xl border border-[rgba(51,51,51,0.12)] bg-muted/30 py-12 px-6 text-center">
           <p className="text-muted-foreground mb-4">
             {algorithms.length === 0
-              ? "No algorithms yet. Run the database seed to populate the marketplace."
-              : "No algorithms match your filters."}
+              ? "No strategies yet. Run the database seed to populate the marketplace."
+              : "No strategies match your filters."}
           </p>
           {algorithms.length > 0 && (
             <p className="text-sm text-muted-foreground mb-4">
@@ -93,17 +146,18 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
           )}
         </div>
       ) : useDemo ? (
-        <div className="grid gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((v, i) => (
-            <Link
-              key={v.id}
-              href={`/vega-financial/algorithms/${v.id}`}
-              className="block transition-opacity duration-300 ease-out min-w-0"
-              style={{ animationDelay: `${i * 40}ms` }}
-            >
-              <Card className="h-full min-h-[180px] flex flex-col rounded-2xl border border-border bg-card transition-[box-shadow,border-color] duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:border-muted-foreground/20 hover:shadow-md hover:-translate-y-0.5 focus-within:ring-2 focus-within:ring-ring focus-within:outline-none motion-reduce:transition-none" data-tour={v.id === "demo-1" ? "mp-card-alpha" : undefined}>
+        <>
+          <div className="grid gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {filtered.map((v, i) => (
+              <Card
+                key={v.id}
+                className="h-full min-h-[200px] flex flex-col rounded-2xl border border-border bg-card transition-[box-shadow,border-color] duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:border-muted-foreground/20 hover:shadow-md focus-within:ring-2 focus-within:ring-ring focus-within:outline-none motion-reduce:transition-none"
+                data-tour={v.id === "demo-1" ? "mp-card-alpha" : undefined}
+              >
                 <CardHeader className="pb-2 flex-shrink-0">
-                  <CardTitle className="font-syne text-sm font-semibold leading-tight">{v.name}</CardTitle>
+                  <CardTitle className="font-syne text-sm font-semibold leading-tight">
+                    <Link href={`/vega-financial/algorithms/${v.id}`} className="hover:underline">{v.name}</Link>
+                  </CardTitle>
                   <CardDescription className="line-clamp-2 text-xs mt-1">{v.shortDesc}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3 flex-1 flex flex-col justify-end pt-0">
@@ -117,25 +171,53 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
                   {(v as DemoAlgo).riskLevel && (
                     <Badge variant="outline" className="text-xs">{(v as DemoAlgo).riskLevel}</Badge>
                   )}
-                  <p className="text-xs text-muted-foreground">Demo mode · Run backtest to see metrics</p>
+                  <p className="text-xs text-muted-foreground">Simulated results · View metrics and methodology</p>
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    <Link href={`/vega-financial/algorithms/${v.id}`} className="text-sm font-medium text-primary hover:underline">
+                      View details
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={(e) => { e.preventDefault(); toggleCompare(v.id); }}
+                      className="text-sm font-medium text-muted-foreground hover:text-foreground"
+                    >
+                      Compare
+                    </button>
+                    <Link href={`/vega-financial/algorithms/${v.id}#invest`} className="text-sm font-medium text-muted-foreground hover:text-foreground">
+                      Add to watchlist
+                    </Link>
+                  </div>
                 </CardContent>
               </Card>
-            </Link>
-          ))}
-        </div>
+            ))}
+          </div>
+          {compareArray.length >= 2 && (
+            <div className="sticky bottom-0 left-0 right-0 z-20 flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-4 shadow-lg">
+              <span className="text-sm font-medium text-foreground">
+                {compareArray.length} strategies selected
+              </span>
+              <Link
+                href={compareHref ?? "#"}
+                className="rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:bg-primary/90"
+              >
+                Compare strategies
+              </Link>
+            </div>
+          )}
+        </>
       ) : (
-        <div className="grid gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((v, i) => (
-            <Link
-              key={v.id}
-              href={`/vega-financial/algorithms/${v.id}`}
-              className="block transition-opacity duration-300 ease-out min-w-0"
-              style={{ animationDelay: `${i * 40}ms` }}
-            >
-              <Card className="h-full min-h-[180px] flex flex-col rounded-2xl border border-border bg-card transition-[box-shadow,border-color] duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:border-muted-foreground/20 hover:shadow-md hover:-translate-y-0.5 focus-within:ring-2 focus-within:ring-ring focus-within:outline-none motion-reduce:transition-none" data-tour={v.id === "demo-1" ? "mp-card-alpha" : undefined}>
+        <>
+          <div className="grid gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {filtered.map((v) => (
+              <Card
+                key={v.id}
+                className="h-full min-h-[200px] flex flex-col rounded-2xl border border-border bg-card transition-[box-shadow,border-color] duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:border-muted-foreground/20 hover:shadow-md focus-within:ring-2 focus-within:ring-ring focus-within:outline-none motion-reduce:transition-none"
+              >
                 <CardHeader className="pb-2 flex-shrink-0">
                   <div className="flex items-start justify-between gap-2">
-                    <CardTitle className="font-syne text-sm font-semibold leading-tight">{v.name}</CardTitle>
+                    <CardTitle className="font-syne text-sm font-semibold leading-tight">
+                      <Link href={`/vega-financial/algorithms/${v.id}`} className="hover:underline">{v.name}</Link>
+                    </CardTitle>
                     {isDbVersion(v) && v.verificationStatus === "verified" && (
                       <ShieldCheck className="size-4 text-primary shrink-0 mt-0.5" aria-hidden />
                     )}
@@ -170,11 +252,39 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
                       <span><span className="text-foreground">Biggest drop:</span> {formatPercent(v.cachedMaxDrawdown)}</span>
                     )}
                   </div>
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    <Link href={`/vega-financial/algorithms/${v.id}`} className="text-sm font-medium text-primary hover:underline">
+                      View details
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => toggleCompare(v.id)}
+                      className="text-sm font-medium text-muted-foreground hover:text-foreground"
+                    >
+                      Compare
+                    </button>
+                    <Link href={`/vega-financial/algorithms/${v.id}#invest`} className="text-sm font-medium text-muted-foreground hover:text-foreground">
+                      Add to watchlist
+                    </Link>
+                  </div>
                 </CardContent>
               </Card>
-            </Link>
-          ))}
-        </div>
+            ))}
+          </div>
+          {compareArray.length >= 2 && (
+            <div className="sticky bottom-0 left-0 right-0 z-20 flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-4 shadow-lg">
+              <span className="text-sm font-medium text-foreground">
+                {compareArray.length} strategies selected
+              </span>
+              <Link
+                href={compareHref ?? "#"}
+                className="rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:bg-primary/90"
+              >
+                Compare strategies
+              </Link>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

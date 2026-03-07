@@ -44,10 +44,10 @@ export function HelpCard({ className }: HelpCardProps) {
           Replay tutorial
         </button>
         <Link
-          href="/vega-financial/profile#metrics"
+          href="/vega-financial/learn"
           className="text-sm font-medium text-primary hover:underline focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded"
         >
-          Learn about risk
+          How to read these metrics
         </Link>
       </div>
     </div>

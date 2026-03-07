@@ -176,7 +176,7 @@ export default function VegaFinancialProfilePage() {
               </p>
               {watchlistCount > 0 && (
                 <Link
-                  href="/vega-financial/profile#watchlist"
+                  href="/vega-financial/watchlist"
                   className="text-sm text-primary hover:underline mt-1 inline-block"
                 >
                   View in Watchlist section

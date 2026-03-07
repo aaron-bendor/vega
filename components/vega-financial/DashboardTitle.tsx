@@ -14,8 +14,7 @@ export function DashboardTitle() {
         </Badge>
       </div>
       <p className="text-sm text-muted-foreground max-w-xl mb-4">
-        Track your paper allocations, review your holdings, and decide what to
-        adjust next.
+        Review your current allocations, portfolio concentration, and next actions.
       </p>
     </header>
   );

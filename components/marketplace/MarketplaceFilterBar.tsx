@@ -15,10 +15,11 @@ import { SlidingChipRow } from "@/components/marketplace/SlidingChipRow";
 import { cn } from "@/lib/utils";
 
 const SORT_OPTIONS = [
-  { value: "trending", label: "Trending" },
+  { value: "best-fit", label: "Best fit for portfolio" },
+  { value: "drawdown", label: "Lowest drawdown" },
+  { value: "risk", label: "Lowest risk" },
+  { value: "return", label: "Highest return" },
   { value: "newest", label: "Newest" },
-  { value: "drawdown", label: "Smallest drop" },
-  { value: "sharpe", label: "Best risk-adjusted" },
 ] as const;
 
 const CATEGORY_OPTIONS = [
@@ -51,7 +52,7 @@ export function MarketplaceFilterBar({
 }: MarketplaceFilterBarProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [sort, setSort] = useState(searchParams.get("sort") ?? "trending");
+  const [sort, setSort] = useState(searchParams.get("sort") ?? "newest");
   const tag = searchParams.get("tag") ?? "";
   const risk = searchParams.get("risk") ?? "";
 
@@ -100,11 +101,11 @@ export function MarketplaceFilterBar({
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" aria-hidden />
           <Input
             type="search"
-            placeholder="Search algorithms…"
+            placeholder="Search strategies…"
             value={search}
             onChange={(e) => onSearchChange?.(e.target.value)}
             className="pl-9 h-9 w-full"
-            aria-label="Search algorithms"
+            aria-label="Search strategies"
           />
         </div>
         <div className="flex items-center gap-2 shrink-0 self-start sm:self-center">
@@ -225,9 +226,12 @@ export function MarketplaceFilterBar({
           )}
         </div>
         <p className="text-sm text-muted-foreground tabular-nums shrink-0">
-          Showing {resultCount} of {totalCount}
+          Showing {resultCount} strateg{resultCount === 1 ? "y" : "ies"}
         </p>
       </div>
+      <p className="text-xs text-muted-foreground">
+        Start with risk and drawdown. Then compare how each strategy may fit with the rest of your portfolio.
+      </p>
     </div>
   );
 }

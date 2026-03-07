@@ -3,6 +3,10 @@
  * Use these instead of technical terms on primary screens.
  */
 
+/** Shown on all investor pages. */
+export const INVESTOR_DISCLAIMER =
+  "University prototype. Paper trading only. Not investment advice.";
+
 export const METRIC_LABELS = {
   /** Use instead of "Max drawdown" */
   biggestDrop: "Biggest drop",
@@ -14,6 +18,9 @@ export const METRIC_LABELS = {
   similarityToMarket: "Similarity to market",
   /** Cumulative return */
   return: "Return",
+  /** Strategy snapshot / allocation summary */
+  marketSimilarity: "Market similarity",
+  dataConfidence: "Data confidence",
   /** For tooltips / advanced mode, keep technical term */
   maxDrawdown: "Max drawdown",
   sharpeRatio: "Sharpe ratio",
@@ -24,19 +31,19 @@ export const METRIC_LABELS = {
 export const EMPTY_STATES = {
   noHoldings: {
     headline: "No holdings yet",
-    body: "Explore algorithms and add them to your portfolio to see performance here.",
-    cta: "Explore algorithms",
+    body: "Explore strategies and add them to your portfolio to see performance here.",
+    cta: "Explore strategies",
   },
   noActivity: {
     headline: "No recent activity",
-    body: "When you add funds or allocate to a strategy, the updates will appear here.",
+    body: "Allocations, watchlist changes, and portfolio updates will appear here.",
     cta: "Explore strategies",
   },
 } as const;
 
 export const PAGE_SUBTITLES = {
-  dashboard: "Track your portfolio, review your holdings, and decide what to do next.",
-  explore: "Discover algorithms you might want to add to your portfolio.",
-  portfolio: "How your money is allocated and how it's performing.",
+  dashboard: "Review your current allocations, portfolio concentration, and next actions.",
+  explore: "Compare systematic strategies by risk, drawdown, and portfolio role before you allocate.",
+  portfolio: "See your current allocations, concentration, and overall portfolio behaviour.",
   algorithmDetail: "Review performance, risk and how it works before adding to your portfolio.",
 } as const;

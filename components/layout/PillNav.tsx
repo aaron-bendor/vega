@@ -20,6 +20,7 @@ type NavEntry =
 
 const mainNav: NavEntry[] = [
   { type: "link", href: "/", label: "Home", exact: true },
+  { type: "link", href: "/about-us", label: "About Us" },
   { type: "link", href: "/vega-developer", label: "Developer" },
   { type: "link", href: "/faq", label: "FAQ" },
   { type: "link", href: "/admin", label: "Admin" },
@@ -57,6 +58,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
     router.push("/vega-financial");
   };
   const isStandalone = variant === "standalone" || variant === "investor" || variant === "investorApp";
+  const isInvestorAppCompact = variant === "investorApp";
   const bannerRef = useRef<HTMLDivElement>(null);
   const spacerRef = useRef<HTMLDivElement>(null);
 
@@ -65,8 +67,9 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
     const spacer = spacerRef.current;
     if (!banner || !spacer) return;
 
+    const minHeight = isInvestorAppCompact ? 56 : 84;
     function setSpacerHeight() {
-      const h = Math.max(banner!.offsetHeight || 0, 84);
+      const h = Math.max(banner!.offsetHeight || 0, minHeight);
       spacer!.style.setProperty("--banner-height", `${h}px`);
     }
 
@@ -247,7 +250,8 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
       <div
         ref={bannerRef}
         className={cn(
-          "site-banner fixed top-0 left-0 right-0 pt-4",
+          "site-banner fixed top-0 left-0 right-0",
+          isInvestorAppCompact ? "pt-2" : "pt-4",
           bannerHidden && "is-hidden"
         )}
         role="banner"
@@ -257,8 +261,9 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
             className={cn(
               "nav-pill-glass w-full max-w-[1400px] flex rounded-full shrink-0 transition-[height,background-color,box-shadow,border-color] duration-motion-slow ease-motion border-b border-transparent",
               pillBg,
-              isScrolled && "h-12 md:h-14 bg-black/60 backdrop-blur-xl shadow-lg shadow-black/25 border-white/10",
-              !isScrolled && "h-14 md:h-16"
+              isInvestorAppCompact && "h-11 md:h-12",
+              !isInvestorAppCompact && isScrolled && "h-12 md:h-14 bg-black/60 backdrop-blur-xl shadow-lg shadow-black/25 border-white/10",
+              !isInvestorAppCompact && !isScrolled && "h-14 md:h-16"
             )}
           >
             <nav

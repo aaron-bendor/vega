@@ -1,6 +1,6 @@
 "use client";
 
-import { formatPercent } from "@/lib/utils/format";
+import { formatPercent, UNAVAILABLE_IN_DEMO } from "@/lib/utils/format";
 import { METRIC_LABELS } from "@/lib/vega-financial/investor-copy";
 import { InfoTooltip } from "@/components/vega-financial/InfoTooltip";
 import { cn } from "@/lib/utils";
@@ -57,31 +57,31 @@ export function StrategyMetricStrip({
     {
       key: "return",
       label: METRIC_LABELS.return,
-      value: returnPct != null ? `${returnPct >= 0 ? "+" : ""}${formatPercent(returnPct)}` : "—",
+      value: returnPct != null ? formatPercent(returnPct) : UNAVAILABLE_IN_DEMO,
       explanation: CARD_EXPLANATIONS.return,
     },
     {
       key: "biggestDrop",
       label: METRIC_LABELS.biggestDrop,
-      value: maxDrawdown != null ? formatPercent(maxDrawdown) : "—",
+      value: maxDrawdown != null ? formatPercent(maxDrawdown) : UNAVAILABLE_IN_DEMO,
       explanation: CARD_EXPLANATIONS.biggestDrop,
     },
     {
       key: "riskAdjustedReturn",
       label: METRIC_LABELS.riskAdjustedReturn,
-      value: riskAdjustedReturn != null ? riskAdjustedReturn.toFixed(2) : "—",
+      value: riskAdjustedReturn != null ? riskAdjustedReturn.toFixed(2) : UNAVAILABLE_IN_DEMO,
       explanation: CARD_EXPLANATIONS.riskAdjustedReturn,
     },
     {
       key: "trackRecordLength",
       label: "Track record length",
-      value: trackRecordLength ?? "—",
+      value: trackRecordLength ?? UNAVAILABLE_IN_DEMO,
       explanation: CARD_EXPLANATIONS.trackRecordLength,
     },
     {
       key: "dataConfidence",
-      label: "Data confidence",
-      value: dataConfidence ?? "—",
+      label: METRIC_LABELS.dataConfidence,
+      value: dataConfidence ?? UNAVAILABLE_IN_DEMO,
       explanation: CARD_EXPLANATIONS.dataConfidence,
     },
   ];

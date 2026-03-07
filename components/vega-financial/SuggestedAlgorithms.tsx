@@ -23,10 +23,16 @@ export interface SuggestedAlgorithm {
   style?: string;
   /** Optional popularity label */
   popularity?: string;
+  /** Optional portfolio role e.g. "Growth", "Diversifier" */
+  role?: string;
+  /** Why this strategy is suggested (e.g. "Lower correlation with your current holdings") */
+  suggestedReason?: string;
 }
 
 interface SuggestedAlgorithmsProps {
   algorithms: SuggestedAlgorithm[];
+  /** Exclude these strategy ids (already held). */
+  heldAlgorithmIds?: string[];
 }
 
 function riskVariant(level: string): "success" | "warning" | "destructive" {
@@ -35,8 +41,10 @@ function riskVariant(level: string): "success" | "warning" | "destructive" {
   return "warning";
 }
 
-export function SuggestedAlgorithms({ algorithms }: SuggestedAlgorithmsProps) {
-  const show = algorithms.slice(0, 3);
+export function SuggestedAlgorithms({ algorithms, heldAlgorithmIds = [] }: SuggestedAlgorithmsProps) {
+  const held = new Set(heldAlgorithmIds);
+  const notHeld = algorithms.filter((a) => !held.has(a.id));
+  const show = notHeld.slice(0, 3);
   if (show.length === 0) return null;
 
   return (
@@ -84,6 +92,23 @@ export function SuggestedAlgorithms({ algorithms }: SuggestedAlgorithmsProps) {
               {/* Description */}
               <p className="text-xs text-muted-foreground line-clamp-2 leading-snug">
                 {algo.shortDesc}
+              </p>
+
+              {/* Risk + Role + Why suggested */}
+              <div className="flex flex-wrap gap-2 text-xs">
+                <span className="text-muted-foreground">Risk:</span>
+                <span className="font-medium">{algo.riskLevel}</span>
+                {algo.role && (
+                  <>
+                    <span className="text-muted-foreground">Role:</span>
+                    <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                      {algo.role}
+                    </span>
+                  </>
+                )}
+              </div>
+              <p className="text-[11px] text-muted-foreground italic">
+                {algo.suggestedReason ?? "May complement your current holdings."}
               </p>
 
               {/* Metric strip: 4 items desktop, 2x2 mobile */}
