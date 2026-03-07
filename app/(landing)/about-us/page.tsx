@@ -26,7 +26,7 @@ export default function AboutUsPage() {
         <div className="relative z-10 flex flex-col min-h-screen justify-center pt-[18%] sm:pt-[240px] lg:pt-[281px] px-4 sm:px-6 md:px-10 lg:px-[157px] pb-16 md:pb-24">
           <div className="max-w-[1217px]">
             <p className="font-dm-mono font-normal text-white text-base md:text-xl tracking-[2px] leading-tight">
-              // ABOUT US
+              {"// ABOUT US"}
             </p>
             <h1
               id="about-heading"

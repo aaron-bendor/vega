@@ -36,10 +36,11 @@ interface DashboardPortfolioChartProps {
  */
 export function DashboardPortfolioChart({
   currentValue,
-  startValue,
+  startValue: _startValue,
   dataPoints,
   className,
 }: DashboardPortfolioChartProps) {
+  void _startValue; // optional prop for future use
   const [range, setRange] = useState<(typeof RANGES)[number]>("All");
 
   const hasHistory = dataPoints && dataPoints.length >= 2;

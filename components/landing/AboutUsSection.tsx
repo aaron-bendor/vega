@@ -36,7 +36,7 @@ export function AboutUsSection() {
       <section className="relative w-full min-h-screen flex flex-col bg-white">
         <div className="flex-1 flex flex-col justify-center max-w-[1200px] mx-auto px-4 md:px-8 lg:px-12 xl:px-[184px] py-12 md:py-16 w-full">
           <p className="font-dm-mono font-normal text-[#531cb3] text-base md:text-xl tracking-[2px] leading-tight">
-            // OUR TEAM
+            {"// OUR TEAM"}
           </p>
           <h2 className="font-maven-pro font-extrabold text-[#111] text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-[-2px] leading-tight mt-3 max-w-[800px]">
             Who are we?
@@ -73,7 +73,7 @@ export function AboutUsSection() {
       <section className="relative w-full min-h-screen flex flex-col bg-white">
         <div className="flex-1 flex flex-col justify-center max-w-[1200px] mx-auto px-4 md:px-8 lg:px-[184px] py-16 md:py-20 w-full">
           <p className="font-dm-mono font-normal text-[#531cb3] text-base md:text-xl tracking-[2px] leading-tight">
-            // OUR MISSION
+            {"// OUR MISSION"}
           </p>
           <p className="font-maven-pro font-semibold text-[#111] text-2xl sm:text-3xl md:text-[50px] tracking-[-2px] leading-[1.2] mt-4 max-w-[900px]">
             To make sophisticated investing{" "}
@@ -103,7 +103,7 @@ export function AboutUsSection() {
       <section className="relative w-full min-h-screen flex flex-col bg-white">
         <div className="flex-1 flex flex-col justify-center max-w-[1200px] mx-auto px-4 md:px-8 lg:px-[184px] py-16 md:py-20 w-full">
           <p className="font-dm-mono font-normal text-[#531cb3] text-base md:text-xl tracking-[2px] leading-tight">
-            // WHAT WE STAND FOR
+            {"// WHAT WE STAND FOR"}
           </p>
           <h2 className="font-maven-pro font-semibold text-[#111] text-2xl sm:text-3xl md:text-[50px] tracking-[-2px] leading-tight mt-4">
             Built on three core principles.

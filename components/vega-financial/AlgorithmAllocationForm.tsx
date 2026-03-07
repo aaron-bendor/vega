@@ -37,7 +37,7 @@ export function AlgorithmAllocationForm({
   showAllocationHelper = true,
   className,
 }: AlgorithmAllocationFormProps) {
-  const [amount, setAmount] = useState<number>(10000);
+  const [, setAmount] = useState<number>(10000);
   const [amountInput, setAmountInput] = useState("10000");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

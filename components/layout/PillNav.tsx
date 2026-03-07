@@ -144,7 +144,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
       window.removeEventListener("resize", setSpacerHeight);
       window.removeEventListener("scroll", onScroll);
     };
-  }, []);
+  }, [isInvestorAppCompact]);
 
   const pillBg = isInvestorAppCompact
     ? "bg-shell-banner border border-shell-border shadow-[0_1px_2px_0_rgb(0_0_0/0.04)]"
@@ -159,7 +159,6 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
 
   const mobileMenuBg = "bg-black/80 backdrop-blur-xl border border-white/10";
 
-  const isHome = pathname === "/";
   const isHeroPage = pathname === "/" || pathname === "/about-us";
 
   const [hoveredNavIndex, setHoveredNavIndex] = useState<number | null>(null);

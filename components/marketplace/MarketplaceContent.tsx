@@ -148,7 +148,7 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
       ) : useDemo ? (
         <>
           <div className="grid gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((v, i) => (
+            {filtered.map((v) => (
               <Card
                 key={v.id}
                 className="h-full min-h-[200px] flex flex-col rounded-2xl border border-border bg-card transition-[box-shadow,border-color] duration-200 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:border-muted-foreground/20 hover:shadow-md focus-within:ring-2 focus-within:ring-ring focus-within:outline-none motion-reduce:transition-none"

@@ -50,6 +50,7 @@ export function MarketplaceFilterBar({
   search = "",
   onSearchChange,
 }: MarketplaceFilterBarProps) {
+  void totalCount; // passed from parent for future use
   const router = useRouter();
   const searchParams = useSearchParams();
   const [sort, setSort] = useState(searchParams.get("sort") ?? "newest");

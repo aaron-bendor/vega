@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import {
-  PORTFOLIO_STORAGE_KEY,
   loadPortfolioState,
   savePortfolioState,
   seedFromMockAccountIfEmpty,

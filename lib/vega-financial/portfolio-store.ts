@@ -214,7 +214,6 @@ export function performDemoAllocation(
     const existing = state.holdings.find((h) => h.algorithmId === versionId);
     const newAllocated = (existing?.allocated ?? 0) + amount;
     const newCurrentValue = (existing?.currentValue ?? 0) + amount;
-    const newTotalAllocated = totalAllocated + amount;
     const newTotalEquity = totalEquity;
     const newHoldings: PaperHolding[] = existing
       ? state.holdings.map((h) =>

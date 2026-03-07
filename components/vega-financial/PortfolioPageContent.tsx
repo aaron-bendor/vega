@@ -13,7 +13,6 @@ import {
   loadPortfolioState,
   seedFromMockAccountIfEmpty,
   subscribePortfolioUpdate,
-  getTotalAllocated,
 } from "@/lib/vega-financial/portfolio-store";
 
 
@@ -35,7 +34,6 @@ export function PortfolioPageContent() {
     seedFromMockAccountIfEmpty();
     const state = loadPortfolioState();
     setAvailableCash(state.availableCash);
-    const totalAllocated = getTotalAllocated(state.holdings);
     setHoldings(
       state.holdings.map((h) => ({
         id: h.id,

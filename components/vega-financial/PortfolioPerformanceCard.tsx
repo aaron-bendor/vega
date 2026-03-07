@@ -35,10 +35,11 @@ interface PortfolioPerformanceCardProps {
  */
 export function PortfolioPerformanceCard({
   currentValue,
-  startValue,
+  startValue: _startValue,
   dataPoints,
   className,
 }: PortfolioPerformanceCardProps) {
+  void _startValue; // optional prop for future use
   const [range, setRange] = useState<(typeof RANGES)[number]>("All");
 
   const hasRealHistory = dataPoints && dataPoints.length >= 2;
