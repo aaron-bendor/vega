@@ -23,7 +23,6 @@ import { AdvancedDisclosure } from "@/components/vega-financial/AdvancedDisclosu
 import {
   STRATEGY_OVERVIEW_COPY,
   METRICS_EXPLAINER_COPY,
-  DEFAULT_METRICS_HELP,
 } from "@/lib/vega-financial/strategy-copy";
 
 function formatSymbol(symbol: string) {
@@ -115,29 +114,48 @@ export default async function AlgorithmDetailPage({
       name={displayName}
       verified={verified}
       oneLineSummary={oneLineSummary}
+      heroMicrocopy={overviewCopy?.heroMicrocopy}
       assetClass={assetClass}
       strategyStyle={strategyStyle}
       riskLevel={displayRisk}
-      suitableFor={overviewCopy?.suitableFor}
-      bestRole={overviewCopy?.bestRole}
-      typicalBehaviour={overviewCopy?.typicalBehaviour}
-      mainDrawback={overviewCopy?.mainDrawback}
-      whyConsider={overviewCopy?.whyConsider}
-      trustSignals={overviewCopy?.trustSignals}
+      bestFit={overviewCopy?.bestFit ?? overviewCopy?.suitableFor}
+      portfolioRole={overviewCopy?.portfolioRole ?? overviewCopy?.bestRole}
+      worksBestIn={overviewCopy?.worksBestIn ?? overviewCopy?.typicalBehaviour}
+      mainRisk={overviewCopy?.mainRisk ?? overviewCopy?.mainDrawback}
+      trustPills={overviewCopy?.trustPills}
       replayTutorialSlot={<ReplayTutorialLink />}
     />
   );
 
   const heroRight = (version || demoAlgo) ? (
-    <AllocationSummaryCard
-      returnPct={returnPct ?? undefined}
-      maxDrawdown={maxDrawdown ?? undefined}
-      riskLevel={displayRisk ?? undefined}
-      marketSimilarity={undefined}
-      actionInsight={overviewCopy?.actionInsight ?? undefined}
-    >
-      <AlgorithmAllocationForm versionId={id} strategyName={displayName} showAllocationHelper />
-    </AllocationSummaryCard>
+    <div className="flex flex-col gap-6">
+      {/* Compact performance snapshot: chart + pills + track record */}
+      <div className="rounded-xl border border-border bg-card p-4 transition-[border-color,box-shadow] duration-200 hover:border-muted-foreground/25 hover:shadow-sm">
+        {equityPoints.length >= 2 && (
+          <div className="h-[120px] w-full mb-3 -mx-1 overflow-hidden">
+            <EquityCurve data={equityPoints} startDate={demoAlgo?.startDate} className="h-[120px]" />
+          </div>
+        )}
+        <div className="flex flex-wrap items-center gap-2">
+          {returnPct != null && (
+            <span className="inline-flex items-center rounded-full bg-brand-green/15 px-2.5 py-1 text-sm font-semibold tabular-nums text-brand-green">
+              {returnPct >= 0 ? "+" : ""}{(returnPct * 100).toFixed(2)}%
+            </span>
+          )}
+          {maxDrawdown != null && (
+            <span className="inline-flex items-center rounded-full bg-amber-500/15 px-2.5 py-1 text-sm font-semibold tabular-nums text-amber-700 dark:text-amber-400">
+              {(maxDrawdown * 100).toFixed(2)}% max drawdown
+            </span>
+          )}
+          {trackRecord !== "—" && (
+            <span className="text-xs text-muted-foreground">{trackRecord} track record</span>
+          )}
+        </div>
+      </div>
+      <AllocationSummaryCard>
+        <AlgorithmAllocationForm versionId={id} strategyName={displayName} showAllocationHelper />
+      </AllocationSummaryCard>
+    </div>
   ) : null;
 
   const metricStrip = (
@@ -150,24 +168,29 @@ export default async function AlgorithmDetailPage({
     />
   );
 
-  const metricsHelp = overviewCopy?.metricsHelp ?? DEFAULT_METRICS_HELP;
-
   return (
     <AlgorithmDetailLayout
       breadcrumb={[
-        { label: "Explore", href: "/vega-financial/marketplace" },
+        { label: "Strategies", href: "/vega-financial/marketplace" },
         { label: displayName },
       ]}
       heroLeft={heroLeft}
       heroRight={heroRight ?? <div />}
-      metricStrip={metricStrip}
+      metricStrip={
+        <>
+          {metricStrip}
+          {overviewCopy?.actionInsight && (
+            <p className="text-xs text-muted-foreground mt-3 max-w-2xl">{overviewCopy.actionInsight}</p>
+          )}
+        </>
+      }
       mobileStickyBar={<MobileStickyAllocationBar />}
       tabPanels={{
         overview: (
           <div className="space-y-6">
             {/* Section 1: What this strategy does */}
             {overviewCopy?.whatItDoes && (
-              <section>
+              <section id={METRICS_HELP_ID}>
                 <h3 className="text-sm font-semibold text-foreground mb-2">What this strategy does</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed max-w-3xl">
                   {overviewCopy.whatItDoes}
@@ -259,21 +282,7 @@ export default async function AlgorithmDetailPage({
               </section>
             )}
 
-            {/* Section 6: How to read the main metrics (expandable) */}
-            <section id={METRICS_HELP_ID}>
-              <AdvancedDisclosure summary="How to read the main metrics">
-                <dl className="space-y-2 text-sm text-muted-foreground">
-                  {Object.entries(metricsHelp).map(([key, text]) => (
-                    <div key={key}>
-                      <dt className="font-medium text-foreground capitalize">
-                        {key.replace(/([A-Z])/g, " $1").trim()}
-                      </dt>
-                      <dd className="mt-0.5">{text}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </AdvancedDisclosure>
-            </section>
+            {/* Metrics help moved to Help button in hero; Methodology tab has full explainer */}
           </div>
         ),
         performance: (
@@ -404,37 +413,6 @@ export default async function AlgorithmDetailPage({
               <CardContent className="pt-4">
                 <p className="text-xs font-medium text-muted-foreground mb-2">Works best alongside</p>
                 <p className="text-sm text-foreground">{overviewCopy?.bestUsedAs ?? "Strategies with different styles (e.g. trend and mean reversion) to smooth returns."}</p>
-              </CardContent>
-            </Card>
-          </div>
-        ),
-        developer: (
-          <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Strategy provider and review status.
-            </p>
-            <Card className="rounded-xl border border-border bg-card">
-              <CardContent className="pt-4 space-y-4">
-                <div>
-                  <p className="text-sm font-medium text-foreground">Developer background</p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Strategy provider and verification status are shown. Source code is not disclosed to protect intellectual property and reduce strategy cloning.
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-foreground">Verification status</p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {version?.verificationStatus === "verified"
-                      ? "Reviewed before publication. Monitored for risk and data quality."
-                      : "Simulated demo strategy. Methodology summary available."}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-foreground">Strategy review status</p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Methodology and assumptions are reviewed before publication.
-                  </p>
-                </div>
               </CardContent>
             </Card>
           </div>

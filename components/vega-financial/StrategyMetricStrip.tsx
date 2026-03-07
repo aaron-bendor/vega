@@ -1,7 +1,6 @@
 "use client";
 
-import { formatPercent, UNAVAILABLE_IN_DEMO } from "@/lib/utils/format";
-import { METRIC_LABELS } from "@/lib/vega-financial/investor-copy";
+import { formatPercent } from "@/lib/utils/format";
 import { InfoTooltip } from "@/components/vega-financial/InfoTooltip";
 import { cn } from "@/lib/utils";
 
@@ -35,7 +34,7 @@ function MetricCard({
   explanation: string;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-3 min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink flex flex-col gap-0.5">
+    <div className="rounded-xl border border-border bg-card p-3 min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink flex flex-col gap-0.5 transition-[border-color,box-shadow] duration-200 hover:border-muted-foreground/25 hover:shadow-sm">
       <div className="flex items-center gap-1.5">
         <p className="text-[11px] font-medium text-muted-foreground">{label}</p>
         <InfoTooltip content={explanation} />
@@ -54,37 +53,37 @@ export function StrategyMetricStrip({
   className,
 }: StrategyMetricStripProps) {
   const cards = [
-    {
+    returnPct != null && {
       key: "return",
-      label: METRIC_LABELS.return,
-      value: returnPct != null ? formatPercent(returnPct) : UNAVAILABLE_IN_DEMO,
+      label: "Return",
+      value: formatPercent(returnPct),
       explanation: CARD_EXPLANATIONS.return,
     },
-    {
-      key: "biggestDrop",
-      label: METRIC_LABELS.biggestDrop,
-      value: maxDrawdown != null ? formatPercent(maxDrawdown) : UNAVAILABLE_IN_DEMO,
+    maxDrawdown != null && {
+      key: "maxDrawdown",
+      label: "Max drawdown",
+      value: formatPercent(maxDrawdown),
       explanation: CARD_EXPLANATIONS.biggestDrop,
     },
-    {
-      key: "riskAdjustedReturn",
-      label: METRIC_LABELS.riskAdjustedReturn,
-      value: riskAdjustedReturn != null ? riskAdjustedReturn.toFixed(2) : UNAVAILABLE_IN_DEMO,
+    riskAdjustedReturn != null && {
+      key: "sharpe",
+      label: "Sharpe",
+      value: riskAdjustedReturn.toFixed(2),
       explanation: CARD_EXPLANATIONS.riskAdjustedReturn,
     },
-    {
-      key: "trackRecordLength",
-      label: "Track record length",
-      value: trackRecordLength ?? UNAVAILABLE_IN_DEMO,
+    trackRecordLength && {
+      key: "trackRecord",
+      label: "Track record",
+      value: trackRecordLength,
       explanation: CARD_EXPLANATIONS.trackRecordLength,
     },
-    {
-      key: "dataConfidence",
-      label: METRIC_LABELS.dataConfidence,
-      value: dataConfidence ?? UNAVAILABLE_IN_DEMO,
+    dataConfidence && {
+      key: "confidence",
+      label: "Confidence",
+      value: dataConfidence,
       explanation: CARD_EXPLANATIONS.dataConfidence,
     },
-  ];
+  ].filter(Boolean) as { key: string; label: string; value: React.ReactNode; explanation: string }[];
 
   return (
     <div className={cn("min-w-0", className)}>

@@ -138,8 +138,10 @@ export function AlgorithmAllocationForm({
   const estimatedWeightPct =
     totalEquity > 0
       ? (((currentHoldingValue + effectiveAmount) / totalEquity) * 100).toFixed(1)
-      : "—";
-  const cashAfter = availableCash - effectiveAmount;
+      : effectiveAmount > 0
+        ? "100.0"
+        : "0";
+  const cashAfter = Math.max(0, availableCash - effectiveAmount);
 
   return (
     <div className={cn("space-y-3", className)}>
@@ -175,9 +177,9 @@ export function AlgorithmAllocationForm({
                   setAmountInput(String(a));
                   setError(null);
                 }}
-                className="min-h-[44px] sm:min-h-[36px] px-2.5 py-1.5 rounded-md border border-border bg-muted/30 text-xs font-medium text-foreground hover:bg-muted/50 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
+                className="min-h-[44px] sm:min-h-[36px] px-2.5 py-1.5 rounded-md border border-border bg-muted/30 text-xs font-medium text-foreground hover:bg-muted/50 hover:border-muted-foreground/30 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring transition-colors duration-200"
               >
-                £{a.toLocaleString("en-GB")}
+                £{(a / 1000).toFixed(0)}k
               </button>
             ))}
             <button
@@ -187,7 +189,7 @@ export function AlgorithmAllocationForm({
                 setAmountInput(String(maxAmount));
                 setError(null);
               }}
-              className="min-h-[44px] sm:min-h-[36px] px-2.5 py-1.5 rounded-md border border-border bg-muted/30 text-xs font-medium text-foreground hover:bg-muted/50 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
+              className="min-h-[44px] sm:min-h-[36px] px-2.5 py-1.5 rounded-md border border-border bg-muted/30 text-xs font-medium text-foreground hover:bg-muted/50 hover:border-muted-foreground/30 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring transition-colors duration-200"
             >
               Max
             </button>
@@ -197,8 +199,8 @@ export function AlgorithmAllocationForm({
 
       {showAllocationHelper && (
         <div className="text-[11px] text-muted-foreground space-y-0.5">
-          <p>Estimated portfolio weight: {estimatedWeightPct}%</p>
-          <p>Available cash after: {formatCurrency(Math.max(0, cashAfter))}</p>
+          <p>Portfolio weight: {estimatedWeightPct}%</p>
+          <p>Cash left: {formatCurrency(cashAfter)}</p>
         </div>
       )}
 
@@ -220,7 +222,7 @@ export function AlgorithmAllocationForm({
           className="w-full min-h-[44px] sm:min-h-[40px]"
           data-tour="algo-add-paper"
         >
-          {loading ? "Allocating…" : "Allocate to demo portfolio"}
+          {loading ? "Allocating…" : "Add to demo portfolio"}
         </Button>
         {success && (
           <Link

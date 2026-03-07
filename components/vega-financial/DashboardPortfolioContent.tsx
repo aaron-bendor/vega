@@ -130,25 +130,17 @@ export function DashboardPortfolioContent({
         aria-label="Portfolio summary"
       >
         <SummaryMetricCard
-          label="Total account value"
+          label="Portfolio value"
           value={formatCurrency(account.equity)}
           numericValue={account.equity}
           numericFormat="currency"
-          helperText="Includes invested strategies and available cash"
+          helperText="Invested and cash"
         />
         <SummaryMetricCard
-          label="Invested in strategies"
-          value={formatCurrency(account.allocated)}
-          numericValue={account.allocated}
-          numericFormat="currency"
-          helperText="Amount currently allocated across your holdings"
-        />
-        <SummaryMetricCard
-          label="Total return"
+          label="1M return"
           value={formatPercent(account.unrealizedPnlPct / 100)}
           numericValue={account.unrealizedPnlPct}
           numericFormat="percent"
-          helperText="Since your first allocation"
           variant={account.unrealizedPnlPct >= 0 ? "positive" : "negative"}
         />
         <SummaryMetricCard
@@ -156,7 +148,10 @@ export function DashboardPortfolioContent({
           value={formatCurrency(account.availableCash)}
           numericValue={account.availableCash}
           numericFormat="currency"
-          helperText="Ready to allocate when you add another strategy"
+        />
+        <SummaryMetricCard
+          label="Risk score"
+          value={riskMix}
         />
       </section>
 

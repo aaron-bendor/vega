@@ -37,7 +37,6 @@ export interface AlgorithmDetailLayoutProps {
     performance: ReactNode;
     risk: ReactNode;
     portfolioFit: ReactNode;
-    developer: ReactNode;
     methodology: ReactNode;
   };
   /** Optional mobile sticky CTA bar (e.g. "Add to portfolio" that scrolls to form) */
@@ -75,45 +74,39 @@ export function AlgorithmDetailLayout({
         </section>
       )}
 
-      {/* 3. Tabs: Maven Pro labels, clear active state */}
+      {/* 3. Tabs: Overview, Performance, Risk, Portfolio fit, Methodology */}
       <Tabs value={tab} onValueChange={setTab} className="min-w-0">
         <div className="rounded-lg bg-muted/30 border border-border p-1.5 mb-6 overflow-x-auto">
           <TabsList className="flex h-auto gap-1 w-full sm:w-auto bg-transparent border-0 p-0 rounded-none shadow-none min-w-0">
             <TabsTrigger
               value="overview"
-              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-200"
+              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-200 hover:bg-background/70"
             >
               Overview
             </TabsTrigger>
             <TabsTrigger
               value="performance"
-              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-200"
+              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-200 hover:bg-background/70"
             >
               Performance
             </TabsTrigger>
             <TabsTrigger
               value="risk"
-              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-200"
+              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-200 hover:bg-background/70"
             >
               Risk
             </TabsTrigger>
             <TabsTrigger
-              value="developer"
-              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-200"
-            >
-              Developer
-            </TabsTrigger>
-            <TabsTrigger
               value="portfolio-fit"
-              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-200"
+              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-200 hover:bg-background/70"
             >
               Portfolio fit
             </TabsTrigger>
             <TabsTrigger
               value="methodology"
-              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-200"
+              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-200 hover:bg-background/70"
             >
-              Advanced
+              Methodology
             </TabsTrigger>
           </TabsList>
         </div>
@@ -129,9 +122,6 @@ export function AlgorithmDetailLayout({
           </TabsContent>
           <TabsContent value="portfolio-fit" className="mt-0 focus-visible:outline-none">
             {tabPanels.portfolioFit}
-          </TabsContent>
-          <TabsContent value="developer" className="mt-0 focus-visible:outline-none">
-            {tabPanels.developer}
           </TabsContent>
           <TabsContent value="methodology" className="mt-0 focus-visible:outline-none">
             {tabPanels.methodology}

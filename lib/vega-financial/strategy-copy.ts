@@ -42,6 +42,15 @@ export interface StrategyOverviewCopy {
   whyConsider?: { title: string; body: string }[];
   /** Hero: trust strip items. */
   trustSignals?: string[];
+  /** Compact trust pills: Reviewed, Demo-ready, Methodology, Advanced analytics */
+  trustPills?: string[];
+  /** Four decision cards: bestFit, portfolioRole, worksBestIn, mainRisk */
+  bestFit?: string;
+  portfolioRole?: string;
+  worksBestIn?: string;
+  mainRisk?: string;
+  /** Hero: microcopy under one-line summary */
+  heroMicrocopy?: string;
   /** Action card: plain-English insight. */
   actionInsight?: string;
   /** Overview: risks to know (3 cards). */
@@ -59,7 +68,7 @@ export interface StrategyOverviewCopy {
 export const STRATEGY_OVERVIEW_COPY: Record<string, StrategyOverviewCopy> = {
   "demo-1": {
     whatItDoes:
-      "Alpha Momentum Pro follows strong equity trends using an adaptive lookback window. It is designed to stay with persistent market leadership without relying on one fixed setting in every environment.",
+      "Alpha Momentum Pro follows persistent equity trends using an adaptive lookback, so it can stay with market leaders without relying on one fixed setting.",
     whereWorks: [
       "Sustained trends with clear market leadership",
       "Periods where winners continue to outperform for longer than expected",
@@ -88,19 +97,24 @@ export const STRATEGY_OVERVIEW_COPY: Record<string, StrategyOverviewCopy> = {
     suggestedRole: "Satellite growth allocation.",
     suggestedAllocationRange: "5% to 15% of a diversified demo portfolio.",
     oneLineSummary:
-      "Momentum strategy that aims to follow strong equity trends while adjusting to changing market conditions.",
-    suitableFor: "Users comfortable with medium risk and trend-following behaviour.",
-    bestRole: "Growth-oriented strategy that may complement slower or defensive holdings.",
-    typicalBehaviour: "Tends to do better in sustained trends.",
-    mainDrawback: "Can struggle in sideways or reversing markets.",
+      "Adaptive equity momentum strategy for medium-risk growth exposure.",
+    heroMicrocopy: "Built to follow persistent market leaders and adjust as trend strength changes.",
+    suitableFor: "Medium-risk growth investors.",
+    bestRole: "Growth satellite or complement to defensive holdings.",
+    typicalBehaviour: "Works best in sustained trends with clear market leadership.",
+    mainDrawback: "Weak in sideways or fast-reversing markets.",
+    bestFit: "Medium-risk growth investors",
+    portfolioRole: "Growth satellite or complement to defensive holdings",
+    worksBestIn: "Sustained trends with clear market leadership",
+    mainRisk: "Weak in sideways or fast-reversing markets",
     whyConsider: [
-      { title: "Upside potential", body: "Can benefit from persistent market leadership." },
-      { title: "Risk profile", body: "Medium risk with meaningful pullbacks." },
-      { title: "Diversification role", body: "May complement lower-growth or non-momentum strategies." },
+      { title: "Upside potential", body: "Benefits from persistent market leadership." },
+      { title: "Risk profile", body: "Medium risk with meaningful pullbacks possible." },
+      { title: "Diversification role", body: "Complements slower or non-momentum holdings." },
     ],
     trustSignals: ["Reviewed before publication", "Simulated portfolio use", "Methodology explained", "Advanced analysis available"],
-    actionInsight:
-      "This strategy has delivered strong returns in the demo period, but it has also experienced meaningful declines. It may suit users who can tolerate short-term losses.",
+    trustPills: ["Reviewed", "Demo-ready", "Methodology", "Advanced analytics"],
+    actionInsight: "Strong demo-period returns with moderate drawdowns.",
     risksToKnow: [
       "Can lose momentum quickly during reversals",
       "May underperform in sideways markets",
@@ -114,7 +128,6 @@ export const STRATEGY_OVERVIEW_COPY: Record<string, StrategyOverviewCopy> = {
       return: "Total change in value over the tested period.",
       biggestDrop: "Largest peak-to-trough fall before recovering.",
       riskAdjustedReturn: "How much return the strategy delivered for the level of risk taken.",
-      marketSimilarity: "How closely the strategy moved with the market benchmark.",
       dataConfidence: "Based on the amount of history available for this strategy.",
     },
   },
@@ -388,12 +401,14 @@ export const DEFAULT_TRUST_SIGNALS = [
   "Advanced analysis available",
 ];
 
-/** Default metrics help when not specified per strategy. */
+/** Compact trust pills for hero. */
+export const DEFAULT_TRUST_PILLS = ["Reviewed", "Demo-ready", "Methodology", "Advanced analytics"];
+
+/** Default metrics help when not specified per strategy. (Similarity to market omitted until implemented.) */
 export const DEFAULT_METRICS_HELP: Record<string, string> = {
   return: "Total change in value over the tested period.",
   biggestDrop: "Largest peak-to-trough fall before recovering.",
   riskAdjustedReturn: "How much return the strategy delivered for the level of risk taken.",
-  marketSimilarity: "How closely the strategy moved with the market benchmark.",
   dataConfidence: "Based on the amount of history available for this strategy.",
 };
 

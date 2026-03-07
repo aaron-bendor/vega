@@ -9,6 +9,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { cn } from "@/lib/utils";
 
 interface EquityPoint {
   dayIndex: number;
@@ -21,6 +22,8 @@ interface EquityCurveProps {
   startDate?: string;
   /** Optional precomputed date labels (one per point, same order as sorted data). */
   dates?: string[];
+  /** Optional className for the chart container (e.g. h-[120px] for compact hero). */
+  className?: string;
 }
 
 function addDays(isoDate: string, days: number): string {
@@ -37,10 +40,11 @@ function formatAxisDate(isoDate: string): string {
   return `${day} ${month} ${year}`;
 }
 
-export function EquityCurve({ data, startDate, dates }: EquityCurveProps) {
+export function EquityCurve({ data, startDate, dates, className }: EquityCurveProps) {
+  const heightClass = className ?? "h-[300px]";
   if (!data?.length) {
     return (
-      <div className="h-[300px] w-full flex items-center justify-center rounded-lg border border-dashed border-[rgba(51,51,51,0.18)] bg-[rgba(51,51,51,0.02)]">
+      <div className={cn(heightClass, "w-full flex items-center justify-center rounded-lg border border-dashed border-[rgba(51,51,51,0.18)] bg-[rgba(51,51,51,0.02)]")}>
         <p className="text-sm text-muted-foreground">
           No equity data yet. Run a backtest or ensure data is cached.
         </p>
@@ -49,7 +53,7 @@ export function EquityCurve({ data, startDate, dates }: EquityCurveProps) {
   }
   if (data.length < 2) {
     return (
-      <div className="h-[300px] w-full flex items-center justify-center rounded-lg border border-dashed border-[rgba(51,51,51,0.18)] bg-[rgba(51,51,51,0.02)]">
+      <div className={cn(heightClass, "w-full flex items-center justify-center rounded-lg border border-dashed border-[rgba(51,51,51,0.18)] bg-[rgba(51,51,51,0.02)]")}>
         <p className="text-sm text-muted-foreground">
           Not enough bars for a chart. Need at least 2 data points.
         </p>
@@ -65,7 +69,7 @@ export function EquityCurve({ data, startDate, dates }: EquityCurveProps) {
   });
 
   return (
-    <div className="h-[300px] w-full">
+    <div className={cn(heightClass, "w-full")}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(51,51,51,0.10)" />

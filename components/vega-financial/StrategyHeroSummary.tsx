@@ -1,60 +1,67 @@
 "use client";
 
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck, Target, PieChart, TrendingUp, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { TrustSignalsRow } from "./TrustSignalsRow";
-import { MiniInsightCard } from "./MiniInsightCard";
-import { DEFAULT_TRUST_SIGNALS } from "@/lib/vega-financial/strategy-copy";
+import { DEFAULT_TRUST_PILLS } from "@/lib/vega-financial/strategy-copy";
 
 interface StrategyHeroSummaryProps {
   name: string;
   verified: boolean;
   /** One-line plain-English summary */
   oneLineSummary: string;
+  /** Microcopy under summary */
+  heroMicrocopy?: string;
   /** Asset class e.g. Equity */
   assetClass?: string;
-  /** Strategy style e.g. Momentum, Trend Following */
+  /** Strategy style e.g. Momentum */
   strategyStyle?: string;
   /** Risk level e.g. Medium */
   riskLevel?: string | null;
-  /** From strategy copy: suitableFor, bestRole, typicalBehaviour, mainDrawback */
-  suitableFor?: string;
-  bestRole?: string;
-  typicalBehaviour?: string;
-  mainDrawback?: string;
-  whyConsider?: { title: string; body: string }[];
-  trustSignals?: string[];
-  /** Optional: Replay tutorial link (rendered as secondary action) */
+  /** Four decision cards */
+  bestFit?: string;
+  portfolioRole?: string;
+  worksBestIn?: string;
+  mainRisk?: string;
+  /** Compact trust pills */
+  trustPills?: string[];
+  /** Optional: Walkthrough / Replay link (rendered next to Help button, client-safe) */
   replayTutorialSlot?: React.ReactNode;
   className?: string;
 }
+
+const DECISION_CARDS = [
+  { key: "bestFit" as const, label: "Best fit", icon: Target },
+  { key: "portfolioRole" as const, label: "Portfolio role", icon: PieChart },
+  { key: "worksBestIn" as const, label: "Works best in", icon: TrendingUp },
+  { key: "mainRisk" as const, label: "Main risk", icon: AlertTriangle },
+];
 
 export function StrategyHeroSummary({
   name,
   verified,
   oneLineSummary,
+  heroMicrocopy,
   assetClass,
   strategyStyle,
   riskLevel,
-  suitableFor,
-  bestRole,
-  typicalBehaviour,
-  mainDrawback,
-  whyConsider = [],
-  trustSignals = DEFAULT_TRUST_SIGNALS,
+  bestFit,
+  portfolioRole,
+  worksBestIn,
+  mainRisk,
+  trustPills = DEFAULT_TRUST_PILLS,
   replayTutorialSlot,
   className,
 }: StrategyHeroSummaryProps) {
-  const handleHowToRead = () => {
+  const decisionValues = { bestFit, portfolioRole, worksBestIn, mainRisk };
+  const hasDecisionCards = Object.values(decisionValues).some(Boolean);
+
+  const handleHelpClick = () => {
     window.dispatchEvent(new CustomEvent("algo-detail-how-to-read"));
   };
-  const hasQuickSummary =
-    suitableFor || bestRole || typicalBehaviour || mainDrawback;
-  const hasWhyConsider = whyConsider.length > 0;
 
   return (
     <div className={cn("min-w-0 space-y-4", className)}>
-      {/* A. Top metadata row: compact badges */}
+      {/* Badges: Verified, Demo, Equity, Momentum, Medium risk */}
       <div className="flex flex-wrap items-center gap-1.5">
         {verified && (
           <span className="inline-flex items-center gap-1 rounded-md border border-primary/30 bg-primary/5 px-2 py-0.5 text-[11px] font-medium text-primary">
@@ -62,7 +69,7 @@ export function StrategyHeroSummary({
           </span>
         )}
         <span className="rounded-md border border-border bg-muted/30 px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
-          Simulated
+          Demo
         </span>
         {assetClass && (
           <span className="rounded-md border border-border bg-muted/30 px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
@@ -81,69 +88,68 @@ export function StrategyHeroSummary({
         )}
       </div>
 
-      {/* B. Title row */}
-      <h1 className="font-maven-pro text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground tracking-tight flex items-center gap-2 flex-wrap">
+      {/* Title */}
+      <h1 className="font-maven-pro text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground tracking-tight">
         {name}
-        {verified && (
-          <ShieldCheck className="size-6 text-primary shrink-0" aria-label="Verified strategy" />
-        )}
       </h1>
 
-      {/* C. One-line summary */}
+      {/* One-line summary + microcopy */}
       <p className="text-sm sm:text-base text-muted-foreground leading-snug max-w-2xl">
         {oneLineSummary}
       </p>
-
-      {/* D. Two-column quick summary list */}
-      {hasQuickSummary && (
-        <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
-          {suitableFor && (
-            <>
-              <dt className="font-medium text-foreground">Suitable for</dt>
-              <dd className="text-muted-foreground">{suitableFor}</dd>
-            </>
-          )}
-          {bestRole && (
-            <>
-              <dt className="font-medium text-foreground">Best role in a portfolio</dt>
-              <dd className="text-muted-foreground">{bestRole}</dd>
-            </>
-          )}
-          {typicalBehaviour && (
-            <>
-              <dt className="font-medium text-foreground">Typical behaviour</dt>
-              <dd className="text-muted-foreground">{typicalBehaviour}</dd>
-            </>
-          )}
-          {mainDrawback && (
-            <>
-              <dt className="font-medium text-foreground">Main drawback</dt>
-              <dd className="text-muted-foreground">{mainDrawback}</dd>
-            </>
-          )}
-        </dl>
+      {heroMicrocopy && (
+        <p className="text-xs text-muted-foreground/90 leading-snug max-w-2xl">
+          {heroMicrocopy}
+        </p>
       )}
 
-      {/* E. Why consider this: 3 mini cards */}
-      {hasWhyConsider && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {whyConsider.slice(0, 3).map((item, i) => (
-            <MiniInsightCard key={i} title={item.title} body={item.body} />
+      {/* Four decision cards */}
+      {hasDecisionCards && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {DECISION_CARDS.map(({ key, label, icon: Icon }) => {
+            const value = decisionValues[key];
+            if (!value) return null;
+            return (
+              <div
+                key={key}
+                className="rounded-xl border border-border bg-card p-3 transition-[border-color,box-shadow] duration-200 hover:border-muted-foreground/25 hover:shadow-sm flex gap-3"
+              >
+                <div className="flex shrink-0 items-center justify-center size-8 rounded-lg bg-muted/50 text-muted-foreground">
+                  <Icon className="size-4" aria-hidden />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">{label}</p>
+                  <p className="text-sm font-medium text-foreground mt-0.5">{value}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Compact trust pills */}
+      {trustPills.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {trustPills.map((item) => (
+            <span
+              key={item}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/30 px-2.5 py-1 text-[11px] font-medium text-muted-foreground"
+            >
+              <span className="size-1.5 rounded-full bg-brand-green/60 shrink-0" aria-hidden />
+              {item}
+            </span>
           ))}
         </div>
       )}
 
-      {/* F. Trust signals row */}
-      <TrustSignalsRow items={trustSignals} />
-
-      {/* Optional: How to read / Replay tutorial */}
-      <div className="flex flex-wrap items-center gap-3 pt-1">
+      {/* Help + Walkthrough (top right, handlers live in client) */}
+      <div className="flex justify-end items-center gap-2 pt-1">
         <button
           type="button"
-          onClick={handleHowToRead}
-          className="text-xs font-medium text-muted-foreground hover:text-foreground focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded"
+          onClick={handleHelpClick}
+          className="text-xs font-medium text-muted-foreground hover:text-foreground focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded transition-colors"
         >
-          How to read this page
+          Help
         </button>
         {replayTutorialSlot}
       </div>

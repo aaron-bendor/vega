@@ -58,19 +58,24 @@ export function HeroVideoSection() {
 
           {/* Content */}
           <div className="flex flex-col items-center text-center flex-1 max-w-[839px]">
-            <AnimateOnScroll delay={50}>
-              <h1 className="font-syne text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold text-white tracking-[-3px] leading-[1.05]">
+            <h1 className="font-syne text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold text-white tracking-[-3px] leading-[1.05]">
+              <AnimateOnScroll delay={50} duration={700}>
                 Algorithmic
                 <br />
                 trading,
+              </AnimateOnScroll>
+              <AnimateOnScroll
+                delay={650}
+                duration={950}
+                distance={18}
+                scaleFrom={0.97}
+                className="inline-block"
+              >
+                finally for
                 <br />
-                <span className="inline-block">
-                  finally for
-                  <br />
-                  you.
-                </span>
-              </h1>
-            </AnimateOnScroll>
+                you.
+              </AnimateOnScroll>
+            </h1>
 
             <AnimateOnScroll delay={160}>
               <p className="font-dm-sans mt-4 text-white/90 text-base md:text-[19px] font-light leading-[1.7] max-w-[527px]">

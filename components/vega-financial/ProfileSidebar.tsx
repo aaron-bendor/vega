@@ -21,7 +21,7 @@ const ICON_SIZE = 18;
 
 const primaryNav = [
   { href: "/vega-financial", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { href: "/vega-financial/marketplace", label: "Explore", icon: Store },
+  { href: "/vega-financial/marketplace", label: "Strategies", icon: Store },
   { href: "/vega-financial/portfolio", label: "Portfolio", icon: Wallet },
   { href: "/vega-financial/watchlist", label: "Watchlist", icon: Star },
   { href: "/vega-financial/activity", label: "Activity", icon: Activity },
@@ -89,45 +89,12 @@ export function ProfileSidebar({
           )}
         </Link>
 
-        {/* Compact account card – visually part of banner section */}
-        <Link
-          href="/vega-financial/profile"
-          className={cn(
-            "flex items-center rounded-2xl min-h-[48px] transition-colors duration-[160ms] focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-shell-sidebar",
-            isCollapsed ? "justify-center px-0 w-10" : "gap-3 px-3",
-            isProfilePage
-              ? "bg-primary/10 text-primary"
-              : "text-foreground hover:bg-black/[0.04] dark:hover:bg-white/[0.06]"
-          )}
-          aria-current={isProfilePage ? "page" : undefined}
-        >
-          <div
-            className={cn(
-              "vf-nav-icon-wrap flex shrink-0 items-center justify-center rounded-xl size-9 text-xs font-semibold text-[#18181f]",
-              isProfilePage ? "bg-primary/15 text-primary" : "bg-white/80 border border-black/[0.06] shadow-sm"
-            )}
-            aria-hidden
-          >
-            VF
-          </div>
-          {!isCollapsed && (
-            <div className="flex flex-col items-start min-w-0">
-              <span className="text-[11px] font-medium text-muted-foreground">Account</span>
-              <span className="text-sm font-semibold text-[#18181f] truncate w-full">Vega Financial</span>
-            </div>
-          )}
-        </Link>
       </div>
 
       <div className="shrink-0 h-px bg-shell-border/80 mx-4" aria-hidden />
 
       {/* 3. Primary nav group */}
       <nav className="flex-1 shrink-0 px-4 pt-4 pb-2" data-tour="vf-tabs">
-        {!isCollapsed && (
-          <p className="mb-2 px-4 text-[11px] font-maven-pro font-medium uppercase tracking-wider text-muted-foreground">
-            Main
-          </p>
-        )}
         <ul className={cn("flex flex-col", isCollapsed ? "gap-0.5" : "gap-0.5")}>
           {primaryNav.map(({ href, label, icon: Icon, exact }) => {
             const active = isActive(href, exact);
@@ -168,11 +135,6 @@ export function ProfileSidebar({
 
       {/* 4. Secondary nav group */}
       <div className="shrink-0 px-4 pb-2">
-        {!isCollapsed && (
-          <p className="mb-2 px-4 text-[11px] font-maven-pro font-medium uppercase tracking-wider text-muted-foreground">
-            Resources
-          </p>
-        )}
         <ul className="flex flex-col gap-0.5">
           {secondaryNav.map(({ href, label, icon: Icon }) => {
             const active = isActive(href);
