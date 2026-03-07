@@ -99,13 +99,23 @@ export function ProfileSidebar({
           )}
           aria-label="Vega Financial home"
         >
-          <Image
-            src="/logo.png"
-            alt=""
-            width={140}
-            height={35}
-            className={cn("object-contain", isCollapsed ? "h-6 w-auto" : "h-7 w-auto")}
-          />
+          {isCollapsed ? (
+            <Image
+              src="/V.png"
+              alt=""
+              width={32}
+              height={32}
+              className="size-8 object-contain"
+            />
+          ) : (
+            <Image
+              src="/logo.png"
+              alt=""
+              width={140}
+              height={35}
+              className="h-7 w-auto object-contain"
+            />
+          )}
         </Link>
       </div>
 
