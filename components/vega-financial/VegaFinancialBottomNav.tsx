@@ -7,9 +7,9 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/vega-financial", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { href: "/vega-financial/marketplace", label: "Marketplace", icon: Store },
+  { href: "/vega-financial/marketplace", label: "Explore", icon: Store },
   { href: "/vega-financial/portfolio", label: "Portfolio", icon: Wallet },
-  { href: "/vega-financial/profile", label: "Profile", icon: User },
+  { href: "/vega-financial/profile", label: "Settings", icon: User },
 ];
 
 export function VegaFinancialBottomNav() {

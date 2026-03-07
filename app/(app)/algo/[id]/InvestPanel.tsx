@@ -66,7 +66,7 @@ export function InvestPanel({ versionId }: { versionId: string }) {
         className="w-32"
       />
       <Button onClick={handleInvestClick} disabled={loading} data-tour="algo-add-paper">
-        {loading ? "Adding…" : "Add to paper portfolio"}
+        {loading ? "Adding…" : "Add to portfolio"}
       </Button>
       {error && <p className="text-destructive text-sm">{error}</p>}
       <RiskDisclosureModal

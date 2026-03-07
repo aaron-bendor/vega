@@ -3,6 +3,8 @@ import { listPublishedVersions, listTags } from "@/lib/db/algorithms";
 import { withDbOrThrow } from "@/lib/db/safe";
 import { loadDemoAlgorithms } from "@/lib/demo/loader";
 import { MarketplaceContent } from "@/components/marketplace/MarketplaceContent";
+import { PageHeader } from "@/components/vega-financial/PageHeader";
+import { PAGE_SUBTITLES } from "@/lib/vega-financial/investor-copy";
 
 export default async function VegaFinancialMarketplacePage({
   searchParams,
@@ -44,12 +46,11 @@ export default async function VegaFinancialMarketplacePage({
     : tags.map((t) => t.name);
 
   return (
-    <div className="w-full max-w-5xl min-w-0 mx-auto px-4 pt-6 pb-6 sm:px-6 sm:pt-8 sm:pb-8 lg:px-8 space-y-6">
-      <header className="min-w-0 scroll-mt-32" id="marketplace-heading">
-        <h1 className="font-syne text-2xl md:text-3xl font-bold text-foreground">
-          Marketplace
-        </h1>
-      </header>
+    <div className="w-full max-w-6xl min-w-0 mx-auto px-4 pt-6 pb-6 sm:px-6 sm:pt-8 sm:pb-8 lg:px-8 space-y-6">
+      <PageHeader
+        title="Explore algorithms"
+        subtitle={PAGE_SUBTITLES.explore}
+      />
       <div className="min-w-0">
         <MarketplaceContent
           algorithms={algorithms as Parameters<typeof MarketplaceContent>[0]["algorithms"]}

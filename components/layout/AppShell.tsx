@@ -22,6 +22,8 @@ interface AppShellProps {
   bottomNav?: ReactNode;
   /** When true, show minimal app top bar with brand + Back to website + user menu (single nav system). */
   minimalTopBar?: boolean;
+  /** When set, replaces the default header. Receives openSidebar for mobile nav. Sidebar uses top-[6.5rem] when header is logo + main bar. */
+  customHeader?: (props: { openSidebar: () => void }) => ReactNode;
 }
 
 /**
@@ -29,7 +31,7 @@ interface AppShellProps {
  * Top bar (menu, tour, user) + sidebar (Dashboard, Marketplace, Portfolio) + optional toolbar + main.
  * No marketing header (SiteHeader/PillNav).
  */
-export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalTopBar }: AppShellProps) {
+export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalTopBar, customHeader }: AppShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -79,121 +81,138 @@ export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalT
     router.refresh();
   };
 
+  const useCustomHeader = Boolean(customHeader);
+  /** When using custom header: logo bar (h-12) + main bar (h-14) = 6.5rem */
+  const stickyTop = useCustomHeader ? "top-[6.5rem]" : minimalTopBar ? "top-12" : "top-[5.25rem]";
+
   return (
     <div className={naturalScroll ? "bg-white" : "min-h-screen flex flex-col bg-white"}>
-      <header
-        className={cn(
-          "sticky top-0 z-50 shrink-0 border-b bg-white flex items-center justify-between px-4 lg:px-6 transition-[height,background-color,box-shadow,border-color] duration-200 ease-out",
-          scrolled
-            ? "h-11 border-[rgba(51,51,51,0.12)] bg-white/90 backdrop-blur-md shadow-[0_1px_0_0_rgba(51,51,51,0.06)]"
-            : "h-12 border-[rgba(51,51,51,0.12)]"
-        )}
-        role="banner"
-      >
-        <div className="flex items-center gap-3 min-w-0">
+      {useCustomHeader && customHeader ? (
+        <>
+          <div className="sticky top-0 z-50 shrink-0 bg-white">
+            {customHeader({ openSidebar: () => setSidebarOpen(true) })}
+          </div>
           <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
-            <SheetTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="lg:hidden shrink-0 -ml-2 min-w-[44px] min-h-[44px]"
-                aria-label="Open navigation menu"
-              >
-                <Menu className="size-5" />
-              </Button>
-            </SheetTrigger>
             <SheetContent side="left" className="p-0 w-64 max-w-[85vw]">
               <ProfileSidebar />
             </SheetContent>
           </Sheet>
-          {minimalTopBar && (
-            <Link
-              href="/"
-              className="flex items-center shrink-0 gap-2 rounded-md focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
-              aria-label="Vega Financial home"
-            >
-              <Image
-                src="/logo.png"
-                alt=""
-                width={120}
-                height={30}
-                className="h-6 w-auto object-contain sm:h-7"
-              />
-              <span className="sr-only">Vega Financial</span>
-            </Link>
+        </>
+      ) : (
+        <header
+          className={cn(
+            "sticky top-0 z-50 shrink-0 border-b bg-white flex items-center justify-between px-4 lg:px-6 transition-[height,background-color,box-shadow,border-color] duration-200 ease-out",
+            scrolled
+              ? "h-11 border-[rgba(51,51,51,0.12)] bg-white/90 backdrop-blur-md shadow-[0_1px_0_0_rgba(51,51,51,0.06)]"
+              : "h-12 border-[rgba(51,51,51,0.12)]"
           )}
-        </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <button
-            type="button"
-            onClick={handleReplayTour}
-            className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
-            aria-label="Replay guided tour"
-            title="Replay tour"
-          >
-            <HelpCircle className="size-4" />
-          </button>
-          <div className="relative" ref={userMenuRef}>
+          role="banner"
+        >
+          <div className="flex items-center gap-3 min-w-0">
+            <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="lg:hidden shrink-0 -ml-2 min-w-[44px] min-h-[44px]"
+                  aria-label="Open navigation menu"
+                >
+                  <Menu className="size-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="p-0 w-64 max-w-[85vw]">
+                <ProfileSidebar />
+              </SheetContent>
+            </Sheet>
+            {minimalTopBar && (
+              <Link
+                href="/"
+                className="flex items-center shrink-0 gap-2 rounded-md focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
+                aria-label="Vega Financial home"
+              >
+                <Image
+                  src="/logo.png"
+                  alt=""
+                  width={120}
+                  height={30}
+                  className="h-6 w-auto object-contain sm:h-7"
+                />
+                <span className="sr-only">Vega Financial</span>
+              </Link>
+            )}
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
             <button
               type="button"
-              onClick={() => setUserMenuOpen((o) => !o)}
-              className="flex items-center gap-2 min-h-[44px] rounded-full focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
-              aria-expanded={userMenuOpen}
-              aria-haspopup="true"
-              aria-label="User menu"
+              onClick={handleReplayTour}
+              className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
+              aria-label="Replay guided tour"
+              title="Replay tour"
             >
-              <div
-                className="size-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0"
-                aria-hidden
-              >
-                <span className="text-xs font-medium text-primary">VF</span>
-              </div>
+              <HelpCircle className="size-4" />
             </button>
-            <div
-              role="menu"
-              className={cn(
-                "absolute right-0 top-full mt-1 z-50 min-w-[180px] rounded-lg border border-border bg-popover py-1 shadow-lg",
-                "transition-[opacity,visibility] duration-150",
-                userMenuOpen
-                  ? "opacity-100 visible"
-                  : "opacity-0 invisible pointer-events-none"
-              )}
-            >
-              <Link
-                href="/vega-financial/profile"
-                role="menuitem"
-                className="block px-4 py-2.5 text-sm text-popover-foreground hover:bg-muted"
-                onClick={() => setUserMenuOpen(false)}
-              >
-                Profile
-              </Link>
-              <Link
-                href="/vega-financial/profile#preferences"
-                role="menuitem"
-                className="block px-4 py-2.5 text-sm text-popover-foreground hover:bg-muted"
-                onClick={() => setUserMenuOpen(false)}
-              >
-                Preferences
-              </Link>
+            <div className="relative" ref={userMenuRef}>
               <button
                 type="button"
-                role="menuitem"
-                className="w-full text-left px-4 py-2.5 text-sm text-popover-foreground hover:bg-muted"
-                onClick={handleResetDemoPortfolio}
+                onClick={() => setUserMenuOpen((o) => !o)}
+                className="flex items-center gap-2 min-h-[44px] rounded-full focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
+                aria-expanded={userMenuOpen}
+                aria-haspopup="true"
+                aria-label="User menu"
               >
-                Reset demo portfolio
+                <div
+                  className="size-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0"
+                  aria-hidden
+                >
+                  <span className="text-xs font-medium text-primary">VF</span>
+                </div>
               </button>
+              <div
+                role="menu"
+                className={cn(
+                  "absolute right-0 top-full mt-1 z-50 min-w-[180px] rounded-lg border border-border bg-popover py-1 shadow-lg",
+                  "transition-[opacity,visibility] duration-150",
+                  userMenuOpen
+                    ? "opacity-100 visible"
+                    : "opacity-0 invisible pointer-events-none"
+                )}
+              >
+                <Link
+                  href="/vega-financial/profile"
+                  role="menuitem"
+                  className="block px-4 py-2.5 text-sm text-popover-foreground hover:bg-muted"
+                  onClick={() => setUserMenuOpen(false)}
+                >
+                  Profile
+                </Link>
+                <Link
+                  href="/vega-financial/profile#preferences"
+                  role="menuitem"
+                  className="block px-4 py-2.5 text-sm text-popover-foreground hover:bg-muted"
+                  onClick={() => setUserMenuOpen(false)}
+                >
+                  Preferences
+                </Link>
+                <button
+                  type="button"
+                  role="menuitem"
+                  className="w-full text-left px-4 py-2.5 text-sm text-popover-foreground hover:bg-muted"
+                  onClick={handleResetDemoPortfolio}
+                >
+                  Reset demo portfolio
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
+      )}
 
       {naturalScroll ? (
         <div className="lg:flex min-w-0">
           <div
             className={cn(
               "hidden lg:block shrink-0 self-start sticky",
-              minimalTopBar ? "top-12" : "top-[5.25rem]"
+              stickyTop
             )}
           >
             <ProfileSidebar naturalScroll />
@@ -202,8 +221,8 @@ export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalT
             {toolbar != null ? (
               <div
                 className={cn(
-                  "sticky z-10 border-b border-primary/10 bg-primary/[0.02] bg-white",
-                  minimalTopBar ? "top-12" : "top-[5.25rem]"
+                  "sticky z-10 border-b border-border bg-muted/30",
+                  useCustomHeader ? "top-[6.5rem]" : minimalTopBar ? "top-12" : "top-[5.25rem]"
                 )}
               >
                 {toolbar}

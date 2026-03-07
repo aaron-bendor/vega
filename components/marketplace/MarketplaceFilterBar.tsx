@@ -17,8 +17,8 @@ import { cn } from "@/lib/utils";
 const SORT_OPTIONS = [
   { value: "trending", label: "Trending" },
   { value: "newest", label: "Newest" },
-  { value: "drawdown", label: "Lowest drawdown" },
-  { value: "sharpe", label: "Best Sharpe" },
+  { value: "drawdown", label: "Smallest drop" },
+  { value: "sharpe", label: "Best risk-adjusted" },
 ] as const;
 
 const CATEGORY_OPTIONS = [
@@ -108,7 +108,7 @@ export function MarketplaceFilterBar({
           />
         </div>
         <div className="flex items-center gap-2 shrink-0 self-start sm:self-center">
-          <span className="text-sm text-muted-foreground whitespace-nowrap">Sort</span>
+          <span className="text-sm text-muted-foreground whitespace-nowrap">Sort by</span>
           <Select
             value={sort}
             onValueChange={(v) => {
@@ -155,7 +155,7 @@ export function MarketplaceFilterBar({
           style={{ maxHeight: contentHeight != null ? (filtersOpen ? contentHeight : 0) : undefined }}
         >
           <div className="min-w-0 space-y-2">
-            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Category</p>
+            <p className="text-xs font-medium text-muted-foreground">Strategy style</p>
             <SlidingChipRow
               chips={[
                 { href: "/vega-financial/marketplace", label: "All" },
@@ -178,7 +178,7 @@ export function MarketplaceFilterBar({
             />
           </div>
           <div className="min-w-0 space-y-2 sm:col-span-2 lg:col-span-1">
-            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Risk</p>
+            <p className="text-xs font-medium text-muted-foreground">Risk level</p>
             <SlidingChipRow
               chips={[
                 { href: "/vega-financial/marketplace", label: "All" },

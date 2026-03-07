@@ -8,8 +8,6 @@ export function VegaFinancialShell({
 }: {
   children: React.ReactNode;
 }) {
-  // Marketplace page has its own search/filters in MarketplaceFilterBar; no duplicate toolbar
-
   return (
     <AppShell naturalScroll bottomNav={<VegaFinancialBottomNav />}>
       {children}

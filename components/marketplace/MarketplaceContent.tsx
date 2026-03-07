@@ -164,10 +164,10 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
                       <span><span className="text-foreground">Return:</span> {formatPercent(v.cachedReturn)}</span>
                     )}
                     {isDbVersion(v) && v.cachedSharpe != null && (
-                      <span><span className="text-foreground">Sharpe:</span> {v.cachedSharpe.toFixed(2)}</span>
+                      <span><span className="text-foreground">Risk-adjusted:</span> {v.cachedSharpe.toFixed(2)}</span>
                     )}
                     {isDbVersion(v) && v.cachedMaxDrawdown != null && (
-                      <span><span className="text-foreground">Max DD:</span> {formatPercent(v.cachedMaxDrawdown)}</span>
+                      <span><span className="text-foreground">Biggest drop:</span> {formatPercent(v.cachedMaxDrawdown)}</span>
                     )}
                   </div>
                 </CardContent>

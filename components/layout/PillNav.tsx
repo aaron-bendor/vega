@@ -57,7 +57,6 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
     router.push("/vega-financial");
   };
   const isStandalone = variant === "standalone" || variant === "investor" || variant === "investorApp";
-  const isInInvestorApp = pathname?.startsWith("/vega-financial");
   const bannerRef = useRef<HTMLDivElement>(null);
   const spacerRef = useRef<HTMLDivElement>(null);
 

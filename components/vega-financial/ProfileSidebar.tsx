@@ -8,16 +8,19 @@ import {
   LayoutDashboard,
   Wallet,
   Store,
-  ChevronLeft,
   Star,
 } from "lucide-react";
-import { TextLink } from "@/components/ui/TextLink";
+
+import { Activity, BookOpen, Settings } from "lucide-react";
 
 const mainNav = [
   { href: "/vega-financial", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { href: "/vega-financial/marketplace", label: "Marketplace", icon: Store },
+  { href: "/vega-financial/marketplace", label: "Explore", icon: Store },
   { href: "/vega-financial/portfolio", label: "Portfolio", icon: Wallet },
   { href: "/vega-financial/profile#watchlist", label: "Watchlist", icon: Star },
+  { href: "/vega-financial/profile#activity", label: "Activity", icon: Activity },
+  { href: "/faq", label: "Learn", icon: BookOpen },
+  { href: "/vega-financial/profile", label: "Settings", icon: Settings },
 ];
 
 export function ProfileSidebar({ naturalScroll }: { naturalScroll?: boolean } = {}) {
@@ -121,14 +124,6 @@ export function ProfileSidebar({ naturalScroll }: { naturalScroll?: boolean } = 
         </div>
       </nav>
 
-      {!pathname?.startsWith("/vega-financial") && (
-        <div className="p-2 border-t border-[rgba(51,51,51,0.12)]">
-          <TextLink href="/" className="flex items-center gap-2 rounded-lg px-3 py-2.5 min-h-[44px] text-sm text-muted-foreground hover:text-foreground">
-            <ChevronLeft className="size-4" />
-            Back to Vega
-          </TextLink>
-        </div>
-      )}
     </aside>
   );
 }

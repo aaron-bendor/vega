@@ -28,6 +28,32 @@ export interface StrategyOverviewCopy {
   extraNote?: string;
   /** Fallback when metrics are unavailable. */
   metricsUnavailableNote?: string;
+  /** Hero: one-line plain-English summary. */
+  oneLineSummary?: string;
+  /** Hero: suitable for (quick summary list). */
+  suitableFor?: string;
+  /** Hero: best role in a portfolio. */
+  bestRole?: string;
+  /** Hero: typical behaviour. */
+  typicalBehaviour?: string;
+  /** Hero: main drawback. */
+  mainDrawback?: string;
+  /** Hero: why consider this (3 mini cards). */
+  whyConsider?: { title: string; body: string }[];
+  /** Hero: trust strip items. */
+  trustSignals?: string[];
+  /** Action card: plain-English insight. */
+  actionInsight?: string;
+  /** Overview: risks to know (3 cards). */
+  risksToKnow?: string[];
+  /** Overview: when it tends to work (short list). */
+  whenWorksList?: string[];
+  /** Overview: when it tends to struggle (short list). */
+  whenStrugglesList?: string[];
+  /** Overview: who it may suit (one line). */
+  whoItMaySuit?: string;
+  /** Overview: how to read metrics (expandable). */
+  metricsHelp?: Record<string, string>;
 }
 
 export const STRATEGY_OVERVIEW_COPY: Record<string, StrategyOverviewCopy> = {
@@ -61,6 +87,36 @@ export const STRATEGY_OVERVIEW_COPY: Record<string, StrategyOverviewCopy> = {
       "Investors who want low turnover, low drawdown, or strong protection in sudden reversals.",
     suggestedRole: "Satellite growth allocation.",
     suggestedAllocationRange: "5% to 15% of a diversified demo portfolio.",
+    oneLineSummary:
+      "Momentum strategy that aims to follow strong equity trends while adjusting to changing market conditions.",
+    suitableFor: "Users comfortable with medium risk and trend-following behaviour.",
+    bestRole: "Growth-oriented strategy that may complement slower or defensive holdings.",
+    typicalBehaviour: "Tends to do better in sustained trends.",
+    mainDrawback: "Can struggle in sideways or reversing markets.",
+    whyConsider: [
+      { title: "Upside potential", body: "Can benefit from persistent market leadership." },
+      { title: "Risk profile", body: "Medium risk with meaningful pullbacks." },
+      { title: "Diversification role", body: "May complement lower-growth or non-momentum strategies." },
+    ],
+    trustSignals: ["Reviewed before publication", "Simulated portfolio use", "Methodology explained", "Advanced analysis available"],
+    actionInsight:
+      "This strategy has delivered strong returns in the demo period, but it has also experienced meaningful declines. It may suit users who can tolerate short-term losses.",
+    risksToKnow: [
+      "Can lose momentum quickly during reversals",
+      "May underperform in sideways markets",
+      "Returns may arrive in bursts rather than steadily",
+    ],
+    whenWorksList: ["Sustained trending markets", "Clear market leadership"],
+    whenStrugglesList: ["Choppy or rapidly reversing conditions", "Fast rotation between sectors"],
+    whoItMaySuit:
+      "May suit investors looking for growth-oriented exposure who are comfortable with medium risk and periods of underperformance.",
+    metricsHelp: {
+      return: "Total change in value over the tested period.",
+      biggestDrop: "Largest peak-to-trough fall before recovering.",
+      riskAdjustedReturn: "How much return the strategy delivered for the level of risk taken.",
+      marketSimilarity: "How closely the strategy moved with the market benchmark.",
+      dataConfidence: "Based on the amount of history available for this strategy.",
+    },
   },
   "demo-2": {
     whatItDoes:
@@ -88,6 +144,36 @@ export const STRATEGY_OVERVIEW_COPY: Record<string, StrategyOverviewCopy> = {
     suggestedAllocationRange: "5% to 20% of a diversified demo portfolio.",
     extraNote:
       "Risk label refers to the strategy's internal classification in this prototype, not a guarantee of small losses. Always review drawdown and volatility alongside the headline label.",
+    oneLineSummary:
+      "Trend-following strategy that aims to stay aligned with broad market direction without forecasting turning points.",
+    suitableFor: "Users comfortable with equity market dependence and medium risk.",
+    bestRole: "Core rules-based trend sleeve that can complement defensive holdings.",
+    typicalBehaviour: "Tends to do better when markets move in a sustained direction.",
+    mainDrawback: "Can struggle in choppy or sideways markets.",
+    whyConsider: [
+      { title: "Upside potential", body: "Can capture sustained market moves." },
+      { title: "Risk profile", body: "Medium risk with meaningful pullbacks." },
+      { title: "Diversification role", body: "May complement non-trend or defensive strategies." },
+    ],
+    trustSignals: ["Reviewed before publication", "Simulated portfolio use", "Methodology explained", "Advanced analysis available"],
+    actionInsight:
+      "This strategy has delivered strong returns in the demo period, but it has also experienced meaningful declines. It may suit users who can tolerate short-term losses.",
+    risksToKnow: [
+      "Can lose momentum quickly during reversals",
+      "May underperform in sideways markets",
+      "Returns may arrive in bursts rather than steadily",
+    ],
+    whenWorksList: ["Sustained trending markets", "Clear directional moves"],
+    whenStrugglesList: ["Choppy or sideways markets", "Repeated false signals"],
+    whoItMaySuit:
+      "May suit investors looking for a clean trend strategy who are comfortable with medium risk and equity dependence.",
+    metricsHelp: {
+      return: "Total change in value over the tested period.",
+      biggestDrop: "Largest peak-to-trough fall before recovering.",
+      riskAdjustedReturn: "How much return the strategy delivered for the level of risk taken.",
+      marketSimilarity: "How closely the strategy moved with the market benchmark.",
+      dataConfidence: "Based on the amount of history available for this strategy.",
+    },
   },
   "demo-3": {
     whatItDoes:
@@ -113,6 +199,36 @@ export const STRATEGY_OVERVIEW_COPY: Record<string, StrategyOverviewCopy> = {
     whoNotFit: "Investors who prefer simple long-only directional strategies.",
     suggestedRole: "Diversifying tactical sleeve.",
     suggestedAllocationRange: "5% to 15% of a diversified demo portfolio.",
+    oneLineSummary:
+      "Mean-reversion strategy that looks for temporary price moves away from a normal range and positions for a move back.",
+    suitableFor: "Users looking to diversify away from pure trend exposure.",
+    bestRole: "Diversifying tactical sleeve that can complement momentum strategies.",
+    typicalBehaviour: "Tends to do better when markets overshoot then settle back.",
+    mainDrawback: "Can struggle when strong trends continue longer than expected.",
+    whyConsider: [
+      { title: "Upside potential", body: "Can benefit when prices revert to the mean." },
+      { title: "Risk profile", body: "Medium risk; behaves differently from trend strategies." },
+      { title: "Diversification role", body: "May complement momentum or trend-following holdings." },
+    ],
+    trustSignals: ["Reviewed before publication", "Simulated portfolio use", "Methodology explained", "Advanced analysis available"],
+    actionInsight:
+      "This strategy can behave differently from trend-following approaches. It may suit investors looking to diversify their paper portfolio.",
+    risksToKnow: [
+      "Can struggle in strong trending markets",
+      "May underperform when prices do not revert quickly",
+      "Returns can be uneven over shorter periods",
+    ],
+    whenWorksList: ["Markets that overshoot then settle", "Conditions where prices revert to a mean"],
+    whenStrugglesList: ["Strong trends that continue longer than expected", "Prices that do not revert quickly"],
+    whoItMaySuit:
+      "May suit investors looking to diversify away from pure trend exposure and comfortable with medium risk.",
+    metricsHelp: {
+      return: "Total change in value over the tested period.",
+      biggestDrop: "Largest peak-to-trough fall before recovering.",
+      riskAdjustedReturn: "How much return the strategy delivered for the level of risk taken.",
+      marketSimilarity: "How closely the strategy moved with the market benchmark.",
+      dataConfidence: "Based on the amount of history available for this strategy.",
+    },
   },
   "demo-4": {
     whatItDoes:
@@ -138,6 +254,29 @@ export const STRATEGY_OVERVIEW_COPY: Record<string, StrategyOverviewCopy> = {
     whoNotFit: "Investors looking for smoother performance or a simpler strategy.",
     suggestedRole: "Small tactical allocation.",
     suggestedAllocationRange: "0% to 10% of a diversified demo portfolio.",
+    oneLineSummary: "Tactical strategy built around overbought and oversold signals; aims to respond to short-term extremes.",
+    suitableFor: "Users who want a tactical strategy and understand that indicator-driven systems can be unstable.",
+    bestRole: "Small tactical allocation.",
+    typicalBehaviour: "Tends to respond to momentum extremes and reversals.",
+    mainDrawback: "Can be unstable in choppy or persistent trends.",
+    whyConsider: [
+      { title: "Upside potential", body: "Can capture short-term reversals." },
+      { title: "Risk profile", body: "Higher variability; tactical by design." },
+      { title: "Diversification role", body: "May add tactical variety to a portfolio." },
+    ],
+    trustSignals: ["Reviewed before publication", "Simulated portfolio use", "Methodology explained", "Advanced analysis available"],
+    actionInsight: "This is a tactical strategy with higher variability. Suits investors who understand short-term signal-based approaches.",
+    risksToKnow: ["Can struggle in choppy markets", "May underperform in persistent trends", "Returns can be uneven"],
+    whenWorksList: ["Reversals after momentum extremes"],
+    whenStrugglesList: ["Choppy markets", "Persistent trends"],
+    whoItMaySuit: "Investors who want a tactical strategy and understand that indicator-driven systems can be unstable.",
+    metricsHelp: {
+      return: "Total change in value over the tested period.",
+      biggestDrop: "Largest peak-to-trough fall before recovering.",
+      riskAdjustedReturn: "How much return the strategy delivered for the level of risk taken.",
+      marketSimilarity: "How closely the strategy moved with the market benchmark.",
+      dataConfidence: "Based on the amount of history available for this strategy.",
+    },
   },
   "demo-5": {
     whatItDoes:
@@ -165,6 +304,29 @@ export const STRATEGY_OVERVIEW_COPY: Record<string, StrategyOverviewCopy> = {
     suggestedAllocationRange: "10% to 25% of a diversified demo portfolio.",
     metricsUnavailableNote:
       "Latest performance metrics are being prepared for this demo strategy. You can still review the strategy summary and methodology, but avoid comparing it on headline numbers until the metric set is complete.",
+    oneLineSummary: "Diversified multi-asset strategy designed to spread exposure across different market drivers.",
+    suitableFor: "Users starting a paper portfolio who want a more balanced first allocation.",
+    bestRole: "Core diversified anchor.",
+    typicalBehaviour: "Tends to provide a steadier base when diversification benefits hold.",
+    mainDrawback: "Can struggle when diversification breaks down or risk assets weaken together.",
+    whyConsider: [
+      { title: "Upside potential", body: "Spreads exposure across different drivers." },
+      { title: "Risk profile", body: "Designed for steadier base; not highest upside." },
+      { title: "Diversification role", body: "Core anchor that may complement concentrated strategies." },
+    ],
+    trustSignals: ["Reviewed before publication", "Simulated portfolio use", "Methodology explained", "Advanced analysis available"],
+    actionInsight: "This strategy aims to provide a steadier base. Suits investors who value diversification over concentrated upside.",
+    risksToKnow: ["Can struggle when diversification breaks down", "Multiple risk assets may weaken together", "Returns can be moderate"],
+    whenWorksList: ["Periods when diversification benefits hold", "When no single asset class dominates"],
+    whenStrugglesList: ["When diversification breaks down", "Multiple risk assets weakening together"],
+    whoItMaySuit: "Investors starting a paper portfolio who want a more balanced first allocation.",
+    metricsHelp: {
+      return: "Total change in value over the tested period.",
+      biggestDrop: "Largest peak-to-trough fall before recovering.",
+      riskAdjustedReturn: "How much return the strategy delivered for the level of risk taken.",
+      marketSimilarity: "How closely the strategy moved with the market benchmark.",
+      dataConfidence: "Based on the amount of history available for this strategy.",
+    },
   },
   "demo-6": {
     whatItDoes:
@@ -192,7 +354,47 @@ export const STRATEGY_OVERVIEW_COPY: Record<string, StrategyOverviewCopy> = {
     suggestedAllocationRange: "5% to 15% of a diversified demo portfolio.",
     metricsUnavailableNote:
       "This strategy is currently available for qualitative review, but its latest demo metric panel is incomplete. Use it as a diversification idea, not as a fully comparable metric page, until the data is filled in.",
+    oneLineSummary: "Defensive allocation overlay built to add precious metals exposure alongside risk assets.",
+    suitableFor: "Users seeking to reduce concentration to equity-driven strategies.",
+    bestRole: "Defensive diversifier.",
+    typicalBehaviour: "Tends to behave differently from growth assets in stress.",
+    mainDrawback: "Can lag when growth assets rally strongly.",
+    whyConsider: [
+      { title: "Upside potential", body: "Diversification rather than aggressive growth." },
+      { title: "Risk profile", body: "Defensive; may behave differently in stress." },
+      { title: "Diversification role", body: "May reduce concentration to equities." },
+    ],
+    trustSignals: ["Reviewed before publication", "Simulated portfolio use", "Methodology explained", "Advanced analysis available"],
+    actionInsight: "This strategy is designed for diversification. Use it as a defensive sleeve, not a high-growth standalone.",
+    risksToKnow: ["Can lag when growth assets rally", "Defensive exposures may underperform in strong bull markets", "Returns can be uneven"],
+    whenWorksList: ["When investors seek safety", "When inflation concerns rise"],
+    whenStrugglesList: ["When growth assets rally strongly", "When defensive exposures lag"],
+    whoItMaySuit: "Investors who want to reduce concentration to equity-driven strategies.",
+    metricsHelp: {
+      return: "Total change in value over the tested period.",
+      biggestDrop: "Largest peak-to-trough fall before recovering.",
+      riskAdjustedReturn: "How much return the strategy delivered for the level of risk taken.",
+      marketSimilarity: "How closely the strategy moved with the market benchmark.",
+      dataConfidence: "Based on the amount of history available for this strategy.",
+    },
   },
+};
+
+/** Default trust signals when not specified per strategy. */
+export const DEFAULT_TRUST_SIGNALS = [
+  "Reviewed before publication",
+  "Simulated portfolio use",
+  "Methodology explained",
+  "Advanced analysis available",
+];
+
+/** Default metrics help when not specified per strategy. */
+export const DEFAULT_METRICS_HELP: Record<string, string> = {
+  return: "Total change in value over the tested period.",
+  biggestDrop: "Largest peak-to-trough fall before recovering.",
+  riskAdjustedReturn: "How much return the strategy delivered for the level of risk taken.",
+  marketSimilarity: "How closely the strategy moved with the market benchmark.",
+  dataConfidence: "Based on the amount of history available for this strategy.",
 };
 
 export const METRICS_EXPLAINER_COPY =
