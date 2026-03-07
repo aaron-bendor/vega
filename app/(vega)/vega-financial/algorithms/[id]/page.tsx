@@ -130,7 +130,7 @@ export default async function AlgorithmDetailPage({
   const heroRight = (version || demoAlgo) ? (
     <div className="flex flex-col gap-6">
       {/* Compact performance snapshot: chart + pills + track record */}
-      <div className="rounded-xl border border-border bg-card p-4 transition-[border-color,box-shadow] duration-200 hover:border-muted-foreground/25 hover:shadow-sm">
+      <div className="vf-glass-card vf-glass-blue rounded-xl p-4">
         {equityPoints.length >= 2 && (
           <div className="h-[120px] w-full mb-3 -mx-1 overflow-hidden">
             <EquityCurve data={equityPoints} startDate={demoAlgo?.startDate} className="h-[120px]" />
@@ -300,7 +300,7 @@ export default async function AlgorithmDetailPage({
             />
             {equityPoints.length > 0 && (
               <>
-                <Card className="rounded-xl border border-border bg-card">
+                <Card className="vf-glass-card vf-glass-blue rounded-xl overflow-hidden border-0 shadow-none bg-transparent">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base font-semibold">Performance chart</CardTitle>
                     <p className="text-xs text-muted-foreground">Cumulative return over the tested period.</p>
@@ -309,7 +309,7 @@ export default async function AlgorithmDetailPage({
                     <EquityCurve data={equityPoints} startDate={demoAlgo?.startDate} />
                   </CardContent>
                 </Card>
-                <Card className="rounded-xl border border-border bg-card">
+                <Card className="vf-glass-card vf-glass-amber rounded-xl overflow-hidden border-0 shadow-none bg-transparent">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base font-semibold">Biggest drop over time</CardTitle>
                     <p className="text-xs text-muted-foreground">
@@ -359,7 +359,7 @@ export default async function AlgorithmDetailPage({
               )}
             </div>
             {equityPoints.length > 0 && (
-              <Card className="rounded-xl border border-border bg-card">
+              <Card className="vf-glass-card vf-glass-amber rounded-xl overflow-hidden border-0 shadow-none bg-transparent">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-base font-semibold">Drawdown chart</CardTitle>
                   <p className="text-xs text-muted-foreground">

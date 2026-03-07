@@ -103,16 +103,17 @@ export function StrategyHeroSummary({
         </p>
       )}
 
-      {/* Four decision cards */}
+      {/* Four decision cards (standard glass, tint by purpose) */}
       {hasDecisionCards && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {DECISION_CARDS.map(({ key, label, icon: Icon }) => {
+          {DECISION_CARDS.map(({ key, label, icon: Icon }, i) => {
             const value = decisionValues[key];
             if (!value) return null;
+            const tint = (["vf-glass-violet", "vf-glass-blue", "vf-glass-green", "vf-glass-amber"] as const)[i] ?? "vf-glass-violet";
             return (
               <div
                 key={key}
-                className="rounded-xl border border-border bg-card p-3 transition-[border-color,box-shadow] duration-200 hover:border-muted-foreground/25 hover:shadow-sm flex gap-3"
+                className={cn("vf-glass-card rounded-xl p-4 flex gap-3", tint)}
               >
                 <div className="flex shrink-0 items-center justify-center size-8 rounded-lg bg-muted/50 text-muted-foreground">
                   <Icon className="size-4" aria-hidden />
@@ -127,13 +128,13 @@ export function StrategyHeroSummary({
         </div>
       )}
 
-      {/* Compact trust pills */}
+      {/* Compact trust pills (quiet glass) */}
       {trustPills.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {trustPills.map((item) => (
             <span
               key={item}
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/30 px-2.5 py-1 text-[11px] font-medium text-muted-foreground"
+              className="vf-glass-quiet inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium text-muted-foreground"
             >
               <span className="size-1.5 rounded-full bg-brand-green/60 shrink-0" aria-hidden />
               {item}

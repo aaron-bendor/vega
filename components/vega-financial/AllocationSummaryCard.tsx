@@ -16,8 +16,7 @@ export function AllocationSummaryCard({
   return (
     <div
       className={cn(
-        "rounded-xl border border-border bg-card p-4 flex flex-col gap-4 lg:sticky lg:top-24 lg:self-start",
-        "transition-[border-color,box-shadow] duration-200 hover:border-muted-foreground/25 hover:shadow-md",
+        "vf-glass-hero vf-glass-violet rounded-xl p-5 flex flex-col gap-4 lg:sticky lg:top-24 lg:self-start",
         className
       )}
     >

@@ -34,7 +34,7 @@ function MetricCard({
   explanation: string;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-3 min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink flex flex-col gap-0.5 transition-[border-color,box-shadow] duration-200 hover:border-muted-foreground/25 hover:shadow-sm">
+    <div className="vf-glass-card rounded-xl p-3 min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink flex flex-col gap-0.5">
       <div className="flex items-center gap-1.5">
         <p className="text-[11px] font-medium text-muted-foreground">{label}</p>
         <InfoTooltip content={explanation} />
