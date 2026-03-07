@@ -114,7 +114,7 @@ export function DashboardPortfolioContent({
     : undefined;
 
   return (
-    <div className="w-full max-w-[1160px] min-w-0 mx-auto px-4 sm:px-6 py-6 sm:py-8 lg:px-6 space-y-6 sm:space-y-8 md:space-y-10">
+    <div className="w-full max-w-[1160px] min-w-0 mx-auto px-4 sm:px-6 py-6 sm:py-8 lg:pl-6 lg:pr-8 space-y-6 sm:space-y-8 md:space-y-10">
       <DashboardHeader />
 
       <section

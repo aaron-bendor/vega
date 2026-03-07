@@ -126,7 +126,7 @@ export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalT
       )}
 
       {naturalScroll ? (
-        <div className="lg:flex min-w-0">
+        <div className="lg:flex min-w-0 lg:gap-6">
           <div
             className={cn(
               "hidden lg:block shrink-0 self-start sticky z-10",
@@ -135,7 +135,7 @@ export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalT
           >
             <ProfileSidebar naturalScroll />
           </div>
-          <div className="flex-1 min-w-0 overflow-x-hidden">
+          <div className="flex-1 min-w-0 overflow-x-hidden lg:min-w-[0]">
             {toolbar != null ? (
               <div
                 className={cn(

@@ -83,14 +83,14 @@ export function ProfileSidebar({
   return (
     <aside
       className={cn(
-        "relative shrink-0 border-r border-shell-border bg-shell-sidebar flex flex-col transition-[width] duration-200 ease-out rounded-r-xl overflow-hidden",
-        isCollapsed ? "w-[72px]" : "w-64",
+        "relative shrink-0 border-r border-shell-border bg-shell-sidebar flex flex-col transition-[width] duration-200 ease-out overflow-hidden",
+        isCollapsed ? "w-[72px]" : "w-60",
         naturalScroll ? "h-auto min-h-[100dvh]" : "h-screen sticky top-0"
       )}
       aria-label="App navigation"
     >
-      {/* Logo – always visible at top, darker background */}
-      <div className="shrink-0 p-3 border-b border-primary/20 bg-primary/25">
+      {/* Logo – always visible at top, tint of about-us #531cb3 (chart-3) */}
+      <div className="shrink-0 p-3 border-b border-chart-3/15 bg-chart-3/10">
         <Link
           href="/"
           className={cn(
