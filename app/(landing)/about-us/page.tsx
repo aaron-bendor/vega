@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { AboutUsSection } from "@/components/landing/AboutUsSection";
-import { TeamMissionPrinciplesSection } from "@/components/landing/TeamMissionPrinciplesSection";
 
 export const metadata = {
   title: "About Us — Vega Financial",
@@ -10,10 +9,10 @@ export const metadata = {
 
 export default function AboutUsPage() {
   return (
-    <div className="flex flex-col items-start relative bg-white">
-      {/* Hero with background image and overlay content (PDF reference) */}
+    <div className="flex flex-col w-full relative bg-white">
+      {/* Section 1: Hero — full viewport, then scroll */}
       <section
-        className="relative w-full min-h-[1018px] flex flex-col"
+        className="relative w-full min-h-screen flex flex-col"
         aria-labelledby="about-heading"
       >
         <Image
@@ -24,8 +23,7 @@ export default function AboutUsPage() {
           priority
           sizes="100vw"
         />
-        {/* Overlay content matching PDF: // ABOUT US (top ~281px), headline (~316px), paragraph (~745px) */}
-        <div className="relative z-10 flex flex-col min-h-[1018px] pt-[18%] sm:pt-[240px] lg:pt-[281px] px-4 sm:px-6 md:px-10 lg:px-[157px] pb-16 md:pb-24">
+        <div className="relative z-10 flex flex-col min-h-screen justify-center pt-[18%] sm:pt-[240px] lg:pt-[281px] px-4 sm:px-6 md:px-10 lg:px-[157px] pb-16 md:pb-24">
           <div className="max-w-[1217px]">
             <p className="font-dm-mono font-normal text-white text-base md:text-xl tracking-[2px] leading-tight">
               // ABOUT US
@@ -47,7 +45,6 @@ export default function AboutUsPage() {
       </section>
 
       <AboutUsSection />
-      <TeamMissionPrinciplesSection />
     </div>
   );
 }

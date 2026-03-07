@@ -158,6 +158,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
   const mobileMenuBg = "bg-black/80 backdrop-blur-xl border border-white/10";
 
   const isHome = pathname === "/";
+  const isHeroPage = pathname === "/" || pathname === "/about-us";
 
   const [hoveredNavIndex, setHoveredNavIndex] = useState<number | null>(null);
   const [focusedNavIndex, setFocusedNavIndex] = useState<number | null>(null);
@@ -226,16 +227,16 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
 
   const pill = (
     <>
-      {/* On home: zero-height spacer so hero starts at top and fills viewport (no white band). Else: reserve space for fixed nav. */}
+      {/* On home and about-us: zero-height spacer so hero starts at top (no white band). Else: reserve space for fixed nav. */}
       <div
         ref={spacerRef}
         id="siteBannerSpacer"
         className={cn(
           "shrink-0 w-full",
-          isHome ? "h-0 min-h-0" : ""
+          isHeroPage ? "h-0 min-h-0" : ""
         )}
         style={
-          isHome
+          isHeroPage
             ? { height: 0, minHeight: 0 }
             : {
                 height: "var(--banner-height, 5.5rem)",

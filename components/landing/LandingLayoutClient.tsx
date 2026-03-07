@@ -11,11 +11,12 @@ export function LandingLayoutClient({
 }) {
   const pathname = usePathname();
   const isHome = pathname === "/";
+  const useHeroBanner = pathname === "/" || pathname === "/about-us";
 
   return (
     <>
       <SmoothScrollToHash />
-      <SiteHeader variant={isHome ? "hero" : "standalone"} />
+      <SiteHeader variant={useHeroBanner ? "hero" : "standalone"} />
       <main className="flex shrink-0 flex-col relative z-[1] overflow-visible">{children}</main>
     </>
   );
