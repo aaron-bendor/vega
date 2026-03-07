@@ -56,10 +56,8 @@ export function StrategyCard({
     <Card
       data-tour={dataTour}
       className={cn(
-        "h-full flex flex-col rounded-xl border border-border bg-card",
-        "transition-[box-shadow,border-color,transform] duration-150 ease-out",
-        "hover:border-primary/25 hover:shadow-md hover:-translate-y-0.5",
-        "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:outline-none"
+        "vf-card-hover h-full flex flex-col rounded-xl border border-border bg-card",
+        "hover:border-primary/25 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:outline-none"
       )}
     >
       <CardHeader className="pb-3 flex-shrink-0 space-y-3">

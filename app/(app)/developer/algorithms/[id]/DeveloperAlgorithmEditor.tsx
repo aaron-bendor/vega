@@ -222,7 +222,7 @@ export function DeveloperAlgorithmEditor({ algorithm }: { algorithm: Algorithm }
                       href={`/vega-financial/algorithms/${v.id}`}
                       className="font-medium hover:underline"
                     >
-                      View in marketplace
+                      View in Explore
                     </Link>
                     <span className="text-muted-foreground text-sm ml-2">
                       {new Date(v.publishedAt).toLocaleDateString()}

@@ -81,7 +81,7 @@ function HoldingsTableDesktop({
               return (
                 <tr
                   key={h.id}
-                  className="border-b border-border last:border-0 hover:bg-muted/20 transition-colors h-[72px] sm:h-[80px]"
+                  className="border-b border-border last:border-0 hover:bg-muted/20 transition-colors duration-200 h-[72px] sm:h-[80px]"
                 >
                   <td className="py-3 px-4 align-middle">
                     <Link

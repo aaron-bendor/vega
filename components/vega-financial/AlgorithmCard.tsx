@@ -198,7 +198,7 @@ export function AlgorithmCard({
                 className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded"
                 onClick={(e) => e.stopPropagation()}
               >
-                View strategy
+                View details
                 <ChevronRight className="size-4" aria-hidden />
               </ViewTransitionLink>
             </div>
@@ -315,7 +315,7 @@ export function AlgorithmCard({
                 className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded"
                 onClick={(e) => e.stopPropagation()}
               >
-                View strategy
+                View details
                 <ChevronRight className="size-4" aria-hidden />
               </ViewTransitionLink>
             </div>

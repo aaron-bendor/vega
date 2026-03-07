@@ -72,7 +72,7 @@ export function AlgoCard({ algo }: AlgoCardProps) {
         </div>
         <div className="flex gap-2 mt-auto">
           <Button size="sm" className="flex-1" asChild>
-            <Link href={`/vega-financial/algorithms/${algo.id}`}>View</Link>
+            <Link href={`/vega-financial/algorithms/${algo.id}`}>View details</Link>
           </Button>
           <Button size="sm" variant="outline" className="flex-1" asChild>
             <Link href={`/vega-financial/algorithms/${algo.id}#simulate`}>Simulate invest</Link>

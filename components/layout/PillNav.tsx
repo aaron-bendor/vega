@@ -28,12 +28,12 @@ const mainNav: NavEntry[] = [
 
 const investorNav: NavEntry[] = [
   { type: "link", href: "/vega-financial", label: "Dashboard", exact: true },
-  { type: "link", href: "/vega-financial/marketplace", label: "Marketplace" },
+  { type: "link", href: "/vega-financial/marketplace", label: "Explore" },
   { type: "link", href: "/vega-financial/portfolio", label: "Portfolio" },
 ];
 
 const investorAppNav: NavEntry[] = [
-  { type: "link", href: "/vega-financial", label: "Home", exact: true },
+  { type: "link", href: "/vega-financial", label: "Dashboard", exact: true },
 ];
 
 type PillNavVariant = "hero" | "standalone" | "investor" | "investorApp";

@@ -133,6 +133,9 @@ export function PortfolioPerformanceCard({
                   dot={false}
                   strokeLinecap="round"
                   strokeLinejoin="round"
+                  isAnimationActive={true}
+                  animationDuration={900}
+                  animationEasing="ease-out"
                 />
               </LineChart>
             </ResponsiveContainer>

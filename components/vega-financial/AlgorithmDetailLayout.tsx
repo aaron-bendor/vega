@@ -81,37 +81,37 @@ export function AlgorithmDetailLayout({
           <TabsList className="flex h-auto gap-1 w-full sm:w-auto bg-transparent border-0 p-0 rounded-none shadow-none min-w-0">
             <TabsTrigger
               value="overview"
-              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-150"
+              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-200"
             >
               Overview
             </TabsTrigger>
             <TabsTrigger
               value="performance"
-              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-150"
+              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-200"
             >
               Performance
             </TabsTrigger>
             <TabsTrigger
               value="risk"
-              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-150"
+              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-200"
             >
               Risk
             </TabsTrigger>
             <TabsTrigger
               value="developer"
-              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-150"
+              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-200"
             >
               Developer
             </TabsTrigger>
             <TabsTrigger
               value="portfolio-fit"
-              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-150"
+              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-200"
             >
               Portfolio fit
             </TabsTrigger>
             <TabsTrigger
               value="methodology"
-              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-150"
+              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-200"
             >
               Advanced
             </TabsTrigger>

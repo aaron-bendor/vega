@@ -70,7 +70,7 @@ export function SuggestedAlgorithms({ algorithms, heldAlgorithmIds = [] }: Sugge
         {show.map((algo) => (
           <Card
             key={algo.id}
-            className="rounded-xl border border-border bg-card overflow-hidden transition-colors hover:border-muted-foreground/20 flex flex-col h-full"
+            className="vf-card-hover rounded-xl border border-border bg-card overflow-hidden hover:border-muted-foreground/25 flex flex-col h-full"
           >
             <CardContent className="p-4 flex flex-col flex-1 gap-3">
               {/* Top row: name + verified */}

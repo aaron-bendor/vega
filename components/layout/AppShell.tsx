@@ -26,8 +26,8 @@ interface AppShellProps {
 }
 
 /**
- * App layout for /vega-financial/* and (app) routes (marketplace, portfolio, etc.).
- * Top bar (menu, tour, user) + sidebar (Dashboard, Marketplace, Portfolio) + optional toolbar + main.
+ * App layout for /vega-financial/* and (app) routes (Explore, Portfolio, etc.).
+ * Top bar (menu, tour, user) + sidebar (Dashboard, Explore, Portfolio, …) + optional toolbar + main.
  * No marketing header (SiteHeader/PillNav).
  */
 export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalTopBar, hideTopBar, customHeader }: AppShellProps) {

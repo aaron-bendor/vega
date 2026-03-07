@@ -13,10 +13,10 @@ interface AlgorithmOption {
 
 const PAGES: { href: string; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
   { href: "/", label: "Home", icon: Home },
-  { href: "/vega-financial", label: "Vega Financial", icon: Wallet },
+  { href: "/vega-financial", label: "Dashboard", icon: Wallet },
   { href: "/vega-financial/portfolio", label: "Portfolio", icon: LayoutDashboard },
-  { href: "/vega-financial/marketplace", label: "Marketplace", icon: Store },
-  { href: "/vega-financial/profile", label: "Profile", icon: User },
+  { href: "/vega-financial/marketplace", label: "Explore", icon: Store },
+  { href: "/vega-financial/profile", label: "Settings", icon: User },
   { href: "/vega-developer", label: "Developer", icon: Code2 },
   { href: "/private", label: "Private", icon: Lock },
 ];

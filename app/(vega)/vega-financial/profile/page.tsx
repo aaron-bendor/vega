@@ -239,12 +239,12 @@ export default function VegaFinancialProfilePage() {
             <CardContent>
               {watchlistCount === 0 ? (
                 <p className="text-sm text-muted-foreground">
-                  No strategies on your watchlist. Add some from the{" "}
+                  No strategies on your watchlist. Add some from{" "}
                   <Link
                     href="/vega-financial/marketplace"
                     className="text-primary hover:underline"
                   >
-                    Marketplace
+                    Explore
                   </Link>
                   .
                 </p>
@@ -252,7 +252,7 @@ export default function VegaFinancialProfilePage() {
                 <p className="text-sm text-muted-foreground">
                   You have {watchlistCount} strategy
                   {watchlistCount !== 1 ? "ies" : ""} on your watchlist. Browse them
-                  from the Dashboard or Marketplace.
+                  from the Dashboard or Explore.
                 </p>
               )}
             </CardContent>

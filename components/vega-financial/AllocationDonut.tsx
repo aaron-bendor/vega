@@ -41,7 +41,7 @@ export function AllocationDonut({ data }: AllocationDonutProps) {
           paddingAngle={2}
           dataKey="value"
           animationBegin={0}
-          animationDuration={600}
+          animationDuration={900}
           animationEasing="ease-out"
         >
           {chartData.map((entry) => (

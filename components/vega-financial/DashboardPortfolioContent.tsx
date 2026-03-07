@@ -93,7 +93,11 @@ export function DashboardPortfolioContent({
     return (
       <div className="w-full max-w-[1160px] min-w-0 mx-auto px-4 sm:px-6 py-6 sm:py-8 lg:px-6 space-y-6">
         <DashboardHeader />
-        <div className="animate-pulse rounded-xl bg-muted/50 h-32 w-full" aria-hidden />
+        <div
+          className="rounded-xl bg-muted/50 h-32 w-full motion-reduce:animate-none animate-pulse transition-opacity duration-200"
+          style={{ animationDuration: "1.5s" }}
+          aria-hidden
+        />
       </div>
     );
   }
@@ -115,37 +119,47 @@ export function DashboardPortfolioContent({
 
   return (
     <div className="w-full max-w-[1160px] min-w-0 mx-auto px-4 sm:px-6 py-6 sm:py-8 lg:pl-6 lg:pr-8 space-y-6 sm:space-y-8 md:space-y-10">
-      <DashboardHeader />
+      <div className="vf-reveal vf-reveal-delay-0">
+        <DashboardHeader />
+      </div>
 
       <section
-        className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 gap-y-3 sm:gap-y-4"
+        className="vf-reveal vf-reveal-delay-1 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 gap-y-3 sm:gap-y-4"
         aria-label="Portfolio summary"
       >
         <SummaryMetricCard
           label="Total account value"
           value={formatCurrency(account.equity)}
+          numericValue={account.equity}
+          numericFormat="currency"
           helperText="Includes invested strategies and available cash"
         />
         <SummaryMetricCard
           label="Invested in strategies"
           value={formatCurrency(account.allocated)}
+          numericValue={account.allocated}
+          numericFormat="currency"
           helperText="Amount currently allocated across your holdings"
         />
         <SummaryMetricCard
           label="Total return"
           value={formatPercent(account.unrealizedPnlPct / 100)}
+          numericValue={account.unrealizedPnlPct}
+          numericFormat="percent"
           helperText="Since your first allocation"
           variant={account.unrealizedPnlPct >= 0 ? "positive" : "negative"}
         />
         <SummaryMetricCard
           label="Cash available"
           value={formatCurrency(account.availableCash)}
+          numericValue={account.availableCash}
+          numericFormat="currency"
           helperText="Ready to allocate when you add another strategy"
         />
       </section>
 
       <section
-        className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6"
+        className="vf-reveal vf-reveal-delay-2 grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6"
         aria-labelledby="performance-heading"
       >
         <h2 id="performance-heading" className="sr-only">
@@ -166,43 +180,47 @@ export function DashboardPortfolioContent({
         </div>
       </section>
 
-      <DashboardHoldingsSection
-        holdings={account.holdings}
-        totalInvested={account.allocated}
-      />
+      <div className="vf-reveal vf-reveal-delay-3">
+        <DashboardHoldingsSection
+          holdings={account.holdings}
+          totalInvested={account.allocated}
+        />
+      </div>
 
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-4" aria-label="Insights and guidance">
+      <section className="vf-reveal vf-reveal-delay-4 grid grid-cols-1 md:grid-cols-2 gap-4" aria-label="Insights and guidance">
         <PortfolioInsightCard account={account} />
         <HelpCard />
       </section>
 
-      <SuggestedAlgorithms
-        algorithms={suggestedAlgorithms}
-        heldAlgorithmIds={account.holdings.map((h) => h.algorithmId)}
-      />
+      <div className="vf-reveal vf-reveal-delay-5">
+        <SuggestedAlgorithms
+          algorithms={suggestedAlgorithms}
+          heldAlgorithmIds={account.holdings.map((h) => h.algorithmId)}
+        />
+      </div>
 
-      <section aria-labelledby="next-actions-heading">
-        <h2 id="next-actions-heading" className="font-syne text-lg font-semibold text-foreground mb-4">
+      <section className="vf-reveal vf-reveal-delay-6" aria-labelledby="next-actions-heading">
+        <h2 id="next-actions-heading" className="font-maven-pro text-lg font-semibold text-foreground mb-4">
           Next actions
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Link
             href="/vega-financial/marketplace"
-            className="rounded-xl border border-border bg-card p-4 flex flex-col gap-2 hover:bg-muted/20 transition-colors focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
+            className="vf-card-hover rounded-xl border border-border bg-card p-4 flex flex-col gap-2 hover:border-muted-foreground/25 hover:bg-muted/10 transition-colors duration-200 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
           >
             <span className="font-medium text-foreground">Add a diversifier</span>
             <span className="text-sm text-muted-foreground">Explore strategies that can improve portfolio diversification.</span>
           </Link>
           <Link
             href="/vega-financial/portfolio"
-            className="rounded-xl border border-border bg-card p-4 flex flex-col gap-2 hover:bg-muted/20 transition-colors focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
+            className="vf-card-hover rounded-xl border border-border bg-card p-4 flex flex-col gap-2 hover:border-muted-foreground/25 hover:bg-muted/10 transition-colors duration-200 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
           >
             <span className="font-medium text-foreground">Reduce concentration</span>
             <span className="text-sm text-muted-foreground">Review allocation weights and rebalancing ideas.</span>
           </Link>
           <Link
             href="/vega-financial/watchlist"
-            className="rounded-xl border border-border bg-card p-4 flex flex-col gap-2 hover:bg-muted/20 transition-colors focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
+            className="vf-card-hover rounded-xl border border-border bg-card p-4 flex flex-col gap-2 hover:border-muted-foreground/25 hover:bg-muted/10 transition-colors duration-200 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
           >
             <span className="font-medium text-foreground">Review watchlist</span>
             <span className="text-sm text-muted-foreground">Compare saved strategies before allocating.</span>
@@ -210,7 +228,9 @@ export function DashboardPortfolioContent({
         </div>
       </section>
 
-      <DashboardRecentActivity />
+      <div className="vf-reveal vf-reveal-delay-7">
+        <DashboardRecentActivity />
+      </div>
     </div>
   );
 }
