@@ -1,9 +1,17 @@
 /**
  * Paper portfolio store — client-side state persisted in localStorage.
  * Versioned key for safe schema evolution.
+ * Derived maths live in portfolio-selectors; this module persists canonical state only.
  */
 
 import { MOCK_ACCOUNT } from "@/lib/mock/portfolio";
+import {
+  getHoldingsValue,
+  getEquity,
+  getHoldingWeightPct,
+  getUnrealisedPnlPct,
+  assertPortfolioInvariants,
+} from "@/lib/vega-financial/portfolio-selectors";
 
 export const PORTFOLIO_STORAGE_KEY = "vega_portfolio_v1";
 
@@ -136,22 +144,18 @@ export function subscribePortfolioUpdate(callback: () => void): () => void {
   return () => window.removeEventListener(PORTFOLIO_UPDATED_EVENT, handler);
 }
 
-/** Sum of allocated amounts (capital invested). */
-export function getTotalInvested(holdings: PaperHolding[]): number {
-  return holdings.reduce((sum, h) => sum + h.allocated, 0);
-}
+/** Sum of allocated amounts (capital invested). Re-exported from portfolio-selectors. */
+export { getTotalInvested } from "@/lib/vega-financial/portfolio-selectors";
 
-/** Sum of current market values. */
+/** Sum of current market values (holdings value). Re-exported for backward compatibility. */
 export function getTotalCurrentValue(holdings: PaperHolding[]): number {
-  return holdings.reduce((sum, h) => sum + h.currentValue, 0);
+  return getHoldingsValue(holdings);
 }
 
-/** Unrealised return % = (totalCurrentValue - totalInvested) / totalInvested * 100 when invested > 0. */
-export function getTotalReturnPct(holdings: PaperHolding[], totalCurrentValue: number): number {
-  if (totalCurrentValue <= 0) return 0;
-  const totalInvested = getTotalInvested(holdings);
-  if (totalInvested <= 0) return 0;
-  return ((totalCurrentValue - totalInvested) / totalInvested) * 100;
+/** Unrealised return % when invested > 0. Second arg ignored; use selectors for consistency. */
+export function getTotalReturnPct(holdings: PaperHolding[], totalCurrentValue?: number): number {
+  void totalCurrentValue;
+  return getUnrealisedPnlPct(holdings);
 }
 
 /** One-time seed from MOCK_ACCOUNT when store is empty. Call from client only. */
@@ -160,13 +164,17 @@ export function seedFromMockAccountIfEmpty(): void {
   const raw = localStorage.getItem(PORTFOLIO_STORAGE_KEY);
   if (raw != null && raw !== "") return;
   const now = new Date().toISOString();
+  const totalInvested = MOCK_ACCOUNT.holdings.reduce((s, h) => s + h.allocated, 0);
+  const holdingsValue = MOCK_ACCOUNT.holdings.reduce((s, h) => s + h.currentValue, 0);
+  const startingCash = MOCK_ACCOUNT.availableCash + totalInvested;
+  const equity = MOCK_ACCOUNT.availableCash + holdingsValue;
   const holdings: PaperHolding[] = MOCK_ACCOUNT.holdings.map((h) => ({
     id: h.id,
     algorithmId: h.algorithmId,
     name: h.name,
     allocated: h.allocated,
     currentValue: h.currentValue,
-    weight: h.weight,
+    weight: getHoldingWeightPct(h.currentValue, equity),
     returnPct: h.returnPct,
     tags: h.tags ?? [],
     addedAt: now,
@@ -179,8 +187,6 @@ export function seedFromMockAccountIfEmpty(): void {
     amount: h.allocated,
     at: now,
   }));
-  const totalInvested = holdings.reduce((s, h) => s + h.allocated, 0);
-  const startingCash = MOCK_ACCOUNT.availableCash + totalInvested;
   const state: PortfolioState = {
     ...defaultState,
     startingCash,
@@ -188,6 +194,7 @@ export function seedFromMockAccountIfEmpty(): void {
     holdings,
     activityLog,
   };
+  if (!assertPortfolioInvariants(state)) return;
   savePortfolioState(state);
 }
 
@@ -218,12 +225,10 @@ export function performDemoAllocation(
     if (amount <= 0 || amount > state.availableCash) {
       return { success: false, error: "Allocation exceeds available demo cash." };
     }
-    const totalCurrentValue = getTotalCurrentValue(state.holdings);
-    const totalEquity = state.availableCash + totalCurrentValue;
+    const totalEquity = getEquity(state.availableCash, state.holdings);
     const existing = state.holdings.find((h) => h.algorithmId === versionId);
     const newAllocated = (existing?.allocated ?? 0) + amount;
     const newCurrentValue = (existing?.currentValue ?? 0) + amount;
-    const newTotalEquity = totalEquity;
     const newHoldings: PaperHolding[] = existing
       ? state.holdings.map((h) =>
           h.algorithmId === versionId
@@ -231,17 +236,17 @@ export function performDemoAllocation(
                 ...h,
                 allocated: newAllocated,
                 currentValue: newCurrentValue,
-                weight: newTotalEquity > 0 ? (newCurrentValue / newTotalEquity) * 100 : 0,
+                weight: getHoldingWeightPct(newCurrentValue, totalEquity),
               }
             : {
                 ...h,
-                weight: newTotalEquity > 0 ? (h.currentValue / newTotalEquity) * 100 : 0,
+                weight: getHoldingWeightPct(h.currentValue, totalEquity),
               }
         )
       : [
           ...state.holdings.map((h) => ({
             ...h,
-            weight: newTotalEquity > 0 ? (h.currentValue / newTotalEquity) * 100 : 0,
+            weight: getHoldingWeightPct(h.currentValue, totalEquity),
           })),
           {
             id: `paper-${versionId}-${Date.now()}`,
@@ -249,7 +254,7 @@ export function performDemoAllocation(
             name: strategyName,
             allocated: amount,
             currentValue: amount,
-            weight: newTotalEquity > 0 ? (amount / newTotalEquity) * 100 : 0,
+            weight: getHoldingWeightPct(amount, totalEquity),
             returnPct: 0,
             tags: [],
             addedAt: new Date().toISOString(),
@@ -270,6 +275,12 @@ export function performDemoAllocation(
       holdings: newHoldings,
       activityLog: [...state.activityLog, activityEntry],
     };
+    if (!assertPortfolioInvariants(newState)) {
+      return {
+        success: false,
+        error: "Portfolio state would be inconsistent. Please refresh and try again.",
+      };
+    }
     savePortfolioState(newState);
     return { success: true, newState };
   } catch (err) {

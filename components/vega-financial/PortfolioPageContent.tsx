@@ -8,43 +8,29 @@ import { formatCurrency, formatPercent, UNAVAILABLE_IN_DEMO } from "@/lib/utils/
 import { PageHeader } from "@/components/vega-financial/PageHeader";
 import { SummaryMetricCard } from "@/components/vega-financial/SummaryMetricCard";
 import { DashboardPortfolioChart } from "@/components/vega-financial/DashboardPortfolioChart";
+import { PortfolioReconciliationBlock } from "@/components/vega-financial/PortfolioReconciliationBlock";
 import { PAGE_SUBTITLES, EMPTY_STATES } from "@/lib/vega-financial/investor-copy";
 import {
   loadPortfolioState,
   seedFromMockAccountIfEmpty,
   subscribePortfolioUpdate,
 } from "@/lib/vega-financial/portfolio-store";
+import {
+  getPortfolioDerived,
+  getHoldingWeightPct,
+} from "@/lib/vega-financial/portfolio-selectors";
+import type { PaperHolding } from "@/lib/vega-financial/portfolio-store";
 
 
 export function PortfolioPageContent() {
   const [mounted, setMounted] = useState(false);
-  const [availableCash, setAvailableCash] = useState(0);
-  const [holdings, setHoldings] = useState<Array<{
-    id: string;
-    versionId: string;
-    name: string;
-    amount: number;
-    currentValue: number;
-    weight: number;
-    tags: string[];
-  }>>([]);
+  const [state, setState] = useState<{ availableCash: number; holdings: PaperHolding[] } | null>(null);
 
   const refresh = useCallback(() => {
     if (typeof window === "undefined") return;
     seedFromMockAccountIfEmpty();
-    const state = loadPortfolioState();
-    setAvailableCash(state.availableCash);
-    setHoldings(
-      state.holdings.map((h) => ({
-        id: h.id,
-        versionId: h.algorithmId,
-        name: h.name,
-        amount: h.allocated,
-        currentValue: h.currentValue,
-        weight: h.weight,
-        tags: h.tags ?? [],
-      }))
-    );
+    const s = loadPortfolioState();
+    setState({ availableCash: s.availableCash, holdings: s.holdings });
   }, []);
 
   useEffect(() => {
@@ -58,7 +44,7 @@ export function PortfolioPageContent() {
     return unsub;
   }, [mounted, refresh]);
 
-  if (!mounted) {
+  if (!mounted || state === null) {
     return (
       <div className="w-full max-w-6xl min-w-0 mx-auto px-4 py-6 sm:p-6 lg:p-8 space-y-8">
         <PageHeader title="Portfolio" subtitle={PAGE_SUBTITLES.portfolio} />
@@ -67,10 +53,8 @@ export function PortfolioPageContent() {
     );
   }
 
-  const totalValue = holdings.reduce((sum, h) => sum + h.currentValue, 0);
-  const totalInvested = holdings.reduce((sum, h) => sum + h.amount, 0);
-  const totalReturnPct = totalInvested > 0 ? ((totalValue - totalInvested) / totalInvested) * 100 : 0;
-  const equity = availableCash + totalValue;
+  const { availableCash, holdings } = state;
+  const { invested, holdingsValue, equity, unrealisedPnl, unrealisedPnlPct } = getPortfolioDerived(state);
 
   if (holdings.length === 0) {
     return (
@@ -111,14 +95,22 @@ export function PortfolioPageContent() {
 
       <section className="grid grid-cols-2 lg:grid-cols-4 gap-4" aria-label="Portfolio summary">
         <SummaryMetricCard label="Total portfolio value" value={formatCurrency(equity)} />
-        <SummaryMetricCard label="Invested" value={formatCurrency(totalInvested)} />
+        <SummaryMetricCard label="Invested" value={formatCurrency(invested)} />
         <SummaryMetricCard
           label="Total return"
-          value={formatPercent(totalReturnPct / 100)}
-          variant={totalReturnPct >= 0 ? "positive" : "negative"}
+          value={formatPercent(unrealisedPnlPct / 100)}
+          variant={unrealisedPnlPct >= 0 ? "positive" : "negative"}
         />
         <SummaryMetricCard label="Cash available" value={formatCurrency(availableCash)} />
       </section>
+
+      <PortfolioReconciliationBlock
+        availableCash={availableCash}
+        holdingsValue={holdingsValue}
+        totalEquity={equity}
+        invested={invested}
+        unrealisedPnl={unrealisedPnl}
+      />
 
       <section aria-labelledby="portfolio-chart-heading">
         <h2 id="portfolio-chart-heading" className="sr-only">
@@ -139,7 +131,7 @@ export function PortfolioPageContent() {
                   <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Strategy</th>
                   <th className="text-right py-3 px-4 text-xs font-medium text-muted-foreground">Allocated</th>
                   <th className="text-right py-3 px-4 text-xs font-medium text-muted-foreground">Current value</th>
-                  <th className="text-right py-3 px-4 text-xs font-medium text-muted-foreground">Weight</th>
+                  <th className="text-right py-3 px-4 text-xs font-medium text-muted-foreground">% of total portfolio</th>
                   <th className="text-right py-3 px-4 text-xs font-medium text-muted-foreground">Return</th>
                   <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Risk</th>
                   <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Role</th>
@@ -148,21 +140,22 @@ export function PortfolioPageContent() {
               </thead>
               <tbody>
                 {holdings.map((h) => {
-                  const pnlPct = h.amount > 0 ? ((h.currentValue - h.amount) / h.amount) * 100 : 0;
-                  const weightStr = totalValue > 0 ? ((h.currentValue / totalValue) * 100).toFixed(0) : "0";
+                  const pnlPct = h.allocated > 0 ? ((h.currentValue - h.allocated) / h.allocated) * 100 : 0;
+                  const weightPct = getHoldingWeightPct(h.currentValue, equity);
+                  const weightStr = weightPct.toFixed(0) + "%";
                   return (
                     <tr key={h.id} className="border-b border-border last:border-0 hover:bg-muted/20">
                       <td className="py-3 px-4">
                         <Link
-                          href={`/vega-financial/algorithms/${h.versionId}`}
+                          href={`/vega-financial/algorithms/${h.algorithmId}`}
                           className="font-medium text-foreground hover:underline"
                         >
                           {h.name}
                         </Link>
                       </td>
-                      <td className="py-3 px-4 text-right tabular-nums">{formatCurrency(h.amount)}</td>
+                      <td className="py-3 px-4 text-right tabular-nums">{formatCurrency(h.allocated)}</td>
                       <td className="py-3 px-4 text-right tabular-nums">{formatCurrency(h.currentValue)}</td>
-                      <td className="py-3 px-4 text-right tabular-nums">{weightStr}%</td>
+                      <td className="py-3 px-4 text-right tabular-nums">{weightStr}</td>
                       <td
                         className={`py-3 px-4 text-right tabular-nums ${pnlPct >= 0 ? "text-brand-green" : "text-brand-red"}`}
                       >
@@ -182,7 +175,7 @@ export function PortfolioPageContent() {
                       </td>
                       <td className="py-3 px-4">
                         <Link
-                          href={`/vega-financial/algorithms/${h.versionId}`}
+                          href={`/vega-financial/algorithms/${h.algorithmId}`}
                           className="text-sm font-medium text-primary hover:underline"
                         >
                           View details
@@ -204,10 +197,10 @@ export function PortfolioPageContent() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <Card className="rounded-xl border border-border bg-card">
             <CardContent className="pt-4">
-              <p className="text-xs font-medium text-muted-foreground mb-2">By strategy</p>
+              <p className="text-xs font-medium text-muted-foreground mb-2">By strategy (% of total portfolio)</p>
               <ul className="text-sm space-y-1">
                 {holdings.map((h) => {
-                  const pct = totalValue > 0 ? ((h.currentValue / totalValue) * 100).toFixed(0) : "0";
+                  const pct = getHoldingWeightPct(h.currentValue, equity).toFixed(0);
                   return (
                     <li key={h.id} className="flex justify-between gap-2">
                       <span className="truncate">{h.name}</span>
@@ -241,13 +234,13 @@ export function PortfolioPageContent() {
           <CardContent className="pt-4">
             {holdings.length > 0 && (() => {
               const largest = holdings.reduce((a, b) => (a.currentValue > b.currentValue ? a : b));
-              const largestPct = totalValue > 0 ? (largest.currentValue / totalValue) * 100 : 0;
+              const largestPct = getHoldingWeightPct(largest.currentValue, equity);
               const isConcentrated = largestPct > 40;
               return (
                 <>
                   <p className="text-sm font-medium text-foreground mb-1">Largest concentration</p>
                   <p className="text-sm text-muted-foreground mb-3">
-                    {largest.name} at {largestPct.toFixed(0)}% of portfolio value.
+                    {largest.name} at {largestPct.toFixed(0)}% of total portfolio.
                   </p>
                   <p className="text-sm text-foreground">
                     {isConcentrated
@@ -268,7 +261,7 @@ export function PortfolioPageContent() {
         <ul className="space-y-2">
           {holdings.length > 1 && (() => {
             const largest = holdings.reduce((a, b) => (a.currentValue > b.currentValue ? a : b));
-            const pct = totalValue > 0 ? (largest.currentValue / totalValue) * 100 : 0;
+            const pct = getHoldingWeightPct(largest.currentValue, equity);
             if (pct > 35) {
               return (
                 <>

@@ -14,7 +14,7 @@ interface PortfolioInsightCardProps {
  */
 export function PortfolioInsightCard({ account, className }: PortfolioInsightCardProps) {
   const hasHoldings = account.holdings.length > 0;
-  const totalAllocated = account.holdings.reduce((s, h) => s + h.currentValue, 0);
+  const totalHoldingsValue = account.holdings.reduce((s, h) => s + h.currentValue, 0);
 
   let body: string;
   if (!hasHoldings) {
@@ -29,7 +29,7 @@ export function PortfolioInsightCard({ account, className }: PortfolioInsightCar
     const avgRisk = riskLevels.reduce((s, r) => s + r, 0) / riskLevels.length;
     if (avgRisk >= 5 && avgRisk <= 6) {
       body = "Your portfolio is tilted towards medium-risk strategies.";
-    } else if (topHolding && totalAllocated > 0 && topHolding.currentValue / totalAllocated > 0.4) {
+    } else if (topHolding && totalHoldingsValue > 0 && topHolding.currentValue / totalHoldingsValue > 0.4) {
       body = `Most of your gains are coming from ${topHolding.name}.`;
     } else {
       body = "Your portfolio is moderately concentrated. Adding a lower-correlation strategy may improve diversification.";

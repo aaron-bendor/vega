@@ -10,7 +10,8 @@ import { ArrowUpRight } from "lucide-react";
 
 interface DashboardHoldingsSectionProps {
   holdings: MockHolding[];
-  totalInvested: number;
+  /** Total equity (cash + holdings value). Used for weight = % of total portfolio. */
+  equity: number;
 }
 
 function riskScoreToLabel(score: number): "Low" | "Medium" | "High" {
@@ -40,11 +41,11 @@ function roleFromTags(tags: string[]): string {
 /** Desktop: full table with Strategy, Allocated, Return, Risk, Trend, Actions */
 function HoldingsTableDesktop({
   holdings,
-  totalInvested,
+  equity,
   onOpenRiskExplainer,
 }: {
   holdings: MockHolding[];
-  totalInvested: number;
+  equity: number;
   onOpenRiskExplainer: (score: number) => void;
 }) {
   return (
@@ -76,8 +77,8 @@ function HoldingsTableDesktop({
             {holdings.map((h) => {
               const score = h.riskScore ?? 5;
               const riskLabel = riskScoreToLabel(score);
-              const pctOfInvested =
-                totalInvested > 0 ? ((h.currentValue / totalInvested) * 100).toFixed(0) : "—";
+              const pctOfPortfolio =
+                equity > 0 ? ((h.currentValue / equity) * 100).toFixed(0) : "—";
               return (
                 <tr
                   key={h.id}
@@ -97,7 +98,7 @@ function HoldingsTableDesktop({
                   <td className="py-3 px-4 text-right align-middle tabular-nums">
                     <span className="font-medium text-foreground">{formatCurrency(h.currentValue)}</span>
                     <span className="text-xs text-muted-foreground block mt-0.5">
-                      {pctOfInvested}% of invested capital
+                      {pctOfPortfolio}% of total portfolio
                     </span>
                   </td>
                   <td className="py-3 px-4 text-right align-middle">
@@ -168,17 +169,17 @@ function HoldingsTableDesktop({
 /** Mobile: one card per holding */
 function HoldingCardMobile({
   holding,
-  totalInvested,
+  equity,
   onOpenRiskExplainer,
 }: {
   holding: MockHolding;
-  totalInvested: number;
+  equity: number;
   onOpenRiskExplainer: (score: number) => void;
 }) {
   const score = holding.riskScore ?? 5;
   const riskLabel = riskScoreToLabel(score);
-  const pctOfInvested =
-    totalInvested > 0 ? ((holding.currentValue / totalInvested) * 100).toFixed(0) : "—";
+  const pctOfPortfolio =
+    equity > 0 ? ((holding.currentValue / equity) * 100).toFixed(0) : "—";
 
   return (
     <div className="rounded-xl border border-border bg-card p-4 space-y-3">
@@ -197,7 +198,7 @@ function HoldingCardMobile({
         <div>
           <p className="text-xs text-muted-foreground">Current value</p>
           <p className="font-medium tabular-nums">{formatCurrency(holding.currentValue)}</p>
-          <p className="text-xs text-muted-foreground">{pctOfInvested}% of invested capital</p>
+          <p className="text-xs text-muted-foreground">{pctOfPortfolio}% of total portfolio</p>
         </div>
         <div>
           <p className="text-xs text-muted-foreground">Return</p>
@@ -259,7 +260,7 @@ function HoldingCardMobile({
   );
 }
 
-export function DashboardHoldingsSection({ holdings, totalInvested }: DashboardHoldingsSectionProps) {
+export function DashboardHoldingsSection({ holdings, equity }: DashboardHoldingsSectionProps) {
   const [explainerOpen, setExplainerOpen] = useState(false);
   const [explainerScore, setExplainerScore] = useState(5);
 
@@ -292,7 +293,7 @@ export function DashboardHoldingsSection({ holdings, totalInvested }: DashboardH
       <div className="hidden md:block">
         <HoldingsTableDesktop
           holdings={holdings}
-          totalInvested={totalInvested}
+          equity={equity}
           onOpenRiskExplainer={openExplainer}
         />
       </div>
@@ -301,7 +302,7 @@ export function DashboardHoldingsSection({ holdings, totalInvested }: DashboardH
           <HoldingCardMobile
             key={h.id}
             holding={h}
-            totalInvested={totalInvested}
+            equity={equity}
             onOpenRiskExplainer={openExplainer}
           />
         ))}

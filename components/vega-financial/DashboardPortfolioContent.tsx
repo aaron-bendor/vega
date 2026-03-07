@@ -16,12 +16,17 @@ import {
   loadPortfolioState,
   seedFromMockAccountIfEmpty,
   subscribePortfolioUpdate,
-  getTotalInvested,
-  getTotalCurrentValue,
-  getTotalReturnPct,
 } from "@/lib/vega-financial/portfolio-store";
+import {
+  getTotalInvested,
+  getEquity,
+  getUnrealisedPnl,
+  getUnrealisedPnlPct,
+  getHoldingWeightPct,
+} from "@/lib/vega-financial/portfolio-selectors";
 import type { MockAccount, MockHolding } from "@/lib/mock/portfolio";
 import type { PaperHolding } from "@/lib/vega-financial/portfolio-store";
+import { PortfolioReconciliationBlock } from "@/components/vega-financial/PortfolioReconciliationBlock";
 import { formatCurrency, formatPercent } from "@/lib/utils/format";
 
 function portfolioStateToMockAccount(
@@ -29,18 +34,17 @@ function portfolioStateToMockAccount(
   _startingCash: number,
   holdings: PaperHolding[]
 ): MockAccount {
-  const totalInvested = getTotalInvested(holdings);
-  const totalCurrentValue = getTotalCurrentValue(holdings);
-  const equity = availableCash + totalCurrentValue;
-  const unrealizedPnlPct = getTotalReturnPct(holdings, totalCurrentValue);
-  const unrealizedPnl = totalInvested > 0 ? totalCurrentValue - totalInvested : 0;
+  const invested = getTotalInvested(holdings);
+  const equity = getEquity(availableCash, holdings);
+  const unrealisedPnl = getUnrealisedPnl(holdings);
+  const unrealisedPnlPct = getUnrealisedPnlPct(holdings);
   const mockHoldings: MockHolding[] = holdings.map((h) => ({
     id: h.id,
     algorithmId: h.algorithmId,
     name: h.name,
     allocated: h.allocated,
     currentValue: h.currentValue,
-    weight: equity > 0 ? (h.currentValue / equity) * 100 : 0,
+    weight: getHoldingWeightPct(h.currentValue, equity),
     returnPct: h.returnPct,
     tags: h.tags ?? [],
     riskScore: 5,
@@ -48,9 +52,9 @@ function portfolioStateToMockAccount(
   return {
     equity,
     availableCash,
-    allocated: totalInvested,
-    unrealizedPnl,
-    unrealizedPnlPct,
+    allocated: invested,
+    unrealizedPnl: unrealisedPnl,
+    unrealizedPnlPct: unrealisedPnlPct,
     holdings: mockHoldings,
   };
 }
@@ -177,10 +181,20 @@ export function DashboardPortfolioContent({
         </div>
       </section>
 
+      <div className="vf-reveal vf-reveal-delay-2b">
+        <PortfolioReconciliationBlock
+          availableCash={account.availableCash}
+          holdingsValue={account.equity - account.availableCash}
+          totalEquity={account.equity}
+          invested={account.allocated}
+          unrealisedPnl={account.unrealizedPnl}
+        />
+      </div>
+
       <div className="vf-reveal vf-reveal-delay-3">
         <DashboardHoldingsSection
           holdings={account.holdings}
-          totalInvested={account.allocated}
+          equity={account.equity}
         />
       </div>
 
