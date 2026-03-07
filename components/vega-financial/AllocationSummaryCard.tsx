@@ -4,6 +4,7 @@ import { formatPercent } from "@/lib/utils/format";
 import { cn } from "@/lib/utils";
 import { METRIC_LABELS } from "@/lib/vega-financial/investor-copy";
 import { ALLOCATION_NOTE_COPY } from "@/lib/vega-financial/strategy-copy";
+import { InfoTooltip } from "@/components/vega-financial/InfoTooltip";
 import type { ReactNode } from "react";
 
 interface AllocationSummaryCardProps {
@@ -43,28 +44,36 @@ export function AllocationSummaryCard({
       {/* 2x2 key metrics */}
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <p className="text-[11px] font-medium text-muted-foreground">Return</p>
+          <div className="flex items-center gap-1.5">
+            <p className="text-[11px] font-medium text-muted-foreground">Return</p>
+            <InfoTooltip content="Total change in value over the tested period." />
+          </div>
           <p className={cn("text-base font-semibold tabular-nums", returnPct != null && (returnPct >= 0 ? "text-brand-green" : "text-brand-red"))}>
             {returnPct != null ? `${returnPct >= 0 ? "+" : ""}${formatPercent(returnPct)}` : "—"}
           </p>
-          <p className="text-[10px] text-muted-foreground mt-0.5">Over tested period</p>
         </div>
         <div>
-          <p className="text-[11px] font-medium text-muted-foreground">{METRIC_LABELS.biggestDrop}</p>
+          <div className="flex items-center gap-1.5">
+            <p className="text-[11px] font-medium text-muted-foreground">{METRIC_LABELS.biggestDrop}</p>
+            <InfoTooltip content="Largest peak-to-trough fall before recovering." />
+          </div>
           <p className="text-base font-semibold tabular-nums text-foreground">
             {maxDrawdown != null ? formatPercent(maxDrawdown) : "—"}
           </p>
-          <p className="text-[10px] text-muted-foreground mt-0.5">Largest peak-to-trough fall</p>
         </div>
         <div>
-          <p className="text-[11px] font-medium text-muted-foreground">Risk level</p>
+          <div className="flex items-center gap-1.5">
+            <p className="text-[11px] font-medium text-muted-foreground">Risk level</p>
+            <InfoTooltip content="Strategy classification for comparison." />
+          </div>
           <p className="text-base font-semibold text-foreground">{riskLevel ?? "—"}</p>
-          <p className="text-[10px] text-muted-foreground mt-0.5">Strategy classification</p>
         </div>
         <div>
-          <p className="text-[11px] font-medium text-muted-foreground">{METRIC_LABELS.similarityToMarket}</p>
+          <div className="flex items-center gap-1.5">
+            <p className="text-[11px] font-medium text-muted-foreground">{METRIC_LABELS.similarityToMarket}</p>
+            <InfoTooltip content="How closely the strategy moved with the market benchmark." />
+          </div>
           <p className="text-base font-semibold text-foreground">{marketSimilarity ?? "—"}</p>
-          <p className="text-[10px] text-muted-foreground mt-0.5">Vs market benchmark</p>
         </div>
       </div>
 

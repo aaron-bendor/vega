@@ -2,6 +2,7 @@
 
 import { formatPercent } from "@/lib/utils/format";
 import { METRIC_LABELS } from "@/lib/vega-financial/investor-copy";
+import { InfoTooltip } from "@/components/vega-financial/InfoTooltip";
 import { cn } from "@/lib/utils";
 
 export type DataConfidenceLevel = "High" | "Medium" | "Low";
@@ -13,8 +14,6 @@ interface StrategyMetricStripProps {
   /** e.g. "5 years" or "6 months" */
   trackRecordLength?: string | null;
   dataConfidence?: DataConfidenceLevel | null;
-  /** Optional: explainer for each metric (tooltip/sheet) */
-  onMetricExplain?: (metricKey: string) => void;
   className?: string;
 }
 
@@ -30,32 +29,20 @@ function MetricCard({
   label,
   value,
   explanation,
-  onClick,
 }: {
   label: string;
   value: React.ReactNode;
   explanation: string;
-  onClick?: () => void;
 }) {
-  const content = (
+  return (
     <div className="rounded-xl border border-border bg-card p-3 min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink flex flex-col gap-0.5">
-      <p className="text-[11px] font-medium text-muted-foreground">{label}</p>
+      <div className="flex items-center gap-1.5">
+        <p className="text-[11px] font-medium text-muted-foreground">{label}</p>
+        <InfoTooltip content={explanation} />
+      </div>
       <p className="text-base font-semibold tabular-nums text-foreground">{value}</p>
-      <p className="text-[10px] text-muted-foreground leading-tight line-clamp-2">{explanation}</p>
     </div>
   );
-  if (onClick) {
-    return (
-      <button
-        type="button"
-        onClick={onClick}
-        className="text-left focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded-xl"
-      >
-        {content}
-      </button>
-    );
-  }
-  return content;
 }
 
 export function StrategyMetricStrip({
@@ -64,7 +51,6 @@ export function StrategyMetricStrip({
   riskAdjustedReturn,
   trackRecordLength,
   dataConfidence,
-  onMetricExplain,
   className,
 }: StrategyMetricStripProps) {
   const cards = [
@@ -109,7 +95,6 @@ export function StrategyMetricStrip({
               label={c.label}
               value={c.value}
               explanation={c.explanation}
-              onClick={onMetricExplain ? () => onMetricExplain(c.key) : undefined}
             />
           </div>
         ))}
