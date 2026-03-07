@@ -14,7 +14,7 @@ export function InvestmentStepsSection() {
           </p>
         </AnimateOnScroll>
 
-        <AnimateOnScroll delay={0.1}>
+        <AnimateOnScroll delay={100}>
           <h2 className="mt-6 font-syne font-extrabold text-3xl sm:text-4xl md:text-6xl tracking-[-2px] leading-[1.05]">
             <span className="text-[#f0edff]">
               The market
@@ -34,7 +34,7 @@ export function InvestmentStepsSection() {
           </h2>
         </AnimateOnScroll>
 
-        <AnimateOnScroll delay={0.2}>
+        <AnimateOnScroll delay={200}>
           <p className="mt-8 font-dm-sans font-light text-[#7b7394] text-sm md:text-base leading-[1.6]">
             Join thousands of investors and developers building the
             <br className="hidden sm:inline" />
@@ -42,7 +42,7 @@ export function InvestmentStepsSection() {
           </p>
         </AnimateOnScroll>
 
-        <AnimateOnScroll delay={0.3}>
+        <AnimateOnScroll delay={300}>
           <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               href="/vega-financial"

@@ -151,7 +151,7 @@ export function InvestingMadeSimpleSection() {
                 ref={(el) => { stepRefs.current[i] = el; }}
                 className="lg:min-h-[70vh] flex flex-col items-center lg:justify-center"
               >
-                <AnimateOnScroll delay={0.05}>
+                <AnimateOnScroll delay={i * 80}>
                   <div className="w-full lg-card p-6 md:p-10 transition-all duration-300 group">
                     <div className="lg-content">
                       <span className="font-maven-pro font-extrabold text-5xl md:text-7xl text-white leading-none block mb-4">

@@ -56,34 +56,45 @@ export function ProfileSidebar({
       )}
       aria-label="App navigation"
     >
-      {/* 1. Compact brand header – darker background for logo contrast */}
-      <div className="shrink-0 border-b border-shell-border bg-primary/[0.12] px-4 py-3">
+      {/* 1. Floating brand card + 2. Unified account row */}
+      <div className="shrink-0 px-4 pt-4 pb-2 flex flex-col gap-3">
         <Link
           href="/"
           className={cn(
-            "flex items-center transition-opacity duration-[160ms] hover:opacity-90 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-shell-sidebar rounded-xl",
-            isCollapsed ? "justify-center min-h-[40px] w-10" : "min-h-[40px] gap-3"
+            "vf-brand-card flex items-center transition-opacity duration-[160ms] hover:opacity-95 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-shell-sidebar",
+            isCollapsed ? "vf-brand-card-collapsed justify-center" : "min-h-[84px] gap-0"
           )}
           aria-label="Vega Financial home"
         >
           {isCollapsed ? (
-            <Image src="/V.png" alt="" width={28} height={28} className="size-7 object-contain" />
+            <div className="relative z-10 flex flex-col items-center gap-1.5">
+              <Image src="/V.png" alt="" width={28} height={28} className="size-7 object-contain" />
+              <span className="text-[9px] font-medium text-[#18181f]/70 tracking-wide">Paper</span>
+            </div>
           ) : (
             <>
-              <Image src="/logo.png" alt="" width={120} height={30} className="h-6 w-auto object-contain" />
-              <span className="sr-only font-maven-pro font-semibold text-foreground">Vega Financial</span>
+              <div className="relative z-10 flex flex-col justify-center min-h-[48px]">
+                <span className="vf-brand-title font-maven-pro">
+                  <strong>Vega</strong>
+                  <span> financial</span>
+                </span>
+                <span
+                  className="mt-2 inline-flex w-fit items-center rounded-full border border-[#7c5cff]/25 bg-[#7c5cff]/08 px-2 py-0.5 text-[10px] font-medium text-[#6f46f6]"
+                  aria-hidden
+                >
+                  Paper trading
+                </span>
+              </div>
             </>
           )}
         </Link>
-      </div>
 
-      {/* 2. Compact profile / account row */}
-      <div className="shrink-0 border-b border-shell-border px-4 py-2">
+        {/* Compact account card – visually part of banner section */}
         <Link
           href="/vega-financial/profile"
           className={cn(
-            "flex items-center rounded-xl min-h-[44px] transition-colors duration-[160ms] focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-shell-sidebar",
-            isCollapsed ? "justify-center px-0 w-10" : "gap-3 px-4",
+            "flex items-center rounded-2xl min-h-[48px] transition-colors duration-[160ms] focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-shell-sidebar",
+            isCollapsed ? "justify-center px-0 w-10" : "gap-3 px-3",
             isProfilePage
               ? "bg-primary/10 text-primary"
               : "text-foreground hover:bg-black/[0.04] dark:hover:bg-white/[0.06]"
@@ -92,20 +103,23 @@ export function ProfileSidebar({
         >
           <div
             className={cn(
-              "flex shrink-0 items-center justify-center rounded-full size-8 text-xs font-medium",
-              isProfilePage ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"
+              "vf-nav-icon-wrap flex shrink-0 items-center justify-center rounded-xl size-9 text-xs font-semibold text-[#18181f]",
+              isProfilePage ? "bg-primary/15 text-primary" : "bg-white/80 border border-black/[0.06] shadow-sm"
             )}
             aria-hidden
           >
             VF
           </div>
           {!isCollapsed && (
-            <span className={cn("text-sm truncate", isProfilePage ? "font-maven-pro font-semibold" : "font-medium text-foreground")}>
-              Account
-            </span>
+            <div className="flex flex-col items-start min-w-0">
+              <span className="text-[11px] font-medium text-muted-foreground">Account</span>
+              <span className="text-sm font-semibold text-[#18181f] truncate w-full">Vega Financial</span>
+            </div>
           )}
         </Link>
       </div>
+
+      <div className="shrink-0 h-px bg-shell-border/80 mx-4" aria-hidden />
 
       {/* 3. Primary nav group */}
       <nav className="flex-1 shrink-0 px-4 pt-4 pb-2" data-tour="vf-tabs">
@@ -122,19 +136,24 @@ export function ProfileSidebar({
                 <Link
                   href={href}
                   className={cn(
-                    "flex items-center min-h-[44px] rounded-xl transition-colors duration-[160ms] focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-shell-sidebar",
+                    "flex items-center min-h-[44px] rounded-[22px] transition-colors duration-[160ms] focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-shell-sidebar",
                     isCollapsed ? "justify-center w-10 px-0" : "gap-3 px-4",
-                    active
-                      ? "bg-primary/10 text-primary border-l-4 border-l-primary -ml-px pl-[12px]"
-                      : "text-foreground hover:bg-black/[0.04] dark:hover:bg-white/[0.06] border-l-4 border-l-transparent"
+                    active ? "vf-nav-pill-active" : "text-foreground hover:bg-black/[0.04] dark:hover:bg-white/[0.06]"
                   )}
                   aria-current={active ? "page" : undefined}
                 >
-                  <Icon
-                    className={cn("shrink-0", active ? "text-primary" : "text-muted-foreground")}
-                    style={{ width: ICON_SIZE, height: ICON_SIZE }}
-                    aria-hidden
-                  />
+                  <span
+                    className={cn(
+                      "flex shrink-0 items-center justify-center rounded-[14px] transition-colors duration-[160ms]",
+                      active ? "vf-nav-icon-wrap size-9" : "size-9"
+                    )}
+                  >
+                    <Icon
+                      className={cn("shrink-0", active ? "text-[#6f46f6]" : "text-muted-foreground")}
+                      style={{ width: ICON_SIZE, height: ICON_SIZE }}
+                      aria-hidden
+                    />
+                  </span>
                   {!isCollapsed && (
                     <span className={cn("text-sm truncate", active ? "font-maven-pro font-semibold" : "font-normal")}>
                       {label}
@@ -162,19 +181,24 @@ export function ProfileSidebar({
                 <Link
                   href={href}
                   className={cn(
-                    "flex items-center min-h-[44px] rounded-xl transition-colors duration-[160ms] focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-shell-sidebar",
+                    "flex items-center min-h-[44px] rounded-[22px] transition-colors duration-[160ms] focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-shell-sidebar",
                     isCollapsed ? "justify-center w-10 px-0" : "gap-3 px-4",
-                    active
-                      ? "bg-primary/10 text-primary border-l-4 border-l-primary -ml-px pl-[12px]"
-                      : "text-foreground hover:bg-black/[0.04] dark:hover:bg-white/[0.06] border-l-4 border-l-transparent"
+                    active ? "vf-nav-pill-active" : "text-foreground hover:bg-black/[0.04] dark:hover:bg-white/[0.06]"
                   )}
                   aria-current={active ? "page" : undefined}
                 >
-                  <Icon
-                    className={cn("shrink-0", active ? "text-primary" : "text-muted-foreground")}
-                    style={{ width: ICON_SIZE, height: ICON_SIZE }}
-                    aria-hidden
-                  />
+                  <span
+                    className={cn(
+                      "flex shrink-0 items-center justify-center rounded-[14px] transition-colors duration-[160ms]",
+                      active ? "vf-nav-icon-wrap size-9" : "size-9"
+                    )}
+                  >
+                    <Icon
+                      className={cn("shrink-0", active ? "text-[#6f46f6]" : "text-muted-foreground")}
+                      style={{ width: ICON_SIZE, height: ICON_SIZE }}
+                      aria-hidden
+                    />
+                  </span>
                   {!isCollapsed && (
                     <span className={cn("text-sm truncate", active ? "font-maven-pro font-semibold" : "font-normal")}>
                       {label}
@@ -197,19 +221,24 @@ export function ProfileSidebar({
                 <Link
                   href={href}
                   className={cn(
-                    "flex items-center min-h-[44px] rounded-xl transition-colors duration-[160ms] focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-shell-sidebar",
+                    "flex items-center min-h-[44px] rounded-[22px] transition-colors duration-[160ms] focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-shell-sidebar",
                     isCollapsed ? "justify-center w-10 px-0" : "gap-3 px-4",
-                    active
-                      ? "bg-primary/10 text-primary border-l-4 border-l-primary -ml-px pl-[12px]"
-                      : "text-foreground hover:bg-black/[0.04] dark:hover:bg-white/[0.06] border-l-4 border-l-transparent"
+                    active ? "vf-nav-pill-active" : "text-foreground hover:bg-black/[0.04] dark:hover:bg-white/[0.06]"
                   )}
                   aria-current={active ? "page" : undefined}
                 >
-                  <Icon
-                    className={cn("shrink-0", active ? "text-primary" : "text-muted-foreground")}
-                    style={{ width: ICON_SIZE, height: ICON_SIZE }}
-                    aria-hidden
-                  />
+                  <span
+                    className={cn(
+                      "flex shrink-0 items-center justify-center rounded-[14px] transition-colors duration-[160ms]",
+                      active ? "vf-nav-icon-wrap size-9" : "size-9"
+                    )}
+                  >
+                    <Icon
+                      className={cn("shrink-0", active ? "text-[#6f46f6]" : "text-muted-foreground")}
+                      style={{ width: ICON_SIZE, height: ICON_SIZE }}
+                      aria-hidden
+                    />
+                  </span>
                   {!isCollapsed && (
                     <span className={cn("text-sm truncate", active ? "font-maven-pro font-semibold" : "font-normal")}>
                       {label}

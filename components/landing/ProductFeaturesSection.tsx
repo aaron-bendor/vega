@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimateOnScroll } from "./AnimateOnScroll";
@@ -15,22 +14,6 @@ const features = [
 ];
 
 export function ProductFeaturesSection() {
-  const listRef = useRef<HTMLUListElement>(null);
-  const [listInView, setListInView] = useState(false);
-
-  useEffect(() => {
-    const el = listRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => {
-        if (e.isIntersecting) setListInView(true);
-      },
-      { threshold: 0.15 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
   return (
     <section id="built-for" className="relative z-0 w-full overflow-hidden py-16 md:py-24">
       <div className="pointer-events-none absolute inset-0 z-0 bg-white" aria-hidden />
@@ -70,18 +53,13 @@ export function ProductFeaturesSection() {
               </p>
             </AnimateOnScroll>
 
-            <AnimateOnScroll delay={0.15}>
-              <ul
-                ref={listRef}
-                className={`mt-6 space-y-2.5 ${listInView ? "feature-list-in-view" : ""}`}
-              >
-                {features.map((feature, i) => (
-                  <li
-                    key={feature}
-                    className="feature-list-item group flex items-start gap-3 rounded-lg px-3 py-2 -mx-3 transition-all duration-300 ease-out hover:bg-[#531cb3]/10 hover:translate-x-1 cursor-default"
-                    style={{
-                      animationDelay: `${0.1 + i * 0.08}s`,
-                    }}
+            <ul className="mt-6 space-y-2.5">
+              {features.map((feature, i) => (
+                <li key={feature}>
+                  <AnimateOnScroll
+                    delay={i * 90}
+                    direction="up"
+                    className="flex items-start gap-3 rounded-lg px-3 py-2 -mx-3 transition-all duration-300 ease-out hover:bg-[#531cb3]/10 hover:translate-x-1 cursor-default group"
                   >
                     <span className="font-dm-mono text-sm mt-0.5 shrink-0 transition-all duration-300 ease-out text-[#531cb3] group-hover:translate-x-1 group-hover:text-[#7c3aed] group-hover:scale-110">
                       →
@@ -89,12 +67,12 @@ export function ProductFeaturesSection() {
                     <p className="font-dm-sans font-light text-base md:text-lg leading-[1.4] text-[#333] transition-colors duration-300 ease-out group-hover:text-[#531cb3]">
                       {feature}
                     </p>
-                  </li>
-                ))}
-              </ul>
-            </AnimateOnScroll>
+                  </AnimateOnScroll>
+                </li>
+              ))}
+            </ul>
 
-            <AnimateOnScroll delay={0.3}>
+            <AnimateOnScroll delay={300}>
               <Link
                 href="/vega-financial"
                 className="mt-8 inline-flex items-center justify-center h-[50px] px-8 rounded-[30px] bg-[#6b21e8] text-white font-dm-sans font-bold text-base md:text-lg hover:bg-[#5a1bc4] hover:scale-[1.02] active:scale-[0.98] transition-[transform,background-color] duration-motion-normal ease-motion"

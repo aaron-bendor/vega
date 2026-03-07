@@ -1,19 +1,22 @@
+"use client";
+
 import Image from "next/image";
 import { AnimateOnScroll } from "./AnimateOnScroll";
+import { CountUp } from "./CountUp";
 
 const stats = [
   {
-    value: "70%",
+    value: <CountUp to={70} suffix="%" />,
     description:
       "of all stock market trades are executed by algorithms. Every time you buy a stock, it\u2019s likely an algo on the other side.",
   },
   {
-    value: "$5T",
+    value: <CountUp to={5} prefix="$" suffix="T" />,
     description:
       "managed by hedge funds using algorithmic strategies, exclusively accessible to accredited investors with \u00a3200K+ income.",
   },
   {
-    value: "99.3%",
+    value: <CountUp to={99.3} suffix="%" decimals={1} />,
     description:
       "of the population has zero access to algorithmic investing tools.",
   },
@@ -32,7 +35,7 @@ export function StatisticsSection() {
           </p>
         </AnimateOnScroll>
 
-        <AnimateOnScroll delay={0.1}>
+        <AnimateOnScroll delay={100}>
           <h2 className="font-maven-pro font-extrabold text-[#111] text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-[-2px] leading-[1.3] mt-4 max-w-[900px]">
             Algorithms trade the markets. Not you.
           </h2>
@@ -41,7 +44,7 @@ export function StatisticsSection() {
         {/* Stats grid */}
         <div className="mt-12 md:mt-20 grid grid-cols-1 sm:grid-cols-3 gap-8 md:gap-14">
           {stats.map((stat, i) => (
-            <AnimateOnScroll key={stat.value} delay={0.15 + i * 0.15}>
+            <AnimateOnScroll key={i} delay={150 + i * 150}>
               <div className="relative">
                 {/* Purple gradient behind each stat (e.g. behind 70%) */}
                 <div
@@ -66,7 +69,7 @@ export function StatisticsSection() {
         </div>
 
         {/* "This is why we built Vega" footer with thisiswhybuiltvega.png */}
-        <AnimateOnScroll delay={0.6} className="mt-14 md:mt-20">
+        <AnimateOnScroll delay={600} className="mt-14 md:mt-20">
           <div className="flex items-center flex-wrap gap-3">
             <p className="font-maven-pro font-semibold text-[#111] text-2xl md:text-[50px] tracking-[-2px] leading-[1.6]">
               This is why we built

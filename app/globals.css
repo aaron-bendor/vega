@@ -124,12 +124,71 @@ html {
     --chart-4: 52 215 105;
     --chart-5: 237 90 90;
 
-    /* Vega investor shell: clean matte, high-contrast (Revolut-style) */
+    /* Vega investor shell: light neutral base, glass accent on brand/active only */
     --shell-banner: 248 246 252;
-    --shell-sidebar: 250 248 253;
-    --shell-border: 238 232 245;
+    --shell-sidebar: 248 249 251;
+    --shell-border: 235 237 240;
 
     --radius: 12px;
+  }
+
+  /* Vega Financial sidebar: floating brand card (frosted glass) */
+  .vf-brand-card {
+    position: relative;
+    padding: 18px 20px;
+    border-radius: 28px;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.38));
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    box-shadow:
+      0 10px 30px rgba(32, 22, 68, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+  }
+  .vf-brand-card::before {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    border-radius: 27px;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.35),
+      rgba(255, 255, 255, 0.06) 45%,
+      rgba(124, 92, 255, 0.08) 100%
+    );
+    pointer-events: none;
+  }
+  .vf-brand-title {
+    font-size: 28px;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: #18181f;
+  }
+  .vf-brand-title strong {
+    font-weight: 700;
+  }
+  .vf-brand-title span {
+    opacity: 0.72;
+    font-weight: 500;
+  }
+
+  /* Active nav item: pill/chip, no left stripe */
+  .vf-nav-pill-active {
+    border-radius: 22px;
+    background: linear-gradient(180deg, rgba(124, 92, 255, 0.14), rgba(124, 92, 255, 0.08));
+    border: 1px solid rgba(124, 92, 255, 0.18);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    color: #6f46f6;
+  }
+  .vf-nav-pill-active .vf-nav-icon-wrap {
+    background: rgba(124, 92, 255, 0.12);
+    border-radius: 14px;
+  }
+  .vf-brand-card.vf-brand-card-collapsed {
+    padding: 0;
+    min-height: 72px;
+    width: 72px;
   }
 
   * {
@@ -321,6 +380,9 @@ html {
   .animate-fade-in-left,
   .feature-list-item {
     animation-duration: 0.01ms !important;
+  }
+  .decorative-glow {
+    animation: none !important;
   }
 }
 

@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { getTourCompleted, TOUR_START_SESSION_KEY, setTourStep } from "@/lib/tour/storage";
+import { AnimateOnScroll } from "./AnimateOnScroll";
 
 export function HeroVideoSection() {
   const router = useRouter();
@@ -28,59 +29,74 @@ export function HeroVideoSection() {
         className="absolute inset-0 bg-gradient-to-b from-black/15 via-black/5 to-black/25 pointer-events-none"
         aria-hidden
       />
+      {/* Subtle ambient glow — one decorative motion, background only */}
+      <div
+        className="decorative-glow pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_20%_20%,rgba(121,61,225,0.14),transparent_32%),radial-gradient(circle_at_80%_30%,rgba(121,61,225,0.10),transparent_28%)] animate-pulse"
+        aria-hidden
+      />
 
       <div className="relative flex flex-col flex-1 min-h-0">
         {/* SiteHeader (marketing nav) is rendered once by (landing) layout with variant="hero" */}
 
         <div className="flex-1 flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-12 px-4 md:px-8 max-w-7xl mx-auto w-full py-6 md:py-8 min-h-0">
           {/* Phone — desktop, full device visible (524×1063), no crop */}
-          <div className="hidden lg:block flex-shrink-0 animate-fade-in-left flex items-center justify-center">
+          <AnimateOnScroll
+            direction="right"
+            duration={700}
+            className="hidden lg:flex flex-shrink-0 items-center justify-center"
+          >
             <Image
               src="/appHero.png"
               alt="Vega Financial mobile app"
               width={524}
               height={1063}
-              className="w-[min(360px,25vw)] h-auto max-h-[85vh] object-contain object-top drop-shadow-2xl"
+              className="w-[min(360px,25vw)] h-auto max-h-[85vh] object-contain object-top drop-shadow-2xl transition-transform duration-500 hover:scale-[1.02]"
               sizes="360px"
               priority
             />
-          </div>
+          </AnimateOnScroll>
 
           {/* Content */}
           <div className="flex flex-col items-center text-center flex-1 max-w-[839px]">
-            <h1 className="font-syne text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold text-white tracking-[-3px] leading-[1.05] animate-fade-up-hero animate-hero-1">
-              Algorithmic
-              <br />
-              trading,
-              <br />
-              <span className="hero-tagline-reveal inline-block">
-                finally for
+            <AnimateOnScroll delay={50}>
+              <h1 className="font-syne text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold text-white tracking-[-3px] leading-[1.05]">
+                Algorithmic
                 <br />
-                you.
-              </span>
-            </h1>
+                trading,
+                <br />
+                <span className="inline-block">
+                  finally for
+                  <br />
+                  you.
+                </span>
+              </h1>
+            </AnimateOnScroll>
 
-            <p className="font-dm-sans mt-4 text-white/90 text-base md:text-[19px] font-light leading-[1.7] max-w-[527px] animate-fade-up-hero animate-hero-3">
-              Invest in trading algorithms built by verified developers.
-              <br className="hidden sm:inline" />
-              Access the same tools that move 70% of financial markets.
-            </p>
+            <AnimateOnScroll delay={160}>
+              <p className="font-dm-sans mt-4 text-white/90 text-base md:text-[19px] font-light leading-[1.7] max-w-[527px]">
+                Invest in trading algorithms built by verified developers.
+                <br className="hidden sm:inline" />
+                Access the same tools that move 70% of financial markets.
+              </p>
+            </AnimateOnScroll>
 
-            <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center animate-fade-up-hero animate-hero-4">
-              <Link
-                href="/vega-financial"
-                className="font-dm-sans inline-flex items-center justify-center h-14 px-8 w-full sm:w-auto min-w-[174px] rounded-[30px] bg-white/20 backdrop-blur-sm border border-white/30 font-black text-white text-[15px] hover:bg-white/30 hover:scale-[1.02] active:scale-[0.98] transition-[transform,background-color,border-color] duration-motion-normal ease-motion"
-                onClick={handleTryItNow}
-              >
-                Start Investing
-              </Link>
-              <Link
-                href="/vega-developer"
-                className="font-dm-sans inline-flex items-center justify-center h-14 px-8 w-full sm:w-auto min-w-[206px] rounded-[30px] border border-white/50 font-normal text-white text-[15px] hover:bg-white/10 hover:scale-[1.02] active:scale-[0.98] transition-[transform,background-color,border-color] duration-motion-normal ease-motion"
-              >
-                Build Algorithms&nbsp;→
-              </Link>
-            </div>
+            <AnimateOnScroll delay={260}>
+              <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
+                <Link
+                  href="/vega-financial"
+                  className="font-dm-sans inline-flex items-center justify-center h-14 px-8 w-full sm:w-auto min-w-[174px] rounded-[30px] bg-white/20 backdrop-blur-sm border border-white/30 font-black text-white text-[15px] hover:bg-white/30 hover:scale-[1.02] active:scale-[0.98] transition-[transform,background-color,border-color] duration-motion-normal ease-motion"
+                  onClick={handleTryItNow}
+                >
+                  Start Investing
+                </Link>
+                <Link
+                  href="/vega-developer"
+                  className="font-dm-sans inline-flex items-center justify-center h-14 px-8 w-full sm:w-auto min-w-[206px] rounded-[30px] border border-white/50 font-normal text-white text-[15px] hover:bg-white/10 hover:scale-[1.02] active:scale-[0.98] transition-[transform,background-color,border-color] duration-motion-normal ease-motion"
+                >
+                  Build Algorithms&nbsp;→
+                </Link>
+              </div>
+            </AnimateOnScroll>
           </div>
         </div>
       </div>
