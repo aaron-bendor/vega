@@ -56,7 +56,7 @@ function HoldingsTableDesktop({
                 Strategy
               </th>
               <th className="text-right py-3 px-4 text-xs font-medium text-muted-foreground">
-                Allocated
+                Current value
               </th>
               <th className="text-right py-3 px-4 text-xs font-medium text-muted-foreground">
                 Return
@@ -195,7 +195,7 @@ function HoldingCardMobile({
       </div>
       <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
         <div>
-          <p className="text-xs text-muted-foreground">Allocated</p>
+          <p className="text-xs text-muted-foreground">Current value</p>
           <p className="font-medium tabular-nums">{formatCurrency(holding.currentValue)}</p>
           <p className="text-xs text-muted-foreground">{pctOfInvested}% of invested capital</p>
         </div>

@@ -4,7 +4,8 @@ import {
   savePortfolioState,
   seedFromMockAccountIfEmpty,
   performDemoAllocation,
-  getTotalAllocated,
+  getTotalInvested,
+  getTotalCurrentValue,
   type PortfolioState,
   type PaperHolding,
 } from "../portfolio-store";
@@ -143,13 +144,23 @@ describe("portfolio-store (demo allocation)", () => {
     });
   });
 
-  describe("getTotalAllocated", () => {
+  describe("getTotalInvested", () => {
+    it("sums allocated of all holdings", () => {
+      const holdings: PaperHolding[] = [
+        { id: "1", algorithmId: "a", name: "A", allocated: 1000, currentValue: 1100, weight: 50, returnPct: 10, tags: [], addedAt: "" },
+        { id: "2", algorithmId: "b", name: "B", allocated: 2000, currentValue: 1900, weight: 50, returnPct: -5, tags: [], addedAt: "" },
+      ];
+      expect(getTotalInvested(holdings)).toBe(3000);
+    });
+  });
+
+  describe("getTotalCurrentValue", () => {
     it("sums currentValue of all holdings", () => {
       const holdings: PaperHolding[] = [
         { id: "1", algorithmId: "a", name: "A", allocated: 1000, currentValue: 1100, weight: 50, returnPct: 10, tags: [], addedAt: "" },
         { id: "2", algorithmId: "b", name: "B", allocated: 2000, currentValue: 1900, weight: 50, returnPct: -5, tags: [], addedAt: "" },
       ];
-      expect(getTotalAllocated(holdings)).toBe(3000);
+      expect(getTotalCurrentValue(holdings)).toBe(3000);
     });
   });
 
@@ -171,6 +182,16 @@ describe("portfolio-store (demo allocation)", () => {
       seedFromMockAccountIfEmpty();
       const loaded = loadPortfolioState();
       expect(loaded.availableCash).toBe(80_000);
+    });
+
+    it("creates reconciled state: startingCash = availableCash + sum(allocated), equity = availableCash + sum(currentValue)", () => {
+      mockStorage.clear();
+      seedFromMockAccountIfEmpty();
+      const loaded = loadPortfolioState();
+      const invested = getTotalInvested(loaded.holdings);
+      const totalValue = getTotalCurrentValue(loaded.holdings);
+      expect(loaded.startingCash).toBe(loaded.availableCash + invested);
+      expect(loaded.availableCash + totalValue).toBe(12_450 + 16_850 + 15_749 + 19_853);
     });
   });
 });

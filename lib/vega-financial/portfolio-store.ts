@@ -136,15 +136,22 @@ export function subscribePortfolioUpdate(callback: () => void): () => void {
   return () => window.removeEventListener(PORTFOLIO_UPDATED_EVENT, handler);
 }
 
-export function getTotalAllocated(holdings: PaperHolding[]): number {
+/** Sum of allocated amounts (capital invested). */
+export function getTotalInvested(holdings: PaperHolding[]): number {
+  return holdings.reduce((sum, h) => sum + h.allocated, 0);
+}
+
+/** Sum of current market values. */
+export function getTotalCurrentValue(holdings: PaperHolding[]): number {
   return holdings.reduce((sum, h) => sum + h.currentValue, 0);
 }
 
-export function getTotalReturnPct(holdings: PaperHolding[], totalAllocated: number): number {
-  if (totalAllocated <= 0) return 0;
-  const totalInvested = holdings.reduce((s, h) => s + h.allocated, 0);
+/** Unrealised return % = (totalCurrentValue - totalInvested) / totalInvested * 100 when invested > 0. */
+export function getTotalReturnPct(holdings: PaperHolding[], totalCurrentValue: number): number {
+  if (totalCurrentValue <= 0) return 0;
+  const totalInvested = getTotalInvested(holdings);
   if (totalInvested <= 0) return 0;
-  return ((totalAllocated - totalInvested) / totalInvested) * 100;
+  return ((totalCurrentValue - totalInvested) / totalInvested) * 100;
 }
 
 /** One-time seed from MOCK_ACCOUNT when store is empty. Call from client only. */
@@ -172,9 +179,11 @@ export function seedFromMockAccountIfEmpty(): void {
     amount: h.allocated,
     at: now,
   }));
+  const totalInvested = holdings.reduce((s, h) => s + h.allocated, 0);
+  const startingCash = MOCK_ACCOUNT.availableCash + totalInvested;
   const state: PortfolioState = {
     ...defaultState,
-    startingCash: 100_000,
+    startingCash,
     availableCash: MOCK_ACCOUNT.availableCash,
     holdings,
     activityLog,
@@ -209,8 +218,8 @@ export function performDemoAllocation(
     if (amount <= 0 || amount > state.availableCash) {
       return { success: false, error: "Allocation exceeds available demo cash." };
     }
-    const totalAllocated = getTotalAllocated(state.holdings);
-    const totalEquity = state.availableCash + totalAllocated;
+    const totalCurrentValue = getTotalCurrentValue(state.holdings);
+    const totalEquity = state.availableCash + totalCurrentValue;
     const existing = state.holdings.find((h) => h.algorithmId === versionId);
     const newAllocated = (existing?.allocated ?? 0) + amount;
     const newCurrentValue = (existing?.currentValue ?? 0) + amount;

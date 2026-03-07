@@ -20,12 +20,13 @@ export interface MockAccount {
   holdings: MockHolding[];
 }
 
+/** Reconciled demo account: equity = availableCash + sum(currentValue); invested = sum(allocated); weight = currentValue/equity*100 (% of portfolio). */
 export const MOCK_ACCOUNT: MockAccount = {
-  equity: 52_450,
+  equity: 64_902,
   availableCash: 12_450,
   allocated: 40_000,
-  unrealizedPnl: 2_450,
-  unrealizedPnlPct: 6.53,
+  unrealizedPnl: 12_452,
+  unrealizedPnlPct: 31.13,
   holdings: [
     {
       id: "h1",
@@ -33,7 +34,7 @@ export const MOCK_ACCOUNT: MockAccount = {
       name: "Alpha Momentum Pro",
       allocated: 15_000,
       currentValue: 16_850,
-      weight: 32.1,
+      weight: 25.96,
       returnPct: 12.33,
       tags: ["Momentum", "Equity"],
       riskScore: 5,
@@ -44,7 +45,7 @@ export const MOCK_ACCOUNT: MockAccount = {
       name: "Trend Tracker",
       allocated: 10_000,
       currentValue: 15_749,
-      weight: 30.0,
+      weight: 24.27,
       returnPct: 57.49,
       tags: ["Trend Following"],
       riskScore: 3,
@@ -55,7 +56,7 @@ export const MOCK_ACCOUNT: MockAccount = {
       name: "Bollinger Reversion",
       allocated: 15_000,
       currentValue: 19_853,
-      weight: 37.8,
+      weight: 30.61,
       returnPct: 32.35,
       tags: ["Mean Reversion"],
       riskScore: 5,

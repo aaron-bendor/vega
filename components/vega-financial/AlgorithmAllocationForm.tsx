@@ -14,7 +14,7 @@ import {
   savePortfolioState,
   performDemoAllocation,
   subscribePortfolioUpdate,
-  getTotalAllocated,
+  getTotalCurrentValue,
 } from "@/lib/vega-financial/portfolio-store";
 import { validateAllocationAmount } from "@/lib/vega-financial/allocation-validation";
 import { formatCurrency } from "@/lib/utils/format";
@@ -53,8 +53,8 @@ export function AlgorithmAllocationForm({
     if (typeof window === "undefined") return;
     const state = loadPortfolioState();
     setAvailableCash(state.availableCash);
-    const allocated = getTotalAllocated(state.holdings);
-    setTotalEquity(state.availableCash + allocated);
+    const totalCurrentValue = getTotalCurrentValue(state.holdings);
+    setTotalEquity(state.availableCash + totalCurrentValue);
     setOnWatchlist(state.watchlist.includes(versionId));
     const existing = state.holdings.find((h) => h.algorithmId === versionId);
     setCurrentHoldingValue(existing?.currentValue ?? 0);

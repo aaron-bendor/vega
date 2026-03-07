@@ -138,6 +138,7 @@ export function PortfolioPageContent() {
                 <tr className="border-b border-border bg-muted/30">
                   <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Strategy</th>
                   <th className="text-right py-3 px-4 text-xs font-medium text-muted-foreground">Allocated</th>
+                  <th className="text-right py-3 px-4 text-xs font-medium text-muted-foreground">Current value</th>
                   <th className="text-right py-3 px-4 text-xs font-medium text-muted-foreground">Weight</th>
                   <th className="text-right py-3 px-4 text-xs font-medium text-muted-foreground">Return</th>
                   <th className="text-left py-3 px-4 text-xs font-medium text-muted-foreground">Risk</th>
@@ -159,6 +160,7 @@ export function PortfolioPageContent() {
                           {h.name}
                         </Link>
                       </td>
+                      <td className="py-3 px-4 text-right tabular-nums">{formatCurrency(h.amount)}</td>
                       <td className="py-3 px-4 text-right tabular-nums">{formatCurrency(h.currentValue)}</td>
                       <td className="py-3 px-4 text-right tabular-nums">{weightStr}%</td>
                       <td

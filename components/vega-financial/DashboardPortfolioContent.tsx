@@ -16,7 +16,8 @@ import {
   loadPortfolioState,
   seedFromMockAccountIfEmpty,
   subscribePortfolioUpdate,
-  getTotalAllocated,
+  getTotalInvested,
+  getTotalCurrentValue,
   getTotalReturnPct,
 } from "@/lib/vega-financial/portfolio-store";
 import type { MockAccount, MockHolding } from "@/lib/mock/portfolio";
@@ -25,20 +26,21 @@ import { formatCurrency, formatPercent } from "@/lib/utils/format";
 
 function portfolioStateToMockAccount(
   availableCash: number,
-  startingCash: number,
+  _startingCash: number,
   holdings: PaperHolding[]
 ): MockAccount {
-  const totalAllocated = getTotalAllocated(holdings);
-  const totalInvested = holdings.reduce((s, h) => s + h.allocated, 0);
-  const equity = availableCash + totalAllocated;
-  const unrealizedPnlPct = getTotalReturnPct(holdings, totalAllocated);
+  const totalInvested = getTotalInvested(holdings);
+  const totalCurrentValue = getTotalCurrentValue(holdings);
+  const equity = availableCash + totalCurrentValue;
+  const unrealizedPnlPct = getTotalReturnPct(holdings, totalCurrentValue);
+  const unrealizedPnl = totalInvested > 0 ? totalCurrentValue - totalInvested : 0;
   const mockHoldings: MockHolding[] = holdings.map((h) => ({
     id: h.id,
     algorithmId: h.algorithmId,
     name: h.name,
     allocated: h.allocated,
     currentValue: h.currentValue,
-    weight: h.weight,
+    weight: equity > 0 ? (h.currentValue / equity) * 100 : 0,
     returnPct: h.returnPct,
     tags: h.tags ?? [],
     riskScore: 5,
@@ -46,8 +48,8 @@ function portfolioStateToMockAccount(
   return {
     equity,
     availableCash,
-    allocated: totalAllocated,
-    unrealizedPnl: totalInvested > 0 ? totalAllocated - totalInvested : 0,
+    allocated: totalInvested,
+    unrealizedPnl,
     unrealizedPnlPct,
     holdings: mockHoldings,
   };
