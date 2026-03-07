@@ -43,7 +43,7 @@ export function DeveloperPlatformSection() {
           </div>
 
           {/* Right: MacBook image */}
-          <AnimateOnScroll delay={0.15} direction="right" className="flex-shrink-0 w-full lg:w-[55%] order-1 lg:order-2">
+          <AnimateOnScroll delay={0.15} direction="right" className="flex-shrink-0 w-full lg:w-[70%] order-1 lg:order-2">
             <div className="relative w-full">
               <Image
                 src="/macbookvegadeveloper.png"
@@ -51,7 +51,7 @@ export function DeveloperPlatformSection() {
                 width={1200}
                 height={900}
                 className="w-full h-auto object-contain"
-                sizes="(max-width: 768px) 100vw, 700px"
+                sizes="(max-width: 768px) 100vw, 900px"
               />
             </div>
           </AnimateOnScroll>

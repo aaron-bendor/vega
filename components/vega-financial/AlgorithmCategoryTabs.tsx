@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Tabs, TabsContent, TabsListWithIndicator, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlgorithmCard } from "./AlgorithmCard";
 import type { InvestableAttributes } from "@/lib/vega-financial/types";
 
@@ -85,6 +86,7 @@ export function AlgorithmCategoryTabs({
   const verifiedList = filterList(verified.length ? verified : algorithms.filter((a) => a.verified));
   const newList = filterList(newAlgorithms.length ? newAlgorithms : [...algorithms].reverse());
   const forYouList = filterList(forYou.length ? forYou : algorithms);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const renderGrid = (items: AlgorithmForCard[]) => (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 min-w-0">
@@ -109,6 +111,8 @@ export function AlgorithmCategoryTabs({
           mayNotSuit={algo.mayNotSuit}
           statusBadgeText={algo.statusBadgeText}
           cardFooterMicrocopy={algo.cardFooterMicrocopy}
+          expandedId={expandedId}
+          onExpand={setExpandedId}
         />
       ))}
     </div>
@@ -118,7 +122,7 @@ export function AlgorithmCategoryTabs({
   const setTab = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("tab", value);
-    router.push(`/vega-financial?${params.toString()}`);
+    router.push(`/vega-financial?${params.toString()}`, { scroll: false });
   };
 
   const tabClass =
@@ -126,7 +130,7 @@ export function AlgorithmCategoryTabs({
 
   return (
     <Tabs value={tab} onValueChange={setTab} className="w-full min-w-0">
-      <TabsListWithIndicator className="mb-4 rounded-xl border border-border bg-muted/30 p-1 w-full overflow-x-auto overflow-y-hidden flex flex-nowrap justify-start gap-0 min-h-[44px]">
+      <TabsList className="mb-4 rounded-xl border border-border bg-muted/30 p-1 w-full overflow-x-auto overflow-y-hidden flex flex-nowrap justify-start gap-0 min-h-[44px]">
         <TabsTrigger value="trending" className={tabClass}>
           Trending
         </TabsTrigger>
@@ -142,7 +146,7 @@ export function AlgorithmCategoryTabs({
         <TabsTrigger value="for-you" className={tabClass}>
           For you
         </TabsTrigger>
-      </TabsListWithIndicator>
+      </TabsList>
       <div className="text-xs text-muted-foreground mb-3 min-w-0">
         {tab === "trending" && `${trendingList.length} algorithm${trendingList.length !== 1 ? "s" : ""}`}
         {tab === "low-risk" && `${lowRiskList.length} algorithm${lowRiskList.length !== 1 ? "s" : ""}`}

@@ -71,14 +71,14 @@ const TabsListWithIndicator = React.forwardRef<
         if (typeof ref === "function") ref(el);
         else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = el;
       }}
-      className={cn("relative inline-flex h-9 items-center justify-center rounded-lg bg-[rgba(51,51,51,0.04)] p-1 text-muted-foreground", className)}
+      className={cn("relative inline-flex h-9 items-center justify-center rounded-lg overflow-hidden bg-[rgba(51,51,51,0.04)] p-1 text-muted-foreground", className)}
       {...props}
     >
       {children}
       <span
         aria-hidden
         className={cn(
-          "pointer-events-none absolute bottom-0 left-0 h-0.5 rounded-full bg-primary ease-motion transition-[transform,width] duration-motion-normal motion-reduce:!duration-0"
+          "pointer-events-none absolute bottom-0 left-0 h-0.5 min-w-0 rounded-full bg-primary ease-motion transition-[transform,width] duration-motion-normal motion-reduce:!duration-0"
         )}
         style={{
           transform: `translateX(${indicator.left}px)`,
