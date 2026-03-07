@@ -50,6 +50,7 @@ interface MarketplaceContentProps {
 }
 
 export function MarketplaceContent({ algorithms, tagOptions, useDemo }: MarketplaceContentProps) {
+  void useDemo; // reserved for future demo-specific UI
   const searchParams = useSearchParams();
   const sort = searchParams.get("sort") ?? "newest";
   const [search, setSearch] = useState("");

@@ -131,7 +131,10 @@ export function StrategyCard({
               type="button"
               onClick={() => onCompareToggle(algorithm.id)}
               disabled={compareDisabled}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground disabled:opacity-50 transition-colors duration-150"
+              className={cn(
+                "text-sm font-medium disabled:opacity-50 transition-colors duration-150",
+                compareSelected ? "text-primary" : "text-muted-foreground hover:text-foreground"
+              )}
             >
               Compare
             </button>
