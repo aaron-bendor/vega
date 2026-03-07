@@ -42,27 +42,28 @@ export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalT
   }, []);
 
   const useCustomHeader = Boolean(customHeader);
-  /** When using custom header: logo bar (h-12) + main bar (h-14) = 6.5rem. When hideTopBar: external banner (e.g. SiteHeader) provides top bar, use top-14. */
-  const stickyTop = useCustomHeader ? "top-[6.5rem]" : hideTopBar ? "top-14" : minimalTopBar ? "top-12" : "top-[5.25rem]";
+  /** When hideTopBar: no top banner, sidebar sticks to top-0. When custom header: top-[6.5rem]. */
+  const stickyTop = useCustomHeader ? "top-[6.5rem]" : hideTopBar ? "top-0" : minimalTopBar ? "top-12" : "top-[5.25rem]";
 
   return (
     <div className={naturalScroll ? "bg-white" : "min-h-screen flex flex-col bg-white"}>
       {hideTopBar ? (
         <>
-          <div className="lg:hidden sticky top-14 z-40 shrink-0 h-11 flex items-center px-4 border-b border-[rgba(51,51,51,0.12)] bg-white">
+          {/* Mobile: fixed menu button to open sidebar (no top bar) */}
+          <div className="lg:hidden fixed top-4 left-4 z-40">
             <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
               <SheetTrigger asChild>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="-ml-2 min-w-[44px] min-h-[44px]"
+                  className="size-11 rounded-xl bg-shell-sidebar border border-shell-border shadow-sm hover:bg-primary/10"
                   aria-label="Open navigation menu"
                 >
                   <Menu className="size-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="p-0 w-64 max-w-[85vw]">
-                <ProfileSidebar />
+              <SheetContent side="left" className="p-0 w-64 max-w-[85vw] rounded-r-xl border-l border-shell-border">
+                <ProfileSidebar inSheet />
               </SheetContent>
             </Sheet>
           </div>
@@ -74,7 +75,7 @@ export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalT
           </div>
           <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
             <SheetContent side="left" className="p-0 w-64 max-w-[85vw]">
-              <ProfileSidebar />
+              <ProfileSidebar inSheet />
             </SheetContent>
           </Sheet>
         </>
@@ -101,7 +102,7 @@ export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalT
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="p-0 w-64 max-w-[85vw]">
-                <ProfileSidebar />
+                <ProfileSidebar inSheet />
               </SheetContent>
             </Sheet>
             {minimalTopBar && (
@@ -139,13 +140,19 @@ export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalT
               <div
                 className={cn(
                   "sticky z-10 border-b border-border bg-muted/30",
-                  useCustomHeader ? "top-[6.5rem]" : hideTopBar ? "top-14" : minimalTopBar ? "top-12" : "top-[5.25rem]"
+                  useCustomHeader ? "top-[6.5rem]" : hideTopBar ? "top-0" : minimalTopBar ? "top-12" : "top-[5.25rem]"
                 )}
               >
                 {toolbar}
               </div>
             ) : null}
-            <main className={cn("min-w-0 pt-4 sm:pt-6", bottomNav && "pb-16 lg:pb-0")}>
+            <main
+              className={cn(
+                "min-w-0",
+                hideTopBar ? "pt-16 pl-16 lg:pt-4 lg:pl-0" : "pt-4 sm:pt-6",
+                bottomNav && "pb-16 lg:pb-0"
+              )}
+            >
               {children}
             </main>
           </div>

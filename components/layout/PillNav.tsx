@@ -146,9 +146,11 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
     };
   }, []);
 
-  const pillBg = isStandalone
-    ? "bg-black/50 backdrop-blur-xl border border-white/15"
-    : "bg-black/40 backdrop-blur-xl border border-white/15";
+  const pillBg = isInvestorAppCompact
+    ? "bg-shell-banner border border-shell-border shadow-[0_1px_2px_0_rgb(0_0_0/0.04)]"
+    : isStandalone
+      ? "bg-black/50 backdrop-blur-xl border border-white/15"
+      : "bg-black/40 backdrop-blur-xl border border-white/15";
 
   // Hero variant: match hero section CTA (Start Investing) — glass pill, white text
   const ctaClass = isStandalone
@@ -257,10 +259,11 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
         )}
         role="banner"
       >
-        <div className="flex justify-center px-4">
+        <div className={cn("flex justify-center", isInvestorAppCompact ? "px-4 sm:px-6" : "px-4")}>
           <div
             className={cn(
-              "nav-pill-glass w-full max-w-[1400px] flex rounded-full shrink-0 transition-[height,background-color,box-shadow,border-color] duration-motion-slow ease-motion border-b border-transparent",
+              "nav-pill-glass w-full max-w-[1400px] flex shrink-0 transition-[height,background-color,box-shadow,border-color] duration-motion-slow ease-motion",
+              isInvestorAppCompact ? "border rounded-2xl md:rounded-[1.25rem]" : "rounded-full border-b border-transparent",
               pillBg,
               isInvestorAppCompact && "h-11 md:h-12",
               !isInvestorAppCompact && isScrolled && "h-12 md:h-14 bg-black/60 backdrop-blur-xl shadow-lg shadow-black/25 border-white/10",
@@ -268,12 +271,18 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
             )}
           >
             <nav
-              className="flex flex-1 items-center justify-between gap-4 px-4 md:px-8 h-full rounded-full"
+              className={cn(
+                "flex flex-1 items-center justify-between gap-4 h-full w-full",
+                isInvestorAppCompact ? "max-w-[1160px] mx-auto px-4 sm:px-6 lg:px-6 rounded-2xl md:rounded-[1.25rem]" : "px-4 md:px-8 rounded-full"
+              )}
               aria-label="Main navigation"
             >
               <Link
                 href="/"
-                className="flex items-center shrink-0 hover:opacity-90 transition-opacity duration-200 ease-out"
+                className={cn(
+                  "flex items-center shrink-0 transition-opacity duration-200 ease-out focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md",
+                  isInvestorAppCompact ? "focus-visible:ring-offset-shell-banner hover:opacity-90" : ""
+                )}
                 aria-label="Vega Financial home"
               >
                 <Image
@@ -281,12 +290,28 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                   alt="Vega Financial"
                   width={140}
                   height={35}
-                  className="h-7 md:h-9 w-auto object-contain"
+                  className={cn(
+                    "w-auto object-contain",
+                    isInvestorAppCompact ? "h-6 md:h-7" : "h-7 md:h-9"
+                  )}
                   priority={!isStandalone}
                 />
               </Link>
 
-              {!isInvestorApp ? (
+              {isInvestorAppCompact ? (
+                <>
+                  <span className="hidden sm:inline-flex text-xs text-muted-foreground font-normal ml-1 mr-auto">
+                    Investor terminal
+                  </span>
+                  <Link
+                    href="/"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 ease-out focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-shell-banner rounded px-2 py-1.5 -mr-1"
+                    aria-label="Back to Vega home"
+                  >
+                    Back to Vega
+                  </Link>
+                </>
+              ) : !isInvestorApp ? (
                 <>
                   <div
                     ref={navContainerRef}

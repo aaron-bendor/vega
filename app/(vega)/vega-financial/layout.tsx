@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import { SiteHeader } from "@/components/layout/SiteHeader";
 import { VegaFinancialShell } from "@/components/vega-financial/VegaFinancialShell";
 import { VegaFinancialPageSkeleton } from "@/components/vega-financial/VegaFinancialPageSkeleton";
 import { TourRunner } from "@/components/tour/TourRunner";
@@ -15,7 +14,6 @@ export default function VegaFinancialLayout({
 }) {
   return (
     <>
-      <SiteHeader variant="investorApp" />
       <TourRunner />
       <Suspense fallback={<VegaFinancialFallback />}>
         <VegaFinancialShell>{children}</VegaFinancialShell>

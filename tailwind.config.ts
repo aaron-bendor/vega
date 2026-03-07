@@ -89,6 +89,11 @@ const config: Config = {
           "4": "rgb(var(--chart-4) / <alpha-value>)",
           "5": "rgb(var(--chart-5) / <alpha-value>)",
         },
+        shell: {
+          banner: "rgb(var(--shell-banner) / <alpha-value>)",
+          sidebar: "rgb(var(--shell-sidebar) / <alpha-value>)",
+          "shell-border": "rgb(var(--shell-border) / <alpha-value>)",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
