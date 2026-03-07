@@ -56,8 +56,8 @@ export function ProfileSidebar({
       )}
       aria-label="App navigation"
     >
-      {/* 1. Compact brand header */}
-      <div className="shrink-0 border-b border-shell-border px-4 py-3">
+      {/* 1. Compact brand header – darker background for logo contrast */}
+      <div className="shrink-0 border-b border-shell-border bg-primary/[0.12] px-4 py-3">
         <Link
           href="/"
           className={cn(
