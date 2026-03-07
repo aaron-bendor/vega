@@ -1,16 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { ProfileSidebar } from "@/components/vega-financial/ProfileSidebar";
 import { Button } from "@/components/ui/button";
-import { Menu, HelpCircle } from "lucide-react";
-import { clearTourForReplay, TOUR_START_SESSION_KEY, setTourStep } from "@/lib/tour/storage";
+import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import { PORTFOLIO_STORAGE_KEY } from "@/lib/vega-financial/portfolio-store";
 
 interface AppShellProps {
   children: ReactNode;
@@ -34,9 +31,6 @@ interface AppShellProps {
 export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalTopBar, customHeader }: AppShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const userMenuRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
 
   useEffect(() => {
     const onScroll = () => setScrolled((window.scrollY ?? 0) > 8);
@@ -44,42 +38,6 @@ export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalT
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  useEffect(() => {
-    if (!userMenuOpen) return;
-    const handleClickOutside = (e: MouseEvent) => {
-      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
-        setUserMenuOpen(false);
-      }
-    };
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setUserMenuOpen(false);
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("keydown", handleEscape);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleEscape);
-    };
-  }, [userMenuOpen]);
-
-  const handleReplayTour = () => {
-    clearTourForReplay();
-    if (typeof sessionStorage !== "undefined") {
-      sessionStorage.setItem(TOUR_START_SESSION_KEY, "1");
-    }
-    setTourStep(0);
-    router.push("/vega-financial");
-  };
-
-  const handleResetDemoPortfolio = () => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem(PORTFOLIO_STORAGE_KEY);
-    }
-    setUserMenuOpen(false);
-    router.push("/vega-financial");
-    router.refresh();
-  };
 
   const useCustomHeader = Boolean(customHeader);
   /** When using custom header: logo bar (h-12) + main bar (h-14) = 6.5rem */
@@ -140,69 +98,6 @@ export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalT
                 <span className="sr-only">Vega Financial</span>
               </Link>
             )}
-          </div>
-          <div className="flex items-center gap-2 shrink-0">
-            <button
-              type="button"
-              onClick={handleReplayTour}
-              className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
-              aria-label="Replay guided tour"
-              title="Replay tour"
-            >
-              <HelpCircle className="size-4" />
-            </button>
-            <div className="relative" ref={userMenuRef}>
-              <button
-                type="button"
-                onClick={() => setUserMenuOpen((o) => !o)}
-                className="flex items-center gap-2 min-h-[44px] rounded-full focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
-                aria-expanded={userMenuOpen}
-                aria-haspopup="true"
-                aria-label="User menu"
-              >
-                <div
-                  className="size-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0"
-                  aria-hidden
-                >
-                  <span className="text-xs font-medium text-primary">VF</span>
-                </div>
-              </button>
-              <div
-                role="menu"
-                className={cn(
-                  "absolute right-0 top-full mt-1 z-50 min-w-[180px] rounded-lg border border-border bg-popover py-1 shadow-lg",
-                  "transition-[opacity,visibility] duration-150",
-                  userMenuOpen
-                    ? "opacity-100 visible"
-                    : "opacity-0 invisible pointer-events-none"
-                )}
-              >
-                <Link
-                  href="/vega-financial/profile"
-                  role="menuitem"
-                  className="block px-4 py-2.5 text-sm text-popover-foreground hover:bg-muted"
-                  onClick={() => setUserMenuOpen(false)}
-                >
-                  Profile
-                </Link>
-                <Link
-                  href="/vega-financial/profile#preferences"
-                  role="menuitem"
-                  className="block px-4 py-2.5 text-sm text-popover-foreground hover:bg-muted"
-                  onClick={() => setUserMenuOpen(false)}
-                >
-                  Preferences
-                </Link>
-                <button
-                  type="button"
-                  role="menuitem"
-                  className="w-full text-left px-4 py-2.5 text-sm text-popover-foreground hover:bg-muted"
-                  onClick={handleResetDemoPortfolio}
-                >
-                  Reset demo portfolio
-                </button>
-              </div>
-            </div>
           </div>
         </header>
       )}

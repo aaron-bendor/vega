@@ -68,11 +68,29 @@ export function ProfileSidebar({ naturalScroll }: { naturalScroll?: boolean } = 
     };
   }, [updateIndicator]);
 
+  const asideClass = cn(
+    "w-64 shrink-0 border-r border-[rgba(51,51,51,0.12)] bg-white flex flex-col",
+    naturalScroll ? "h-auto" : "h-screen sticky top-0"
+  );
+  const isProfilePage = pathname === "/vega-financial/profile";
+
   return (
-    <aside className={cn(
-      "w-64 shrink-0 border-r border-[rgba(51,51,51,0.12)] bg-white flex flex-col",
-      naturalScroll ? "h-auto" : "h-screen sticky top-0"
-    )}>
+    <aside className={asideClass}>
+      <div className="shrink-0 p-3 border-b border-[rgba(51,51,51,0.08)]">
+        <Link
+          href="/vega-financial/profile"
+          className="flex items-center gap-3 rounded-lg px-3 py-2.5 min-h-[44px] text-sm font-medium text-foreground hover:bg-muted/50 transition-colors"
+          aria-current={isProfilePage ? "page" : undefined}
+        >
+          <div
+            className="size-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0"
+            aria-hidden
+          >
+            <span className="text-xs font-medium text-primary">VF</span>
+          </div>
+          <span>Profile</span>
+        </Link>
+      </div>
       <nav
         ref={navRef}
         className="relative p-2 pt-4 flex-1"

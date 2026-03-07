@@ -24,8 +24,6 @@ interface StrategyHeroSummaryProps {
   mainDrawback?: string;
   whyConsider?: { title: string; body: string }[];
   trustSignals?: string[];
-  /** Optional: link to open "How to read this page" */
-  onHowToRead?: () => void;
   /** Optional: Replay tutorial link (rendered as secondary action) */
   replayTutorialSlot?: React.ReactNode;
   className?: string;
@@ -44,10 +42,12 @@ export function StrategyHeroSummary({
   mainDrawback,
   whyConsider = [],
   trustSignals = DEFAULT_TRUST_SIGNALS,
-  onHowToRead,
   replayTutorialSlot,
   className,
 }: StrategyHeroSummaryProps) {
+  const handleHowToRead = () => {
+    window.dispatchEvent(new CustomEvent("algo-detail-how-to-read"));
+  };
   const hasQuickSummary =
     suitableFor || bestRole || typicalBehaviour || mainDrawback;
   const hasWhyConsider = whyConsider.length > 0;
@@ -138,15 +138,13 @@ export function StrategyHeroSummary({
 
       {/* Optional: How to read / Replay tutorial */}
       <div className="flex flex-wrap items-center gap-3 pt-1">
-        {onHowToRead && (
-          <button
-            type="button"
-            onClick={onHowToRead}
-            className="text-xs font-medium text-muted-foreground hover:text-foreground focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded"
-          >
-            How to read this page
-          </button>
-        )}
+        <button
+          type="button"
+          onClick={handleHowToRead}
+          className="text-xs font-medium text-muted-foreground hover:text-foreground focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded"
+        >
+          How to read this page
+        </button>
         {replayTutorialSlot}
       </div>
     </div>

@@ -124,7 +124,6 @@ export default async function AlgorithmDetailPage({
       mainDrawback={overviewCopy?.mainDrawback}
       whyConsider={overviewCopy?.whyConsider}
       trustSignals={overviewCopy?.trustSignals}
-      onHowToRead={() => window.dispatchEvent(new CustomEvent("algo-detail-how-to-read"))}
       replayTutorialSlot={<ReplayTutorialLink />}
     />
   );
