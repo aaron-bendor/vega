@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useRef, useLayoutEffect, useEffect, useCallback, useState } from "react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
@@ -17,266 +17,228 @@ import {
   Settings,
 } from "lucide-react";
 
-const mainNav = [
+const ICON_SIZE = 18;
+
+const primaryNav = [
   { href: "/vega-financial", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/vega-financial/marketplace", label: "Explore", icon: Store },
   { href: "/vega-financial/portfolio", label: "Portfolio", icon: Wallet },
   { href: "/vega-financial/watchlist", label: "Watchlist", icon: Star },
   { href: "/vega-financial/activity", label: "Activity", icon: Activity },
-  { href: "/vega-financial/learn", label: "Learn", icon: BookOpen },
-  { href: "/vega-financial/profile", label: "Settings", icon: Settings },
 ];
+
+const secondaryNav = [{ href: "/vega-financial/learn", label: "Learn", icon: BookOpen }];
+
+const bottomNav = [{ href: "/vega-financial/profile", label: "Settings", icon: Settings }];
 
 export function ProfileSidebar({
   naturalScroll,
   inSheet,
 }: { naturalScroll?: boolean; inSheet?: boolean } = {}) {
   const pathname = usePathname();
-  const navRef = useRef<HTMLElement>(null);
-  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [collapsed, setCollapsed] = useState(false);
   const collapsible = naturalScroll && !inSheet;
+  const isCollapsed = collapsible && collapsed;
 
   function isActive(href: string, exact?: boolean) {
     if (exact) return pathname === href;
     return pathname === href || pathname?.startsWith(href + "/");
   }
 
-  const activeIndex = mainNav.findIndex(({ href, exact }) => isActive(href, exact));
-  const displayIndex = hoveredIndex ?? (activeIndex >= 0 ? activeIndex : null);
-
-  const updateIndicator = useCallback(() => {
-    const container = navRef.current;
-    if (!container || displayIndex == null || displayIndex < 0 || displayIndex >= itemRefs.current.length) {
-      container?.style.removeProperty("--indicator-top");
-      container?.style.removeProperty("--indicator-height");
-      return;
-    }
-    const el = itemRefs.current[displayIndex];
-    if (!el) return;
-    const cr = container.getBoundingClientRect();
-    const er = el.getBoundingClientRect();
-    container.style.setProperty("--indicator-top", `${er.top - cr.top}px`);
-    container.style.setProperty("--indicator-height", `${er.height}px`);
-  }, [displayIndex]);
-
-  useLayoutEffect(() => {
-    updateIndicator();
-  }, [updateIndicator, pathname, collapsed]);
-
-  useEffect(() => {
-    const container = navRef.current;
-    if (!container) return;
-    const ro = new ResizeObserver(updateIndicator);
-    ro.observe(container);
-    window.addEventListener("resize", updateIndicator);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", updateIndicator);
-    };
-  }, [updateIndicator]);
-
   const isProfilePage = pathname === "/vega-financial/profile";
-  const isCollapsed = collapsible && collapsed;
 
   return (
     <aside
       className={cn(
-        "relative shrink-0 border-r border-shell-border bg-shell-sidebar flex flex-col transition-[width] duration-200 ease-out overflow-hidden",
-        isCollapsed ? "w-[72px]" : "w-60",
-        naturalScroll ? "h-auto min-h-[100dvh]" : "h-screen sticky top-0"
+        "relative flex shrink-0 flex-col border-r border-shell-border bg-shell-sidebar overflow-hidden transition-[width] duration-200 ease-out",
+        isCollapsed ? "w-[72px]" : inSheet ? "w-full" : "w-[280px]",
+        naturalScroll ? "min-h-[100dvh] h-auto" : "sticky top-0 h-screen"
       )}
       aria-label="App navigation"
     >
-      {/* Logo – always visible at top, tint of about-us #531cb3 (chart-3) */}
-      <div className="shrink-0 p-3 border-b border-chart-3/15 bg-chart-3/10">
+      {/* 1. Compact brand header */}
+      <div className="shrink-0 border-b border-shell-border px-4 py-3">
         <Link
           href="/"
           className={cn(
-            "flex items-center transition-opacity hover:opacity-90 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-primary/20 rounded-lg",
-            isCollapsed ? "justify-center p-2 min-h-[44px]" : "gap-3 rounded-lg min-h-[44px]"
+            "flex items-center transition-opacity duration-[160ms] hover:opacity-90 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-shell-sidebar rounded-xl",
+            isCollapsed ? "justify-center min-h-[40px] w-10" : "min-h-[40px] gap-3"
           )}
           aria-label="Vega Financial home"
         >
           {isCollapsed ? (
-            <Image
-              src="/V.png"
-              alt=""
-              width={32}
-              height={32}
-              className="size-8 object-contain"
-            />
+            <Image src="/V.png" alt="" width={28} height={28} className="size-7 object-contain" />
           ) : (
-            <Image
-              src="/logo.png"
-              alt=""
-              width={140}
-              height={35}
-              className="h-7 w-auto object-contain"
-            />
+            <>
+              <Image src="/logo.png" alt="" width={120} height={30} className="h-6 w-auto object-contain" />
+              <span className="sr-only font-maven-pro font-semibold text-foreground">Vega Financial</span>
+            </>
           )}
         </Link>
       </div>
 
-      {/* Profile + nav – collapsed shows icon rail, expanded shows full */}
-      {collapsible && isCollapsed ? (
-        <>
-          {/* Collapsed: compact profile (avatar only) */}
-          <div className="shrink-0 p-2 border-b border-shell-border/80">
-            <Link
-              href="/vega-financial/profile"
-              className="flex justify-center rounded-lg p-2 min-h-[44px] hover:bg-primary/10 transition-colors focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-shell-sidebar rounded-lg"
-              aria-current={isProfilePage ? "page" : undefined}
-              aria-label="Profile"
-            >
-              <div
-                className={cn(
-                  "size-9 rounded-full flex items-center justify-center shrink-0",
-                  isProfilePage ? "bg-primary/20 ring-2 ring-primary/40" : "bg-primary/15"
-                )}
-                aria-hidden
-              >
-                <span className="text-xs font-medium text-primary">VF</span>
-              </div>
-            </Link>
-          </div>
-          {/* Collapsed: nav icons only */}
-          <nav
-            ref={navRef}
-            className="relative p-2 pt-3 flex-1"
-            style={{ "--indicator-top": "0px", "--indicator-height": "0px" } as React.CSSProperties}
-            data-tour="vf-tabs"
+      {/* 2. Compact profile / account row */}
+      <div className="shrink-0 border-b border-shell-border px-4 py-2">
+        <Link
+          href="/vega-financial/profile"
+          className={cn(
+            "flex items-center rounded-xl min-h-[44px] transition-colors duration-[160ms] focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-shell-sidebar",
+            isCollapsed ? "justify-center px-0 w-10" : "gap-3 px-4",
+            isProfilePage
+              ? "bg-primary/10 text-primary"
+              : "text-foreground hover:bg-black/[0.04] dark:hover:bg-white/[0.06]"
+          )}
+          aria-current={isProfilePage ? "page" : undefined}
+        >
+          <div
+            className={cn(
+              "flex shrink-0 items-center justify-center rounded-full size-8 text-xs font-medium",
+              isProfilePage ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"
+            )}
+            aria-hidden
           >
-            <span
-              aria-hidden
-              className="absolute left-0 top-0 w-[3px] rounded-full bg-primary pointer-events-none transition-[top,height] duration-motion-normal ease-motion"
-              style={{
-                top: "var(--indicator-top)",
-                height: "var(--indicator-height)",
-              }}
-            />
-            <div className="flex flex-col gap-y-0.5">
-              {mainNav.map(({ href, label, icon: Icon, exact }, i) => {
-                const active =
-                  href.startsWith("/vega-financial/profile")
-                    ? pathname === "/vega-financial/profile"
-                    : isActive(href, exact);
-                return (
-                  <div
-                    key={href}
-                    ref={(el) => {
-                      itemRefs.current[i] = el;
-                    }}
-                    onMouseEnter={() => setHoveredIndex(i)}
-                    onMouseLeave={() => setHoveredIndex(null)}
-                  >
-                    <Link
-                      href={href}
-                      className={cn(
-                        "relative flex items-center justify-center rounded-lg min-h-[44px] transition-colors focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-shell-sidebar",
-                        active
-                          ? "bg-primary/15 text-foreground"
-                          : "text-muted-foreground hover:bg-primary/10 hover:text-foreground"
-                      )}
-                      aria-current={active ? "page" : undefined}
-                      aria-label={label}
-                    >
-                      <Icon className="size-5 shrink-0" />
-                    </Link>
-                  </div>
-                );
-              })}
-            </div>
-          </nav>
-        </>
-      ) : (
-        <>
-          <div className="shrink-0 p-2.5 pt-2 border-b border-shell-border/80">
-            <Link
-              href="/vega-financial/profile"
-              className="flex items-center gap-3 rounded-lg px-3 py-2.5 min-h-[44px] text-sm font-medium text-foreground hover:bg-primary/10 transition-colors duration-200 ease-out focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-shell-sidebar"
-              aria-current={isProfilePage ? "page" : undefined}
-            >
-              <div
-                className="size-9 rounded-full bg-primary/15 flex items-center justify-center shrink-0"
-                aria-hidden
-              >
-                <span className="text-xs font-medium text-primary">VF</span>
-              </div>
-              <span>Profile</span>
-            </Link>
+            VF
           </div>
-          <nav
-            ref={navRef}
-            className="relative p-2 pt-3 flex-1"
-            style={{ "--indicator-top": "0px", "--indicator-height": "0px" } as React.CSSProperties}
-            data-tour="vf-tabs"
-          >
-            <span
-              aria-hidden
-              className="absolute left-0 top-0 w-[3px] rounded-full bg-primary pointer-events-none transition-[top,height] duration-motion-normal ease-motion"
-              style={{
-                top: "var(--indicator-top)",
-                height: "var(--indicator-height)",
-              }}
-            />
-            <p className="px-3 pt-2 pb-1.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-              Investor
-            </p>
-            <div className="flex flex-col gap-y-0.5">
-              {mainNav.map(({ href, label, icon: Icon, exact }, i) => {
-                const active =
-                  href.startsWith("/vega-financial/profile")
-                    ? pathname === "/vega-financial/profile"
-                    : isActive(href, exact);
-                return (
-                  <div
-                    key={href}
-                    ref={(el) => {
-                      itemRefs.current[i] = el;
-                    }}
-                    onMouseEnter={() => setHoveredIndex(i)}
-                    onMouseLeave={() => setHoveredIndex(null)}
-                  >
-                    <Link
-                      href={href}
-                      className={cn(
-                        "relative flex items-center gap-2 rounded-lg px-3 py-2.5 min-h-[44px] text-sm transition-[transform,background-color,color] duration-motion-normal ease-motion active:scale-[0.98] focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-shell-sidebar",
-                        active
-                          ? "bg-primary/15 text-foreground font-medium"
-                          : "text-muted-foreground hover:bg-primary/10 hover:text-foreground"
-                      )}
-                      aria-current={active ? "page" : undefined}
-                    >
-                      <Icon className="size-4 shrink-0" />
-                      {label}
-                    </Link>
-                  </div>
-                );
-              })}
-            </div>
-          </nav>
-        </>
-      )}
+          {!isCollapsed && (
+            <span className={cn("text-sm truncate", isProfilePage ? "font-maven-pro font-semibold" : "font-medium text-foreground")}>
+              Account
+            </span>
+          )}
+        </Link>
+      </div>
 
-      {/* Edge collapse handle – outer right boundary, only when collapsible */}
+      {/* 3. Primary nav group */}
+      <nav className="flex-1 shrink-0 px-4 pt-4 pb-2" data-tour="vf-tabs">
+        {!isCollapsed && (
+          <p className="mb-2 px-4 text-[11px] font-maven-pro font-medium uppercase tracking-wider text-muted-foreground">
+            Main
+          </p>
+        )}
+        <ul className={cn("flex flex-col", isCollapsed ? "gap-0.5" : "gap-0.5")}>
+          {primaryNav.map(({ href, label, icon: Icon, exact }) => {
+            const active = isActive(href, exact);
+            return (
+              <li key={href}>
+                <Link
+                  href={href}
+                  className={cn(
+                    "flex items-center min-h-[44px] rounded-xl transition-colors duration-[160ms] focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-shell-sidebar",
+                    isCollapsed ? "justify-center w-10 px-0" : "gap-3 px-4",
+                    active
+                      ? "bg-primary/10 text-primary border-l-4 border-l-primary -ml-px pl-[12px]"
+                      : "text-foreground hover:bg-black/[0.04] dark:hover:bg-white/[0.06] border-l-4 border-l-transparent"
+                  )}
+                  aria-current={active ? "page" : undefined}
+                >
+                  <Icon
+                    className={cn("shrink-0", active ? "text-primary" : "text-muted-foreground")}
+                    style={{ width: ICON_SIZE, height: ICON_SIZE }}
+                    aria-hidden
+                  />
+                  {!isCollapsed && (
+                    <span className={cn("text-sm truncate", active ? "font-maven-pro font-semibold" : "font-normal")}>
+                      {label}
+                    </span>
+                  )}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+
+      {/* 4. Secondary nav group */}
+      <div className="shrink-0 px-4 pb-2">
+        {!isCollapsed && (
+          <p className="mb-2 px-4 text-[11px] font-maven-pro font-medium uppercase tracking-wider text-muted-foreground">
+            Resources
+          </p>
+        )}
+        <ul className="flex flex-col gap-0.5">
+          {secondaryNav.map(({ href, label, icon: Icon }) => {
+            const active = isActive(href);
+            return (
+              <li key={href}>
+                <Link
+                  href={href}
+                  className={cn(
+                    "flex items-center min-h-[44px] rounded-xl transition-colors duration-[160ms] focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-shell-sidebar",
+                    isCollapsed ? "justify-center w-10 px-0" : "gap-3 px-4",
+                    active
+                      ? "bg-primary/10 text-primary border-l-4 border-l-primary -ml-px pl-[12px]"
+                      : "text-foreground hover:bg-black/[0.04] dark:hover:bg-white/[0.06] border-l-4 border-l-transparent"
+                  )}
+                  aria-current={active ? "page" : undefined}
+                >
+                  <Icon
+                    className={cn("shrink-0", active ? "text-primary" : "text-muted-foreground")}
+                    style={{ width: ICON_SIZE, height: ICON_SIZE }}
+                    aria-hidden
+                  />
+                  {!isCollapsed && (
+                    <span className={cn("text-sm truncate", active ? "font-maven-pro font-semibold" : "font-normal")}>
+                      {label}
+                    </span>
+                  )}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+
+      {/* 5. Bottom-pinned Settings */}
+      <div className="mt-auto shrink-0 border-t border-shell-border px-4 py-3">
+        <ul className="flex flex-col gap-0.5">
+          {bottomNav.map(({ href, label, icon: Icon }) => {
+            const active = isProfilePage;
+            return (
+              <li key={href}>
+                <Link
+                  href={href}
+                  className={cn(
+                    "flex items-center min-h-[44px] rounded-xl transition-colors duration-[160ms] focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-shell-sidebar",
+                    isCollapsed ? "justify-center w-10 px-0" : "gap-3 px-4",
+                    active
+                      ? "bg-primary/10 text-primary border-l-4 border-l-primary -ml-px pl-[12px]"
+                      : "text-foreground hover:bg-black/[0.04] dark:hover:bg-white/[0.06] border-l-4 border-l-transparent"
+                  )}
+                  aria-current={active ? "page" : undefined}
+                >
+                  <Icon
+                    className={cn("shrink-0", active ? "text-primary" : "text-muted-foreground")}
+                    style={{ width: ICON_SIZE, height: ICON_SIZE }}
+                    aria-hidden
+                  />
+                  {!isCollapsed && (
+                    <span className={cn("text-sm truncate", active ? "font-maven-pro font-semibold" : "font-normal")}>
+                      {label}
+                    </span>
+                  )}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+
+      {/* Collapse control – integrated into sidebar edge */}
       {collapsible && (
         <button
           type="button"
           onClick={() => setCollapsed((c) => !c)}
           className={cn(
-            "absolute top-1/2 -translate-y-1/2 right-0 z-10 flex items-center justify-center w-5 h-12 rounded-l-md border-y border-r border-shell-border bg-primary/15 shadow-[0_1px_2px_0_rgb(0_0_0/0.04)]",
-            "text-muted-foreground hover:text-foreground hover:bg-primary/20 hover:border-primary/30",
-            "transition-[color,background-color,border-color] duration-200 ease-out",
+            "absolute top-1/2 -translate-y-1/2 right-0 z-10 flex h-14 w-5 items-center justify-center rounded-l-lg border-y border-r border-shell-border",
+            "bg-shell-sidebar/95 text-muted-foreground hover:text-foreground hover:bg-white/80 dark:hover:bg-white/10",
+            "backdrop-blur-[4px] transition-colors duration-[160ms]",
             "focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-shell-sidebar"
           )}
           aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {isCollapsed ? (
-            <ChevronRight className="size-3.5 shrink-0" aria-hidden />
+            <ChevronRight className="size-4 shrink-0" aria-hidden />
           ) : (
-            <ChevronLeft className="size-3.5 shrink-0" aria-hidden />
+            <ChevronLeft className="size-4 shrink-0" aria-hidden />
           )}
         </button>
       )}

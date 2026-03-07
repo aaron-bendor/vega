@@ -62,7 +62,7 @@ export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalT
                   <Menu className="size-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="p-0 w-64 max-w-[85vw] rounded-r-xl border-l border-shell-border">
+              <SheetContent side="left" className="p-0 w-[280px] max-w-[85vw] rounded-r-xl border-l border-shell-border">
                 <ProfileSidebar inSheet />
               </SheetContent>
             </Sheet>
@@ -74,7 +74,7 @@ export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalT
             {customHeader({ openSidebar: () => setSidebarOpen(true) })}
           </div>
           <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
-            <SheetContent side="left" className="p-0 w-64 max-w-[85vw]">
+            <SheetContent side="left" className="p-0 w-[280px] max-w-[85vw] border-l border-shell-border">
               <ProfileSidebar inSheet />
             </SheetContent>
           </Sheet>
@@ -101,7 +101,7 @@ export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalT
                   <Menu className="size-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="p-0 w-64 max-w-[85vw]">
+              <SheetContent side="left" className="p-0 w-[280px] max-w-[85vw] border-l border-shell-border">
                 <ProfileSidebar inSheet />
               </SheetContent>
             </Sheet>

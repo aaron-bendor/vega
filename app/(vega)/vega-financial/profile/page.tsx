@@ -94,7 +94,7 @@ export default function VegaFinancialProfilePage() {
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 py-5 sm:py-6">
-      <h1 className="font-syne text-2xl md:text-3xl font-bold text-foreground mb-5">
+      <h1 className="font-maven-pro text-2xl md:text-3xl font-bold text-foreground mb-5">
         Profile
       </h1>
 

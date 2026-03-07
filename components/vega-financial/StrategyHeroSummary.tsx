@@ -82,7 +82,7 @@ export function StrategyHeroSummary({
       </div>
 
       {/* B. Title row */}
-      <h1 className="font-syne text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground tracking-tight flex items-center gap-2 flex-wrap">
+      <h1 className="font-maven-pro text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground tracking-tight flex items-center gap-2 flex-wrap">
         {name}
         {verified && (
           <ShieldCheck className="size-6 text-primary shrink-0" aria-label="Verified strategy" />

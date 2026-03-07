@@ -8,7 +8,7 @@ export function DashboardHeader() {
       <div className="flex flex-col gap-3 sm:gap-4">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
           <div className="min-w-0 max-w-2xl">
-            <h1 className="font-syne text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground tracking-tight">
+            <h1 className="font-maven-pro text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground tracking-tight">
               Dashboard
             </h1>
             <p className="text-sm text-muted-foreground mt-1.5 max-w-xl">

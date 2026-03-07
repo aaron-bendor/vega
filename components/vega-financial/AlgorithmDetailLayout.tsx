@@ -3,8 +3,11 @@
 import { useState, useEffect, type ReactNode } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ALLOCATION_FORM_ID_EXPORT } from "./MobileStickyAllocationBar";
+import { Breadcrumb, type BreadcrumbItem } from "./Breadcrumb";
 
 export const METRICS_HELP_ID = "overview-metrics-help";
+
+export type { BreadcrumbItem };
 
 export function useAlgorithmDetailHowToRead(setTab: (v: string) => void) {
   useEffect(() => {
@@ -20,6 +23,8 @@ export function useAlgorithmDetailHowToRead(setTab: (v: string) => void) {
 }
 
 export interface AlgorithmDetailLayoutProps {
+  /** Optional breadcrumb e.g. [{ label: "Explore", href: "/vega-financial/marketplace" }, { label: "Strategy name" }] */
+  breadcrumb?: BreadcrumbItem[];
   /** Left hero block: strategy summary, trust, why consider */
   heroLeft: ReactNode;
   /** Right hero block: allocation summary card (sticky on desktop) */
@@ -40,6 +45,7 @@ export interface AlgorithmDetailLayoutProps {
 }
 
 export function AlgorithmDetailLayout({
+  breadcrumb,
   heroLeft,
   heroRight,
   metricStrip,
@@ -51,8 +57,11 @@ export function AlgorithmDetailLayout({
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-6 sm:px-6 lg:px-8 pb-24 lg:pb-10">
+      {breadcrumb && breadcrumb.length > 0 && (
+        <Breadcrumb items={breadcrumb} />
+      )}
       {/* 1. Hero: two columns on desktop, stack on mobile */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr,340px] gap-6 lg:gap-8 mb-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr,340px] gap-8 lg:gap-10 mb-8">
         <div className="min-w-0">{heroLeft}</div>
         <div id={ALLOCATION_FORM_ID_EXPORT} className="lg:min-w-0 scroll-mt-24">
           {heroRight}
@@ -66,43 +75,43 @@ export function AlgorithmDetailLayout({
         </section>
       )}
 
-      {/* 3. Tabs: directly below strip, reduced margin, light background */}
+      {/* 3. Tabs: Maven Pro labels, clear active state */}
       <Tabs value={tab} onValueChange={setTab} className="min-w-0">
-        <div className="rounded-lg bg-muted/30 border border-border p-1 mb-4 overflow-x-auto">
-          <TabsList className="flex h-auto gap-0.5 w-full sm:w-auto bg-transparent border-0 p-0 rounded-none shadow-none min-w-0">
+        <div className="rounded-lg bg-muted/30 border border-border p-1.5 mb-6 overflow-x-auto">
+          <TabsList className="flex h-auto gap-1 w-full sm:w-auto bg-transparent border-0 p-0 rounded-none shadow-none min-w-0">
             <TabsTrigger
               value="overview"
-              className="text-sm rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[36px] px-3 shrink-0"
+              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-150"
             >
               Overview
             </TabsTrigger>
             <TabsTrigger
               value="performance"
-              className="text-sm rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[36px] px-3 shrink-0"
+              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-150"
             >
               Performance
             </TabsTrigger>
             <TabsTrigger
               value="risk"
-              className="text-sm rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[36px] px-3 shrink-0"
+              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-150"
             >
               Risk
             </TabsTrigger>
             <TabsTrigger
               value="developer"
-              className="text-sm rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[36px] px-3 shrink-0"
+              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-150"
             >
               Developer
             </TabsTrigger>
             <TabsTrigger
-              value="how-it-works"
-              className="text-sm rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[36px] px-3 shrink-0"
+              value="portfolio-fit"
+              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-150"
             >
-              How it works
+              Portfolio fit
             </TabsTrigger>
             <TabsTrigger
-              value="advanced"
-              className="text-sm rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[36px] px-3 shrink-0"
+              value="methodology"
+              className="font-maven-pro text-sm font-medium rounded-md data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm min-h-[44px] sm:min-h-[38px] px-4 shrink-0 transition-colors duration-150"
             >
               Advanced
             </TabsTrigger>

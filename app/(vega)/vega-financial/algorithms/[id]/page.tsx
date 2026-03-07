@@ -154,6 +154,10 @@ export default async function AlgorithmDetailPage({
 
   return (
     <AlgorithmDetailLayout
+      breadcrumb={[
+        { label: "Explore", href: "/vega-financial/marketplace" },
+        { label: displayName },
+      ]}
       heroLeft={heroLeft}
       heroRight={heroRight ?? <div />}
       metricStrip={metricStrip}

@@ -51,6 +51,15 @@ const config: Config = {
         primary: {
           DEFAULT: "rgb(var(--primary) / <alpha-value>)",
           foreground: "rgb(var(--primary-foreground) / <alpha-value>)",
+          hover: "rgb(var(--primary-hover) / <alpha-value>)",
+        },
+        surface: {
+          DEFAULT: "rgb(var(--surface) / <alpha-value>)",
+          foreground: "rgb(var(--surface-foreground) / <alpha-value>)",
+        },
+        warning: {
+          DEFAULT: "rgb(var(--warning) / <alpha-value>)",
+          foreground: "rgb(var(--warning-foreground) / <alpha-value>)",
         },
         secondary: {
           DEFAULT: "rgb(var(--secondary) / <alpha-value>)",
@@ -92,7 +101,7 @@ const config: Config = {
         shell: {
           banner: "rgb(var(--shell-banner) / <alpha-value>)",
           sidebar: "rgb(var(--shell-sidebar) / <alpha-value>)",
-          "shell-border": "rgb(var(--shell-border) / <alpha-value>)",
+          border: "rgb(var(--shell-border) / <alpha-value>)",
         },
       },
       borderRadius: {
