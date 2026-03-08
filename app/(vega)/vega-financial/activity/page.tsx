@@ -76,7 +76,7 @@ export default function ActivityPage() {
             <div className="size-14 rounded-full bg-muted border border-border flex items-center justify-center mx-auto mb-4">
               <Activity className="size-7 text-primary/50" aria-hidden />
             </div>
-            <h2 className="text-lg font-semibold text-foreground mb-2">No activity yet</h2>
+            <h2 className="font-maven-pro text-lg font-semibold text-foreground mb-2">No activity yet</h2>
             <p className="text-sm text-muted-foreground max-w-sm mx-auto">
               Allocations, watchlist changes, and portfolio updates will appear here.
             </p>

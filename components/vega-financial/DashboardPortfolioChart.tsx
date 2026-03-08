@@ -69,7 +69,7 @@ export function DashboardPortfolioChart({
   return (
     <div className={cn("rounded-xl border border-border bg-card overflow-hidden", className)}>
       <div className="flex items-center justify-between gap-2 px-4 pt-4 pb-2">
-        <h3 className="text-sm font-semibold text-foreground">Portfolio value</h3>
+        <h3 className="font-maven-pro text-sm font-semibold text-foreground">Portfolio value</h3>
         {hasHistory && (
           <div className="flex rounded-lg border border-border bg-muted/30 p-0.5">
             {RANGES.map((r) => (

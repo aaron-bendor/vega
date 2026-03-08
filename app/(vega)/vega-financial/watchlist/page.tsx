@@ -48,7 +48,7 @@ export default function WatchlistPage() {
             <div className="size-14 rounded-full bg-muted border border-border flex items-center justify-center mx-auto mb-4">
               <Star className="size-7 text-primary/50" aria-hidden />
             </div>
-            <h2 className="text-lg font-semibold text-foreground mb-2">No strategies on your watchlist</h2>
+            <h2 className="font-maven-pro text-lg font-semibold text-foreground mb-2">No strategies on your watchlist</h2>
             <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">
               Save strategies here to compare them later or review before allocating.
             </p>
@@ -66,7 +66,7 @@ export default function WatchlistPage() {
             <Card key={item.id} className="rounded-xl border border-border bg-card overflow-hidden">
               <CardContent className="p-4 flex flex-col gap-3">
                 <div>
-                  <h3 className="font-semibold text-foreground">
+                  <h3 className="font-maven-pro font-semibold text-foreground">
                     <Link href={`/vega-financial/algorithms/${item.id}`} className="hover:underline">
                       {item.name}
                     </Link>

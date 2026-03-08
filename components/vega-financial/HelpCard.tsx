@@ -31,7 +31,7 @@ export function HelpCard({ className }: HelpCardProps) {
         className
       )}
     >
-      <h3 className="text-sm font-semibold text-foreground">Need help choosing?</h3>
+      <h3 className="font-maven-pro text-sm font-semibold text-foreground">Need help choosing?</h3>
       <p className="text-sm text-muted-foreground leading-snug">
         Replay the product tour or learn how to compare risk, return, and diversification.
       </p>

@@ -22,7 +22,7 @@ export function AdvancedDisclosure({ summary, children, className }: AdvancedDis
         className
       )}
     >
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 text-sm font-medium text-foreground hover:bg-muted/50 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset [&::-webkit-details-marker]:hidden">
+      <summary className="font-maven-pro flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 text-sm font-medium text-foreground hover:bg-muted/50 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset [&::-webkit-details-marker]:hidden">
         <span>{summary}</span>
         <ChevronDown
           className="size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-open:rotate-180"
