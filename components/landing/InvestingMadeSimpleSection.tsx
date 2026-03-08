@@ -2,12 +2,11 @@
 
 /**
  * Investing made simple — scroll-driven phone carousel.
- * Required images in public/: investingmadesimple1–5.png (phones), 1.png–4.png (step numbers),
- * Linkarrow.png, 4dots.png. Built for section uses builtforPhones.png (ProductFeaturesSection).
+ * Required images in public/: investingmadesimple1–5.png (phones), 1.png–4.png (step numbers).
+ * Built for section uses builtforPhones.png (ProductFeaturesSection).
  */
 
 import { useState, useEffect, useRef } from "react";
-import Image from "next/image";
 
 const MAVEN_PRO_URL =
   "https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;500;600;700;800;900&display=swap";
@@ -179,9 +178,9 @@ export function InvestingMadeSimpleSection() {
         style={{ background: "rgba(20,0,60,0.18)" }}
       />
 
-      {/* LEFT — sticky phone crossfade */}
+      {/* LEFT — sticky phone crossfade; container sized so no phone is cropped */}
       <div
-        className="hidden lg:flex sticky top-0 z-[2] w-1/2 flex-shrink-0 items-center justify-center"
+        className="hidden lg:flex sticky top-0 z-[2] w-1/2 flex-shrink-0 items-center justify-center overflow-visible"
         style={{ height: "100vh" }}
       >
         <div
@@ -191,11 +190,18 @@ export function InvestingMadeSimpleSection() {
               "radial-gradient(circle, rgba(210,185,255,0.18) 0%, transparent 65%)",
           }}
         />
-        <div className="relative w-[285px] h-[580px]">
+        <div
+          className="relative flex items-center justify-center"
+          style={{
+            width: "min(320px, 28vw)",
+            height: "min(680px, 85vh)",
+            minHeight: 520,
+          }}
+        >
           {screens.map((s, i) => (
             <div
               key={i}
-              className="absolute inset-0 transition-opacity duration-[800ms]"
+              className="absolute inset-0 flex items-center justify-center transition-opacity duration-[800ms]"
               style={{
                 opacity: active === i ? 1 : 0,
                 transitionTimingFunction: "cubic-bezier(0.4,0,0.2,1)",
@@ -206,7 +212,7 @@ export function InvestingMadeSimpleSection() {
               <img
                 src={s.phone}
                 alt=""
-                className="w-full h-full object-contain"
+                className="max-w-full max-h-full w-auto h-auto object-contain"
                 style={{
                   filter: "drop-shadow(0 36px 80px rgba(50,0,140,0.6))",
                 }}
@@ -277,38 +283,8 @@ export function InvestingMadeSimpleSection() {
                 <RichText text={s.sub} />
               </p>
 
-              {/* First screen: Linkarrow + 4dots under it. Others: dots only or arrow + dots */}
-              {i === 0 && (
-                <div className="flex flex-col items-start gap-3 mt-10">
-                  <button
-                    type="button"
-                    onClick={() => scrollToSlide(1)}
-                    aria-label="Next"
-                    className="p-2 rounded-full border border-white/30 bg-white/10 hover:bg-white/20 transition-colors"
-                  >
-                    <Image
-                      src="/Linkarrow.png"
-                      alt=""
-                      width={28}
-                      height={28}
-                      className="w-7 h-7 object-contain"
-                    />
-                  </button>
-                  <Image
-                    src="/4dots.png"
-                    alt=""
-                    width={32}
-                    height={16}
-                    className="w-8 h-4 object-contain"
-                  />
-                </div>
-              )}
-
               {/* Dot indicators — all slides */}
-              <div
-                className="flex gap-2 items-center mt-8"
-                style={i === 0 ? { marginTop: 52 } : {}}
-              >
+              <div className="flex gap-2 items-center mt-8">
                 {screens.map((_, di) => (
                   <button
                     key={di}
@@ -331,13 +307,13 @@ export function InvestingMadeSimpleSection() {
         ))}
       </div>
 
-      {/* Mobile: show single phone under content (no split) */}
-      <div className="lg:hidden absolute bottom-8 left-0 right-0 z-[2] flex justify-center pointer-events-none">
-        <div className="relative w-[200px] h-[380px]">
+      {/* Mobile: show single phone under content (no crop) */}
+      <div className="lg:hidden absolute bottom-8 left-0 right-0 z-[2] flex justify-center items-center pointer-events-none">
+        <div className="relative flex items-center justify-center w-[200px] min-h-[320px] max-h-[380px]">
           {screens.map((s, i) => (
             <div
               key={i}
-              className="absolute inset-0 transition-opacity duration-[800ms]"
+              className="absolute inset-0 flex items-center justify-center transition-opacity duration-[800ms]"
               style={{
                 opacity: active === i ? 1 : 0,
                 pointerEvents: "none",
@@ -347,7 +323,7 @@ export function InvestingMadeSimpleSection() {
               <img
                 src={s.phone}
                 alt=""
-                className="w-full h-full object-contain"
+                className="max-w-full max-h-full w-auto h-auto object-contain"
               />
             </div>
           ))}
