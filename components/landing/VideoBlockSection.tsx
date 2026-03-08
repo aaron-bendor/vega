@@ -10,7 +10,7 @@ export function VideoBlockSection() {
           <div className="relative w-full aspect-[16/9] overflow-hidden rounded-2xl bg-black shadow-lg">
             <iframe
               className="absolute inset-0 h-full w-full"
-              src="https://www.youtube-nocookie.com/embed/S3RvN5GlsIw"
+              src="https://www.youtube-nocookie.com/embed/5JW-EX0bF7k"
               title="Vega Financial video"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               referrerPolicy="strict-origin-when-cross-origin"

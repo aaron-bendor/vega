@@ -93,6 +93,37 @@ export function InvestingMadeSimpleSection() {
     setTimeout(() => { isScrolling.current = false; }, 800);
   }, []);
 
+  // Scroll-driven: linear progress, rAF for smooth updates
+  useEffect(() => {
+    const section = containerRef.current;
+    if (!section) return;
+    let rafId: number | null = null;
+    const onScroll = () => {
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        const rect = section.getBoundingClientRect();
+        const sectionHeight = rect.height;
+        const viewHeight = typeof window !== "undefined" ? window.innerHeight : 0;
+        const scrollable = Math.max(0, sectionHeight - viewHeight);
+        if (scrollable <= 0) return;
+        const scrolled = -rect.top;
+        const progress = Math.max(0, Math.min(1, scrolled / scrollable));
+        const stepIndex = Math.min(
+          screens.length - 1,
+          Math.floor(progress * screens.length)
+        );
+        setActive(stepIndex);
+      });
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
+  }, []);
+
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -132,10 +163,15 @@ export function InvestingMadeSimpleSection() {
       ref={containerRef}
       className="relative w-full overflow-visible"
       style={{
-        height: "100vh",
+        // Taller section: more scroll per step for a smoother, less twitchy feel
+        height: `calc(100vh + ${(screens.length - 1) * 70}vh)`,
         fontFamily: "'Maven Pro', sans-serif",
       }}
     >
+      <div
+        className="sticky top-0 left-0 w-full h-screen overflow-visible"
+        style={{ height: "100vh" }}
+      >
       <style>{`
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(28px); }
@@ -198,7 +234,7 @@ export function InvestingMadeSimpleSection() {
                 }}
               >
                 {s.step && (
-                  <div className="mb-1">
+                  <div className="-mt-4 mb-1">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={`/${s.step}.png`}
@@ -261,6 +297,7 @@ export function InvestingMadeSimpleSection() {
             ))}
           </div>
         </div>
+      </div>
       </div>
     </section>
   );
