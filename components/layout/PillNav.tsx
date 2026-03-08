@@ -21,6 +21,7 @@ type NavEntry =
 const mainNav: NavEntry[] = [
   { type: "link", href: "/", label: "Home", exact: true },
   { type: "link", href: "/about-us", label: "About Us" },
+  { type: "link", href: "/algorithms", label: "Algorithms" },
   { type: "link", href: "/vega-developer", label: "Developer" },
   { type: "link", href: "/faq", label: "FAQ" },
   { type: "link", href: "/admin", label: "Admin" },
@@ -159,7 +160,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
 
   const mobileMenuBg = "bg-black/80 backdrop-blur-xl border border-white/10";
 
-  const isHeroPage = pathname === "/" || pathname === "/about-us";
+  const isHeroPage = pathname === "/" || pathname === "/about-us" || pathname === "/algorithms";
 
   const [hoveredNavIndex, setHoveredNavIndex] = useState<number | null>(null);
   const [focusedNavIndex, setFocusedNavIndex] = useState<number | null>(null);
@@ -201,9 +202,9 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
     );
   }, [displayIndex, navItems.length]);
 
+  // Update indicator synchronously after layout so the pill position matches hover/focus without a frame delay
   useLayoutEffect(() => {
-    const raf = requestAnimationFrame(() => updateIndicator());
-    return () => cancelAnimationFrame(raf);
+    updateIndicator();
   }, [updateIndicator]);
 
   useEffect(() => {
@@ -242,7 +243,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
             : {
                 height: "var(--banner-height, 5.5rem)",
                 minHeight: "var(--banner-height, 5.5rem)",
-                ...(pathname?.startsWith("/vega-developer")
+                ...((pathname?.startsWith("/vega-developer") || pathname?.startsWith("/algorithms"))
                   ? { backgroundColor: "#000" }
                   : {}),
               }
@@ -316,6 +317,12 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                   <div
                     ref={navContainerRef}
                     className="hidden md:flex relative items-center gap-1 lg:gap-2"
+                    onMouseLeave={(e) => {
+                      // Only clear hover when pointer leaves the whole nav area (avoids flicker when moving between items)
+                      if (!navContainerRef.current?.contains(e.relatedTarget as Node)) {
+                        setHoveredNavIndex(null);
+                      }
+                    }}
                   >
                     {/* Single shared highlight: glides to hovered/focused link, returns to active on mouseleave/blur. */}
                     <span
@@ -335,7 +342,6 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                           navItemRefs.current[i] = el;
                         }}
                         onMouseEnter={() => setHoveredNavIndex(i)}
-                        onMouseLeave={() => setHoveredNavIndex(null)}
                         onFocus={(e) => {
                           if (e.target !== e.currentTarget && navContainerRef.current?.contains(e.target as Node)) {
                             setFocusedNavIndex(i);

@@ -2,27 +2,37 @@
 
 import Link from "next/link";
 import { ChevronRight, ShieldCheck } from "lucide-react";
-import { getDeveloperProfileBySlug, DEFAULT_DEMO_DEVELOPER_SLUG } from "@/lib/demo/developer-profile-data";
 import { cn } from "@/lib/utils";
 
-const developer = getDeveloperProfileBySlug(DEFAULT_DEMO_DEVELOPER_SLUG);
-
-interface AlgorithmDeveloperProfileProps {
-  /** Algorithm id when shown on an algorithm detail page (for breadcrumb on developer page). */
+export interface AlgorithmDeveloperProfileProps {
+  /** Developer slug for the link (e.g. acar-gok). From getDeveloperByAlgorithmId(id).slug */
+  developerSlug: string;
+  /** Developer display name */
+  developerName: string;
+  /** Short role / background line */
+  role: string;
+  /** Show verified badge */
+  verified: boolean;
+  /** Algorithm id (for breadcrumb on developer page). */
   algorithmId?: string;
-  /** Algorithm display name when shown on an algorithm detail page (for breadcrumb on developer page). */
+  /** Algorithm display name (for breadcrumb on developer page). */
   algorithmName?: string;
 }
 
 /**
  * Compact clickable developer card for the algorithm detail page.
  * Renders directly under the algorithm name and links to the dedicated developer profile page.
- * Pass algorithmId and algorithmName so the developer page breadcrumb shows: Strategies > [Algorithm] > [Developer].
+ * Breadcrumb on developer page: Strategies > [Algorithm Name] > [Developer Name].
  */
-export function AlgorithmDeveloperProfile({ algorithmId, algorithmName }: AlgorithmDeveloperProfileProps = {}) {
-  if (!developer) return null;
-
-  const base = `/vega-financial/developers/${developer.slug}`;
+export function AlgorithmDeveloperProfile({
+  developerSlug,
+  developerName,
+  role,
+  verified,
+  algorithmId,
+  algorithmName,
+}: AlgorithmDeveloperProfileProps) {
+  const base = `/vega-financial/developers/${developerSlug}`;
   const params = new URLSearchParams();
   if (algorithmId) params.set("from", algorithmId);
   if (algorithmName) params.set("fromName", algorithmName);
@@ -42,19 +52,19 @@ export function AlgorithmDeveloperProfile({ algorithmId, algorithmName }: Algori
         className="size-10 shrink-0 rounded-full bg-muted border border-border flex items-center justify-center text-muted-foreground text-sm font-medium"
         aria-hidden
       >
-        {developer.name.charAt(0)}
+        {developerName.charAt(0)}
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="font-medium text-foreground text-sm">{developer.name}</span>
-          {developer.verified && (
+          <span className="font-medium text-foreground text-sm">{developerName}</span>
+          {verified && (
             <span className="inline-flex items-center gap-0.5 text-xs text-muted-foreground">
               <ShieldCheck className="size-3.5 text-primary" aria-hidden />
               Verified
             </span>
           )}
         </div>
-        <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{developer.role}</p>
+        <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{role}</p>
         <p className="text-xs text-muted-foreground/80 mt-1">View developer profile</p>
       </div>
       <ChevronRight className="size-4 text-muted-foreground shrink-0" aria-hidden />

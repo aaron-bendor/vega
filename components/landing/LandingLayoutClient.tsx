@@ -10,7 +10,7 @@ export function LandingLayoutClient({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const useHeroBanner = pathname === "/" || pathname === "/about-us";
+  const useHeroBanner = pathname === "/" || pathname === "/about-us" || pathname === "/algorithms";
 
   return (
     <>

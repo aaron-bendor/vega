@@ -1,19 +1,9 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { getDeveloperProfileBySlug } from "@/lib/demo/developer-profile-data";
 import { Breadcrumb } from "@/components/vega-financial/Breadcrumb";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ShieldCheck, GraduationCap } from "lucide-react";
-
-const DEVELOPER_TAGS: { label: string; icon?: "verified" | "education" }[] = [
-  { label: "Equity momentum" },
-  { label: "Mean reversion" },
-  { label: "Trend following" },
-  { label: "Python / pandas" },
-  { label: "Backtesting" },
-  { label: "Verified developer", icon: "verified" },
-  { label: "Imperial College London", icon: "education" },
-  { label: "3 strategies published" },
-];
 
 export default async function DeveloperProfilePage({
   params,
@@ -33,9 +23,16 @@ export default async function DeveloperProfilePage({
     ...(fromAlgoId && fromAlgoName
       ? [
           { label: fromAlgoName, href: `/vega-financial/algorithms/${fromAlgoId}` as const },
-          { label: developer.name },
+          { label: developer.developerName },
         ]
-      : [{ label: developer.name }]),
+      : [{ label: developer.developerName }]),
+  ];
+
+  const tagPills = [
+    ...developer.tags.map((label) => ({ label, icon: null as "verified" | "education" | null })),
+    ...(developer.verified ? [{ label: "Verified developer" as const, icon: "verified" as const }] : []),
+    { label: developer.educationBadge, icon: "education" as const },
+    { label: developer.publishedCountLabel, icon: null as "verified" | "education" | null },
   ];
 
   return (
@@ -53,14 +50,14 @@ export default async function DeveloperProfilePage({
               className="size-16 sm:size-20 shrink-0 rounded-full bg-primary/15 border border-primary/25 flex items-center justify-center text-xl sm:text-2xl font-bold text-primary"
               aria-hidden
             >
-              {developer.name.charAt(0)}
+              {developer.developerName.charAt(0)}
             </div>
             <div className="min-w-0 flex-1">
               <h1
                 id="developer-heading"
                 className="font-maven-pro text-2xl sm:text-3xl font-bold text-foreground tracking-tight"
               >
-                {developer.name}
+                {developer.developerName}
               </h1>
               <p className="text-sm text-muted-foreground mt-1 max-w-2xl leading-relaxed">
                 {developer.role}
@@ -81,7 +78,7 @@ export default async function DeveloperProfilePage({
 
           {/* Tags row */}
           <div className="flex flex-wrap gap-2 mt-6">
-            {DEVELOPER_TAGS.map((tag, i) => (
+            {tagPills.map((tag, i) => (
               <span
                 key={i}
                 className="vf-glass-quiet vf-glass-violet inline-flex items-center gap-1.5 rounded-full border border-white/40 px-2.5 py-1 text-[11px] font-medium text-muted-foreground"
@@ -137,6 +134,37 @@ export default async function DeveloperProfilePage({
             <p className="text-sm text-muted-foreground leading-relaxed">
               {developer.about}
             </p>
+          </CardContent>
+        </Card>
+      </section>
+
+      {/* Published strategies: simple list (name + return only) */}
+      <section aria-labelledby="published-heading" className="mt-6">
+        <Card className="rounded-2xl border border-border">
+          <CardHeader>
+            <CardTitle id="published-heading" className="text-lg">
+              Published strategies
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-3">
+              {developer.publishedStrategies.map((strategy, i) => (
+                <li
+                  key={i}
+                  className="flex flex-wrap items-center justify-between gap-2 py-2 border-b border-border last:border-0 last:pb-0 first:pt-0"
+                >
+                  <Link
+                    href={`/vega-financial/algorithms/${developer.algorithmId}`}
+                    className="font-medium text-foreground text-sm hover:text-primary hover:underline"
+                  >
+                    {strategy.name}
+                  </Link>
+                  <span className="text-sm font-semibold tabular-nums text-foreground">
+                    {strategy.return}
+                  </span>
+                </li>
+              ))}
+            </ul>
           </CardContent>
         </Card>
       </section>

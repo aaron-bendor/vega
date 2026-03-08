@@ -17,6 +17,7 @@ const PAGES: { href: string; label: string; icon: React.ComponentType<{ classNam
   { href: "/vega-financial/portfolio", label: "Portfolio", icon: LayoutDashboard },
   { href: "/vega-financial/marketplace", label: "Explore", icon: Store },
   { href: "/vega-financial/profile", label: "Settings", icon: User },
+  { href: "/algorithms", label: "Algorithms", icon: BarChart3 },
   { href: "/vega-developer", label: "Developer", icon: Code2 },
   { href: "/private", label: "Private", icon: Lock },
 ];

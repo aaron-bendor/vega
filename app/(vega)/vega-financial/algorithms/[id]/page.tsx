@@ -13,6 +13,7 @@ import {
 } from "@/components/vega-financial/AlgorithmDetailLayout";
 import { StrategyHeroSummary } from "@/components/vega-financial/StrategyHeroSummary";
 import { AlgorithmDeveloperProfile } from "@/components/vega-financial/AlgorithmDeveloperProfile";
+import { getDeveloperByAlgorithmId } from "@/lib/demo/developer-profile-data";
 import { AllocationSummaryCard } from "@/components/vega-financial/AllocationSummaryCard";
 import { AlgorithmAllocationForm } from "@/components/vega-financial/AlgorithmAllocationForm";
 import { StrategyMetricStrip } from "@/components/vega-financial/StrategyMetricStrip";
@@ -110,6 +111,7 @@ export default async function AlgorithmDetailPage({
   const trackRecord = trackRecordLength(startDate, endDate);
   const dataConfidence = equityPoints.length >= 2 ? ("High" as const) : ("Medium" as const);
 
+  const developer = getDeveloperByAlgorithmId(id);
   const heroLeft = (
     <StrategyHeroSummary
       name={displayName}
@@ -125,7 +127,18 @@ export default async function AlgorithmDetailPage({
       mainRisk={overviewCopy?.mainRisk ?? overviewCopy?.mainDrawback}
       trustPills={overviewCopy?.trustPills}
       replayTutorialSlot={<ReplayTutorialLink />}
-      slotBelowTitle={<AlgorithmDeveloperProfile algorithmId={id} algorithmName={displayName} />}
+      slotBelowTitle={
+        developer ? (
+          <AlgorithmDeveloperProfile
+            developerSlug={developer.slug}
+            developerName={developer.developerName}
+            role={developer.role}
+            verified={developer.verified}
+            algorithmId={id}
+            algorithmName={displayName}
+          />
+        ) : null
+      }
     />
   );
 
