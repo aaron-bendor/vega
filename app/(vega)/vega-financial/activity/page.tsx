@@ -100,22 +100,18 @@ export default function ActivityPage() {
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2 shrink-0">
-                    <Link href="/vega-financial/marketplace" passHref legacyBehavior>
-                      <Button asChild variant="default" size="sm" className="min-h-[44px]">
-                        <a className="inline-flex items-center gap-2">
-                          <Plus className="size-4" aria-hidden />
-                          Add first strategy
-                        </a>
-                      </Button>
-                    </Link>
-                    <Link href="/vega-financial/watchlist" passHref legacyBehavior>
-                      <Button asChild variant="outline" size="sm" className="min-h-[44px]">
-                        <a className="inline-flex items-center gap-2">
-                          <Star className="size-4" aria-hidden />
-                          View watchlist
-                        </a>
-                      </Button>
-                    </Link>
+                    <Button asChild variant="default" size="sm" className="min-h-[44px]">
+                      <Link href="/vega-financial/marketplace" className="inline-flex items-center gap-2">
+                        <Plus className="size-4" aria-hidden />
+                        Add first strategy
+                      </Link>
+                    </Button>
+                    <Button asChild variant="outline" size="sm" className="min-h-[44px]">
+                      <Link href="/vega-financial/watchlist" className="inline-flex items-center gap-2">
+                        <Star className="size-4" aria-hidden />
+                        View watchlist
+                      </Link>
+                    </Button>
                   </div>
                 </div>
                 <ul className="divide-y divide-border" aria-hidden>

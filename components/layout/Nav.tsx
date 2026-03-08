@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Code2, Wallet, Lock, Home } from "lucide-react";
 
@@ -14,13 +15,13 @@ const navItems = [
 
 export function Nav() {
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   return (
     <nav className="flex items-center gap-1">
       {navItems.map(({ href, label, icon: Icon, exact }) => {
-        const isActive = exact
-          ? pathname === href
-          : pathname?.startsWith(href);
+        const isActive = mounted && (exact ? pathname === href : pathname?.startsWith(href));
         return (
           <Link
             key={href}
@@ -34,9 +35,11 @@ export function Nav() {
           >
             <Icon className="size-4" />
             <span className="hidden sm:inline">{label}</span>
-            {isActive && (
-              <span className="absolute bottom-0 left-3 right-3 h-0.5 bg-primary rounded-full" />
-            )}
+            <span
+              className="absolute bottom-0 left-3 right-3 h-0.5 bg-primary rounded-full"
+              aria-hidden
+              style={{ opacity: isActive ? 1 : 0 }}
+            />
           </Link>
         );
       })}

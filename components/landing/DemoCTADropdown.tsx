@@ -201,7 +201,7 @@ export function DemoCTADropdown({
         </button>
         <Link
           ref={developRef}
-          href="/vega-developer"
+          href="/vega-developer/demo"
           role="menuitem"
           className={itemClass}
           onClick={close}

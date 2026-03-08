@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Wallet, Code2, Lock, Home } from "lucide-react";
 
@@ -18,6 +19,8 @@ interface GlobalHeaderProps {
 
 export function GlobalHeader({ title }: GlobalHeaderProps) {
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-[rgba(51,51,51,0.12)] h-14">
@@ -28,9 +31,7 @@ export function GlobalHeader({ title }: GlobalHeaderProps) {
           </Link>
           <nav className="hidden md:flex items-center">
             {navItems.map(({ href, label, icon: Icon, exact }) => {
-              const isActive = exact
-                ? pathname === href
-                : pathname?.startsWith(href);
+              const isActive = mounted && (exact ? pathname === href : pathname?.startsWith(href));
               return (
                 <Link
                   key={href}
@@ -44,9 +45,11 @@ export function GlobalHeader({ title }: GlobalHeaderProps) {
                 >
                   <Icon className="size-3.5" />
                   {label}
-                  {isActive && (
-                    <span className="absolute bottom-0 left-3 right-3 h-0.5 bg-primary rounded-full" />
-                  )}
+                  <span
+                    className="absolute bottom-0 left-3 right-3 h-0.5 bg-primary rounded-full"
+                    aria-hidden
+                    style={{ opacity: isActive ? 1 : 0 }}
+                  />
                 </Link>
               );
             })}
@@ -56,9 +59,7 @@ export function GlobalHeader({ title }: GlobalHeaderProps) {
         {/* Mobile nav */}
         <nav className="flex md:hidden items-center gap-1">
           {navItems.map(({ href, icon: Icon, exact, label }) => {
-            const isActive = exact
-              ? pathname === href
-              : pathname?.startsWith(href);
+            const isActive = mounted && (exact ? pathname === href : pathname?.startsWith(href));
             return (
               <Link
                 key={href}
@@ -72,9 +73,11 @@ export function GlobalHeader({ title }: GlobalHeaderProps) {
                 )}
               >
                 <Icon className="size-4" />
-                {isActive && (
-                  <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-primary rounded-full" />
-                )}
+                <span
+                  className="absolute bottom-0 left-2 right-2 h-0.5 bg-primary rounded-full"
+                  aria-hidden
+                  style={{ opacity: isActive ? 1 : 0 }}
+                />
               </Link>
             );
           })}

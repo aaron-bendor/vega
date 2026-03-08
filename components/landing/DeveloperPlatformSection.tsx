@@ -24,17 +24,7 @@ export function DeveloperPlatformSection() {
               </h2>
             </AnimateOnScroll>
 
-            <AnimateOnScroll delay={0.15} className="mt-8 flex items-center gap-3">
-              <Image
-                src="/vegadeveloper.png"
-                alt="Vega Developer"
-                width={200}
-                height={60}
-                className="h-10 md:h-14 w-auto object-contain"
-              />
-            </AnimateOnScroll>
-
-            <AnimateOnScroll delay={0.2}>
+            <AnimateOnScroll delay={0.15}>
               <Link
                 href="/vega-developer"
                 className="mt-8 inline-flex items-center justify-center h-[50px] px-8 rounded-[30px] bg-white/10 backdrop-blur-sm border border-white/20 text-white font-dm-sans font-bold text-base hover:bg-white/15 hover:scale-[1.02] active:scale-[0.98] transition-[transform,background-color,border-color] duration-motion-normal ease-motion"
