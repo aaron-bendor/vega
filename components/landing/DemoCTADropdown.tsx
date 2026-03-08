@@ -20,7 +20,8 @@ type DemoCTADropdownProps = {
 };
 
 /**
- * Accessible "Open Demo" dropdown with Invest (investor flow + tour) and Develop (developer demo).
+ * Hero: single "Start Investing" button that goes to the invest demo (/vega-financial).
+ * Header: "Open Demo" dropdown with Invest (investor flow + tour) and Develop (developer demo).
  * Click to open; Escape / outside click to close; arrow keys move between options.
  */
 export function DemoCTADropdown({
@@ -148,6 +149,23 @@ export function DemoCTADropdown({
 
   const itemClass =
     "flex items-center w-full text-left px-4 py-2.5 text-sm font-semibold text-white outline-none rounded-lg mx-1 hover:bg-white/20 focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-inset";
+
+  // Hero: single "Start Investing" button that goes to invest demo (/vega-financial).
+  if (isHero) {
+    return (
+      <div className={cn("relative", className)}>
+        <button
+          ref={triggerRef}
+          type="button"
+          className={triggerClass}
+          onClick={(e) => onInvest(e)}
+          data-tour="try-it-now"
+        >
+          Start Investing
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className={cn("relative", className)}>
