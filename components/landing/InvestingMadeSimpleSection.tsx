@@ -10,36 +10,37 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 
+const IMG_V = "?v=2";
 const screens = [
   {
     step: null as string | null,
     heading: "Investing\nmade simple",
     sub: "Start investing in minutes. No experience needed.",
-    phone: "/investingmadesimple1.png",
+    phone: "/investingmadesimple1.png" + IMG_V,
   },
   {
     step: "1",
     heading: "Browse &\nDiscover",
     sub: "Explore trading strategies **verified by our own experienced developers.**\nFilter by risk, return, and timeframe.",
-    phone: "/investingmadesimple2.png",
+    phone: "/investingmadesimple2.png" + IMG_V,
   },
   {
     step: "2",
     heading: "View\nperformance",
     sub: "See _plain-English descriptions_, past returns, developer background, etc.\nPick a strategy that matches how much risk **you're comfortable with.**",
-    phone: "/investingmadesimple3.png",
+    phone: "/investingmadesimple3.png" + IMG_V,
   },
   {
     step: "3",
     heading: "Invest any\namount",
     sub: "Start from **as little as £1.**\nNo minimum, no accreditation requirements.",
-    phone: "/investingmadesimple4.png",
+    phone: "/investingmadesimple4.png" + IMG_V,
   },
   {
     step: "4",
     heading: "Watch\nit grow",
     sub: "The strategy trades for you automatically. Check your returns at any time in the app. Sell whenever you like.\n**No lock-in period, no exit fees.**",
-    phone: "/investingmadesimple5.png",
+    phone: "/investingmadesimple5.png" + IMG_V,
   },
 ];
 

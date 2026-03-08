@@ -29,7 +29,7 @@ export function UsageExplanationSection() {
           <AnimateOnScroll direction="left" className="flex-shrink-0 w-full lg:w-1/2 flex justify-center">
             <div className="relative w-[280px] sm:w-[340px] md:w-[400px]" style={{ aspectRatio: "524/1063" }}>
               <Image
-                src="/investingmadesimplePhone.png"
+                src="/investingmadesimplePhone.png?v=2"
                 alt="Investing made simple — app interface"
                 fill
                 className="object-contain drop-shadow-2xl"
