@@ -593,9 +593,10 @@ export default function VegaDeveloperTour() {
         width: "100vw",
         background: COLORS.black,
         display: "flex",
-        alignItems: "center",
+        alignItems: "flex-end",
         justifyContent: "center",
         overflow: "hidden",
+        paddingBottom: 48,
       }}
     >
       <div
