@@ -66,27 +66,17 @@ export function ProfileSidebar({
           )}
           aria-label="Vega Financial home"
         >
-          {isCollapsed ? (
-            <div className="relative z-10 flex flex-col items-center gap-1.5">
-              <Image src="/V.png" alt="" width={28} height={28} className="size-7 object-contain" />
-              <span className="text-[9px] font-medium text-[#18181f]/70 tracking-wide">Paper</span>
-            </div>
-          ) : (
-            <>
-              <div className="relative z-10 flex flex-col justify-center min-h-[48px]">
-                <span className="vf-brand-title font-maven-pro">
-                  <strong>Vega</strong>
-                  <span> financial</span>
-                </span>
-                <span
-                  className="mt-2 inline-flex w-fit items-center rounded-full border border-[#7c5cff]/25 bg-[#7c5cff]/08 px-2 py-0.5 text-[10px] font-medium text-[#6f46f6]"
-                  aria-hidden
-                >
-                  Paper trading
-                </span>
-              </div>
-            </>
-          )}
+          <Image
+            src="/logofordemo.png"
+            alt="Vega Financial"
+            width={120}
+            height={30}
+            className={cn(
+              "object-contain",
+              isCollapsed ? "max-w-[56px] h-auto" : "h-7 w-auto"
+            )}
+            priority
+          />
         </Link>
 
       </div>

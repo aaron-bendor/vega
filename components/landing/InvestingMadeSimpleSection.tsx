@@ -182,6 +182,19 @@ export function InvestingMadeSimpleSection() {
           border: none; cursor: pointer; padding: 0; height: 8px; border-radius: 4px;
           transition: width 0.35s cubic-bezier(0.4,0,0.2,1), background 0.35s ease;
         }
+        .dot-ind-btn {
+          display: flex; align-items: center; justify-content: center;
+          border: none; cursor: pointer; padding: 0; background: transparent;
+        }
+        @media (max-width: 1023px) {
+          .dot-ind-btn { min-width: 44px; min-height: 44px; }
+          .dot-ind-btn .dot-ind { height: 10px; border-radius: 5px; min-width: 10px; }
+          .phone-slide-img {
+            backface-visibility: hidden;
+            transform: translateZ(0);
+            -webkit-backface-visibility: hidden;
+          }
+        }
       `}</style>
 
       {/* Background */}
@@ -263,30 +276,45 @@ export function InvestingMadeSimpleSection() {
                   <RichText text={s.sub} />
                 </p>
 
-                {/* Dot indicators */}
-                <div className="flex gap-2 items-center mt-6 lg:mt-10">
-                  {screens.map((_, di) => (
-                    <button
-                      key={di}
-                      type="button"
-                      className="dot-ind"
-                      onClick={() => scrollToSlide(di)}
-                      aria-label={`Go to step ${di + 1}`}
-                      style={{
-                        width: active === di ? 28 : 8,
-                        background: active === di ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.28)",
-                      }}
-                    />
-                  ))}
+                {/* Dot indicators — on mobile: step label + 44px touch targets */}
+                <div className="mt-6 lg:mt-10">
+                  <p className="lg:sr-only text-[rgba(228,215,255,0.9)] text-sm font-medium mb-2" aria-live="polite">
+                    Step {active + 1} of {screens.length}
+                  </p>
+                  <div className="flex gap-1 lg:gap-2 items-center">
+                    {screens.map((_, di) => (
+                      <button
+                        key={di}
+                        type="button"
+                        className="dot-ind-btn"
+                        onClick={() => scrollToSlide(di)}
+                        aria-label={`Go to step ${di + 1}`}
+                        aria-current={active === di ? "step" : undefined}
+                      >
+                        <span
+                          className="dot-ind"
+                          style={{
+                            width: active === di ? 28 : 8,
+                            background: active === di ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.28)",
+                          }}
+                        />
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Mobile phone — responsive width 320–430px, same aspect slot, object-contain */}
+          {/* Mobile phone — stable aspect slot, overflow-hidden to avoid layout bugs; GPU layer for smooth crossfade */}
           <div
-            className="lg:hidden absolute left-1/2 -translate-x-1/2 pointer-events-none overflow-visible aspect-[440/901]"
-            style={{ width: "min(260px, 64vw)", bottom: "0.5rem" }}
+            className="lg:hidden absolute left-1/2 -translate-x-1/2 pointer-events-none overflow-hidden rounded-[2rem] aspect-[440/901]"
+            style={{
+              width: "min(260px, 64vw)",
+              bottom: "0.5rem",
+              contain: "layout paint",
+              minHeight: 0,
+            }}
           >
             {screens.map((s, i) => (
               // eslint-disable-next-line @next/next/no-img-element
@@ -294,8 +322,10 @@ export function InvestingMadeSimpleSection() {
                 key={s.phone}
                 src={s.phone}
                 alt=""
-                className="absolute inset-0 w-full h-full object-contain transition-opacity duration-700"
+                className="phone-slide-img absolute inset-0 w-full h-full object-contain transition-opacity duration-500"
                 style={{ opacity: active === i ? 1 : 0 }}
+                loading="eager"
+                decoding="async"
               />
             ))}
           </div>
