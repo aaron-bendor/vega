@@ -17,7 +17,7 @@ interface MobileStickyAllocationBarProps {
  * Sticky bottom CTA bar on mobile. Scrolls to allocation form when tapped.
  */
 export function MobileStickyAllocationBar({
-  label = "Add to portfolio",
+  label = "Buy or sell",
   scrollToForm = true,
   className,
 }: MobileStickyAllocationBarProps) {

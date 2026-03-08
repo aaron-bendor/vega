@@ -10,19 +10,25 @@ const AVG = 80;
 const TRIGGER = 90;
 const REVEAL_SPEED = 50; // ms per point
 
+// Step ranges:
+//   Step 0 (Watching): 0–50   — line below trigger
+//   Step 1 (Signal):   51–51  — line hits trigger, pause, show signal + trade annos
+//   Step 2 (Trade):    52–87  — line above trigger then returns to avg
+//   Step 3 (Profit):   88–N-1 — line back at avg
 const STEP_RANGES = [
-  { start: 0, end: 29 },
-  { start: 30, end: 59 },
-  { start: 60, end: 60 },
-  { start: 61, end: N - 1 },
+  { start: 0, end: 50 },
+  { start: 51, end: 51 },
+  { start: 52, end: 87 },
+  { start: 88, end: N - 1 },
 ];
 
-const PAUSES: Record<number, number> = { 29: 1000, 59: 700, 60: 1600, 85: 600 };
+// Pause at idx=51 (trigger crossing). 4000ms total: signal anno at 51, trade anno 2000ms later, then resume.
+const PAUSES: Record<number, number> = { 51: 4000 };
 
 const STEP_TITLES = [
   "Watching the ratio, 24/7",
-  "A trading opportunity appears",
-  "The trade is placed — instantly",
+  "Signal: trigger line crossed",
+  "Trade placed — automatically",
   "Ratio normalises — profit taken",
 ];
 
@@ -60,7 +66,9 @@ const LABELS = ALL_DATA.map((_, i) => {
 function drawChart(
   canvas: HTMLCanvasElement | null,
   revealedTo: number,
-  hoverIdx: number | null
+  hoverIdx: number | null,
+  _currentStep: number,
+  showTradeAnno: boolean
 ) {
   if (!canvas) return;
   const dpr = window.devicePixelRatio || 1;
@@ -155,9 +163,10 @@ function drawChart(
     ctx.stroke();
   }
 
-  if (revealedTo >= 60) {
-    const tx = toX(60);
-    const ty = toY(ALL_DATA[60].ratio);
+  // Trade dot at idx=51 where line first meets the trigger
+  if (revealedTo >= 51) {
+    const tx = toX(51);
+    const ty = toY(ALL_DATA[51].ratio);
 
     ctx.setLineDash([]);
     ctx.beginPath();
@@ -202,6 +211,7 @@ function drawChart(
     });
   };
 
+  // ① Watching — always visible once line starts
   if (revealedTo >= 8) {
     drawAnnoLines(PAD.left + 4, PAD.top + 4, "left", [
       "The algorithm watches",
@@ -209,24 +219,27 @@ function drawChart(
     ]);
   }
 
-  if (revealedTo >= 38) {
-    drawAnnoLines(PAD.left + 4, PAD.top + cH - 48, "left", [
-      "Ratio rises above average —",
+  // ② Signal — above the line at idx=51, right-aligned so text sits left of the dot
+  if (revealedTo >= 51) {
+    drawAnnoLines(toX(51) - 26, PAD.top + 48, "right", [
+      "Ratio crosses the trigger —",
       "**opportunity identified.**",
     ]);
   }
 
-  if (revealedTo >= 60) {
-    drawAnnoLines(toX(63), toY(TRIGGER) + 10, "left", [
-      "**Trade placed.**",
-      "Buys gold, sells silver.",
+  // ③ Trade placed — below the curve in the high region (shown 2s after idx=51)
+  if (showTradeAnno) {
+    drawAnnoLines(toX(51) + 54, toY(85.5) + 10, "left", [
+      "**Trade placed** — buys gold,",
+      "sells silver. No human needed.",
     ]);
   }
 
-  if (revealedTo >= 80) {
-    drawAnnoLines(toX(82), PAD.top + 4, "left", [
+  // ④ Profit — top-right, once line returns to avg at idx=87
+  if (revealedTo >= 87) {
+    drawAnnoLines(toX(89), PAD.top + 4, "left", [
       "Ratio returns to normal.",
-      "**Profit taken.**",
+      "**Position closed. Profit taken.**",
     ]);
   }
 
@@ -275,13 +288,13 @@ const STEP_DESCS = [
     The algorithm monitors the <strong style={{ color: "#e2e8f0" }}>price ratio between gold and silver</strong> in real time — every second of every day. The ratio is near its historical average of 80. Nothing to do yet.
   </>,
   <>
-    The ratio <strong style={{ color: "#e2e8f0" }}>spikes significantly above its historical average of 80</strong>. Gold has become unusually expensive relative to silver. The algorithm flags this as a signal: the gap is likely to close.
+    The ratio <strong style={{ color: "#e2e8f0" }}>crosses above 90</strong> — the trigger threshold. Gold has become unusually expensive relative to silver. The algorithm flags this as a trading opportunity: the gap is likely to close.
   </>,
   <>
-    The algorithm <strong style={{ color: "#e2e8f0" }}>automatically buys gold and sells silver</strong>, betting the ratio will fall back to normal. No human needed. No hesitation. The trade is placed in milliseconds.
+    The algorithm <strong style={{ color: "#e2e8f0" }}>automatically buys gold and sells silver</strong>, betting the ratio will fall back to normal. No human needed. The trade fires in milliseconds. Now we wait for the ratio to revert.
   </>,
   <>
-    The ratio falls back toward 80. The algorithm <strong style={{ color: "#e2e8f0" }}>closes the position and takes the profit</strong>. Start to finish, no human was involved. The strategy now watches for the next opportunity.
+    The ratio falls back to 80. The algorithm <strong style={{ color: "#e2e8f0" }}>closes the position and takes the profit</strong>. Start to finish, no human was involved.
   </>,
 ];
 
@@ -293,20 +306,22 @@ export function GoldSilverExplainer(): JSX.Element {
   const stepRef = useRef(0);
   const animRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const showTradeAnnoRef = useRef(false);
+  const tradeAnnoTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [revealedTo, setRevealedTo] = useState(0);
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
-  const [metricVis, setMetricVis] = useState([false, false, false]);
+  const [showTradeAnno, setShowTradeAnno] = useState(false);
 
   useEffect(() => {
-    drawChart(canvasRef.current, revealedTo, hoverIdx);
-  }, [revealedTo, hoverIdx, currentStep]);
+    drawChart(canvasRef.current, revealedTo, hoverIdx, currentStep, showTradeAnno);
+  }, [revealedTo, hoverIdx, currentStep, showTradeAnno]);
 
   useEffect(() => {
     const ro = new ResizeObserver(() =>
-      drawChart(canvasRef.current, revRef.current, null)
+      drawChart(canvasRef.current, revRef.current, null, stepRef.current, showTradeAnnoRef.current)
     );
     if (canvasRef.current) ro.observe(canvasRef.current);
     return () => ro.disconnect();
@@ -315,13 +330,6 @@ export function GoldSilverExplainer(): JSX.Element {
   const activateStep = useCallback((s: number) => {
     stepRef.current = s;
     setCurrentStep(s);
-    setMetricVis((prev) => {
-      const n = [...prev];
-      if (s >= 1) n[0] = true;
-      if (s >= 2) n[1] = true;
-      if (s >= 3) n[2] = true;
-      return n;
-    });
   }, []);
 
   const stopAnim = useCallback(() => {
@@ -330,6 +338,10 @@ export function GoldSilverExplainer(): JSX.Element {
     if (animRef.current) {
       clearTimeout(animRef.current);
       animRef.current = null;
+    }
+    if (tradeAnnoTimerRef.current) {
+      clearTimeout(tradeAnnoTimerRef.current);
+      tradeAnnoTimerRef.current = null;
     }
   }, []);
 
@@ -352,6 +364,17 @@ export function GoldSilverExplainer(): JSX.Element {
         }
       }
 
+      // At idx=51: pause 4000ms. After 2000ms show trade anno and advance to step 2.
+      if (next === 51) {
+        showTradeAnnoRef.current = false;
+        setShowTradeAnno(false);
+        tradeAnnoTimerRef.current = setTimeout(() => {
+          showTradeAnnoRef.current = true;
+          setShowTradeAnno(true);
+          activateStep(2);
+        }, 2000);
+      }
+
       const delay = PAUSES[next] ?? REVEAL_SPEED;
       animRef.current = setTimeout(() => tick(next), delay);
     },
@@ -362,6 +385,8 @@ export function GoldSilverExplainer(): JSX.Element {
     (s: number) => {
       if (s < 0 || s > 3) return;
       stopAnim();
+      showTradeAnnoRef.current = s >= 2;
+      setShowTradeAnno(s >= 2);
       const end = STEP_RANGES[s].end;
       revRef.current = end;
       setRevealedTo(end);
@@ -377,11 +402,12 @@ export function GoldSilverExplainer(): JSX.Element {
     }
     if (revRef.current >= N - 1) {
       stopAnim();
+      showTradeAnnoRef.current = false;
+      setShowTradeAnno(false);
       revRef.current = 0;
       stepRef.current = 0;
       setRevealedTo(0);
       setCurrentStep(0);
-      setMetricVis([false, false, false]);
       setTimeout(() => {
         playRef.current = true;
         setIsPlaying(true);
@@ -396,11 +422,12 @@ export function GoldSilverExplainer(): JSX.Element {
 
   const reset = useCallback(() => {
     stopAnim();
+    showTradeAnnoRef.current = false;
+    setShowTradeAnno(false);
     revRef.current = 0;
     stepRef.current = 0;
     setRevealedTo(0);
     setCurrentStep(0);
-    setMetricVis([false, false, false]);
   }, [stopAnim]);
 
   const onMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -409,17 +436,12 @@ export function GoldSilverExplainer(): JSX.Element {
   }, []);
   const onMouseLeave = useCallback(() => setHoverIdx(null), []);
 
-  useEffect(() => {
-    const t = setTimeout(() => setMetricVis((v) => [true, v[1], v[2]]), 500);
-    return () => clearTimeout(t);
-  }, []);
-
   useEffect(() => () => stopAnim(), [stopAnim]);
 
   const hoveredPoint = hoverIdx !== null ? ALL_DATA[hoverIdx] : null;
   const tooltipLabel = hoverIdx !== null ? LABELS[hoverIdx] : null;
   let tooltipNote: { text: string; color: string } | null = null;
-  if (hoverIdx === 60) tooltipNote = { text: "🔴 Trade placed here", color: "#f87171" };
+  if (hoverIdx === 51) tooltipNote = { text: "🔴 Trade placed here", color: "#f87171" };
   else if (hoverIdx !== null && hoverIdx >= 30 && hoverIdx < 60)
     tooltipNote = { text: "⚠ Ratio rising above average", color: "#fbbf24" };
   else if (hoverIdx !== null && hoverIdx > 60 && hoverIdx < 90)
@@ -453,7 +475,7 @@ export function GoldSilverExplainer(): JSX.Element {
             <span className="text-gray-400">Silver</span> Strategy
           </h2>
           <p className="max-w-[560px] text-[15px] leading-[1.7] text-[#6b7280]">
-            A real example of how a trading algorithm thinks and acts — completely automatically, 24 hours a day.
+            How a trading algorithm thinks and acts — automatically, 24 hours a day.
           </p>
         </div>
 
@@ -499,8 +521,8 @@ export function GoldSilverExplainer(): JSX.Element {
             {[
               "1 · Watching",
               "2 · Signal",
-              "3 · Trade placed",
-              "4 · Profit taken",
+              "3 · Trade",
+              "4 · Profit",
             ].map((label, i) => {
               const active = i === currentStep;
               const done = i < currentStep;
@@ -564,56 +586,6 @@ export function GoldSilverExplainer(): JSX.Element {
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="mx-auto grid max-w-[1100px] grid-cols-1 gap-3 px-6 pb-12 md:grid-cols-3 md:px-12">
-          {[
-            {
-              icon: "👁️",
-              title: "Monitoring frequency",
-              value: "24/7",
-              color: "#a78bfa",
-              desc: "The algorithm watches prices every second — something no human can do consistently.",
-              show: metricVis[0],
-            },
-            {
-              icon: "⚡",
-              title: "Time to execute",
-              value: "< 1ms",
-              color: "#f59e0b",
-              desc: "Once a signal triggers, the trade is placed in under a millisecond. Human reaction time is ~200ms.",
-              show: metricVis[1],
-            },
-            {
-              icon: "🧠",
-              title: "Emotions involved",
-              value: "Zero",
-              color: "#34d399",
-              desc: "The algorithm never panics, hesitates, or second-guesses. It follows its rules exactly, every time.",
-              show: metricVis[2],
-            },
-          ].map((m, i) => (
-            <div
-              key={i}
-              className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 transition-[opacity,transform] duration-500 ease-out"
-              style={{
-                opacity: m.show ? 1 : 0,
-                transform: m.show ? "none" : "translateY(12px)",
-              }}
-            >
-              <div className="mb-3 text-[22px]">{m.icon}</div>
-              <div className="mb-1.5 text-[10px] font-bold uppercase tracking-wider text-[#1f2937]">
-                {m.title}
-              </div>
-              <div
-                className="mb-1.5 text-[26px] font-extrabold tracking-tight"
-                style={{ color: m.color }}
-              >
-                {m.value}
-              </div>
-              <div className="text-xs leading-[1.6] text-[#374151]">{m.desc}</div>
-            </div>
-          ))}
         </div>
 
         <div className="mx-auto max-w-[1100px] px-6 pb-20 text-center md:px-12">

@@ -25,14 +25,23 @@ function formatTime(iso: string): string {
   }
 }
 
+function formatCurrency(amount: number): string {
+  return new Intl.NumberFormat("en-GB", {
+    style: "currency",
+    currency: "GBP",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+
 function eventLabel(entry: ActivityLogEntry): string {
   switch (entry.type) {
     case "allocate":
-      return "Demo allocation made";
+      return "Bought";
     case "reduce":
-      return "Demo allocation reduced";
+      return "Sold";
     case "remove":
-      return "Removed from portfolio";
+      return "Exited";
     default:
       return "Portfolio updated";
   }
@@ -41,11 +50,11 @@ function eventLabel(entry: ActivityLogEntry): string {
 function eventDescription(entry: ActivityLogEntry): string {
   switch (entry.type) {
     case "allocate":
-      return `Allocated ${entry.amount} to ${entry.algorithmName}`;
+      return `Bought ${formatCurrency(entry.amount)} of ${entry.algorithmName}`;
     case "reduce":
-      return `Reduced allocation to ${entry.algorithmName}`;
+      return `Sold ${formatCurrency(entry.amount)} of ${entry.algorithmName}`;
     case "remove":
-      return `Removed ${entry.algorithmName} from portfolio`;
+      return `Exited ${entry.algorithmName}`;
     default:
       return `${entry.algorithmName}`;
   }

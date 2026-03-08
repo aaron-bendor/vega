@@ -8,7 +8,7 @@ import { InvestmentStepsSection } from "@/components/landing/InvestmentStepsSect
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col min-h-screen bg-white overflow-visible">
+    <div className="flex flex-col min-h-screen bg-white overflow-x-clip overflow-y-visible w-full min-w-0">
       <HeroVideoSection />
       <VideoBlockSection />
       <StatisticsSection />

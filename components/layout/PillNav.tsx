@@ -10,6 +10,34 @@ import { NavLink } from "@/components/ui/NavLink";
 import { NavDropdown, type NavDropdownItem } from "@/components/layout/NavDropdown";
 import { getTourCompleted, TOUR_START_SESSION_KEY, setTourStep } from "@/lib/tour/storage";
 
+/** Lock body scroll when mobile menu is open; restore on close or pathname change. */
+function useBodyScrollLock(locked: boolean) {
+  useEffect(() => {
+    if (!locked) return;
+    const scrollY = window.scrollY;
+    const prev = {
+      overflow: document.body.style.overflow,
+      position: document.body.style.position,
+      top: document.body.style.top,
+      left: document.body.style.left,
+      right: document.body.style.right,
+    };
+    document.body.style.overflow = "hidden";
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.left = "0";
+    document.body.style.right = "0";
+    return () => {
+      document.body.style.overflow = prev.overflow;
+      document.body.style.position = prev.position;
+      document.body.style.top = prev.top;
+      document.body.style.left = prev.left;
+      document.body.style.right = prev.right;
+      window.scrollTo(0, scrollY);
+    };
+  }, [locked]);
+}
+
 const SHOW_THRESHOLD_PX = 16;
 const HIDE_THRESHOLD_PX = 24;
 const TOP_SHOW_THRESHOLD_PX = 8;
@@ -47,6 +75,21 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
   const isInvestor = variant === "investor";
   const isInvestorApp = variant === "investorApp";
   const navItems = isInvestorApp ? investorAppNav : isInvestor ? investorNav : mainNav;
+
+  useBodyScrollLock(mobileMenuOpen && !isInvestorApp);
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!mobileMenuOpen || isInvestorApp) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [mobileMenuOpen, isInvestorApp]);
 
   const handleTryItNow = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -253,10 +296,12 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
       <div
         ref={bannerRef}
         className={cn(
-          "site-banner fixed top-0 left-0 right-0",
-          isInvestorAppCompact ? "pt-2" : "pt-4",
+          "site-banner fixed left-0 right-0 top-0",
           bannerHidden && "is-hidden"
         )}
+        style={{
+          paddingTop: `calc(${isInvestorAppCompact ? "0.5rem" : "1rem"} + env(safe-area-inset-top, 0px))`,
+        }}
         role="banner"
       >
         <div className={cn("flex justify-center", isInvestorAppCompact ? "px-4 sm:px-6" : "px-4")}>
@@ -446,12 +491,18 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
       {!isInvestorApp && (
         <div
           className={cn(
-            "md:hidden fixed top-20 left-4 right-4 z-50 rounded-2xl shadow-2xl overflow-hidden border transition-[transform,opacity] duration-motion-normal ease-motion",
+            "md:hidden fixed left-4 right-4 z-50 rounded-2xl shadow-2xl overflow-hidden border transition-[transform,opacity] duration-motion-normal ease-motion",
             mobileMenuBg,
             mobileMenuOpen
               ? "opacity-100 visible translate-y-0 scale-100"
               : "opacity-0 invisible -translate-y-2 scale-[0.98] pointer-events-none"
           )}
+          style={{
+            top: "calc(5rem + env(safe-area-inset-top, 0px))",
+          }}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Mobile navigation menu"
         >
           <nav className="py-3" aria-label="Mobile navigation">
           {navItems.map((entry: NavEntry) =>
@@ -460,7 +511,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                 key={entry.href}
                 href={entry.href}
                 className={cn(
-                  "block px-5 py-3.5 font-medium transition-colors duration-200 ease-out active:scale-[0.99]",
+                  "flex items-center min-h-[44px] px-5 py-3.5 font-medium transition-colors duration-200 ease-out active:scale-[0.99] focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                   isStandalone
                     ? "text-foreground hover:bg-muted/50"
                     : "text-white hover:bg-white/10"
@@ -475,7 +526,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                   key={href}
                   href={href}
                   className={cn(
-                    "block px-5 py-2.5 pl-7 text-sm transition-colors duration-200 ease-out active:scale-[0.99]",
+                    "flex items-center min-h-[44px] px-5 py-2.5 pl-7 text-sm transition-colors duration-200 ease-out active:scale-[0.99] focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                     isStandalone
                       ? "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
                       : "text-white/80 hover:bg-white/10 hover:text-white"

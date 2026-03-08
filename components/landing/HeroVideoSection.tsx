@@ -25,14 +25,14 @@ export function HeroVideoSection() {
 
   return (
     <section
-      className="relative w-full h-screen flex flex-col overflow-hidden bg-black pt-20"
+      className="relative w-full min-h-[100dvh] flex flex-col overflow-hidden bg-black pt-20"
       aria-label="Hero"
     >
       <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden>
         <iframe
           src={colorflowSrc}
           title="Hero background animation"
-          className="absolute left-1/2 top-1/2 h-[160vh] w-[180vw] -translate-x-1/2 -translate-y-1/2 scale-110 border-0 opacity-85 md:h-[140vh] md:w-[140vw] md:opacity-90"
+          className="absolute left-1/2 top-1/2 h-[160vh] w-[180vw] max-w-[100vw] -translate-x-1/2 -translate-y-1/2 scale-110 border-0 opacity-85 md:h-[140vh] md:w-[140vw] md:max-w-none md:opacity-90"
           loading="eager"
           tabIndex={-1}
         />
@@ -46,12 +46,12 @@ export function HeroVideoSection() {
       <div className="relative z-10 flex flex-col flex-1 min-h-0">
         {/* SiteHeader (marketing nav) is rendered once by (landing) layout with variant="hero" */}
 
-        <div className="flex-1 flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-12 px-4 md:px-8 max-w-7xl mx-auto w-full py-6 md:py-8 min-h-0">
+        <div className="flex-1 flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-12 px-4 md:px-8 max-w-7xl mx-auto w-full py-6 md:py-8 min-h-0 min-w-0">
           {/* Phone — desktop, full device visible (524×1063), no crop */}
           <AnimateOnScroll
             direction="right"
             duration={700}
-            className="hidden lg:flex flex-shrink-0 items-center justify-center"
+            className="hidden lg:flex flex-shrink-0 items-center justify-center min-w-0"
           >
             <Image
               src="/appHero.png?v=2"
@@ -59,14 +59,14 @@ export function HeroVideoSection() {
               width={524}
               height={1063}
               className="w-[min(360px,25vw)] h-auto max-h-[85vh] object-contain object-top drop-shadow-2xl transition-transform duration-500 hover:scale-[1.02]"
-              sizes="360px"
+              sizes="(max-width: 1024px) 0px, 360px"
               priority
             />
           </AnimateOnScroll>
 
           {/* Content */}
-          <div className="flex flex-col items-center text-center flex-1 max-w-[839px]">
-            <h1 className="font-syne text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold text-white tracking-[-3px] leading-[1.05]">
+          <div className="flex flex-col items-center text-center flex-1 min-w-0 max-w-[839px]">
+            <h1 className="font-syne text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold text-white tracking-[-3px] leading-[1.05]">
               <AnimateOnScroll delay={50} duration={700}>
                 Algorithmic
                 <br />

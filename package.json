@@ -18,6 +18,8 @@
     "test:watch": "vitest",
     "screenshots:install": "playwright install chromium",
     "screenshots": "tsx scripts/capture_screenshots.ts",
+    "test:e2e": "playwright test",
+    "test:e2e:mobile": "playwright test e2e/mobile.spec.ts",
     "stooq:prefetch": "tsx scripts/prefetch-stooq.ts",
     "stooq:clear": "rm -rf data/stooq/cache/*",
     "demo:precompute": "tsx scripts/precompute-demo-runs.ts"

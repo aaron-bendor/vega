@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { validateAllocationAmount } from "../allocation-validation";
+import { validateAllocationAmount, validateSellAmount } from "../allocation-validation";
 
 describe("validateAllocationAmount", () => {
   const versionId = "demo-1";
@@ -46,5 +46,36 @@ describe("validateAllocationAmount", () => {
   it("rejects invalid versionId type when empty", () => {
     const result = validateAllocationAmount(1000, availableCash, "");
     expect(result.valid).toBe(false);
+  });
+});
+
+describe("validateSellAmount", () => {
+  const versionId = "demo-1";
+  const currentHoldingValue = 5_000;
+
+  it("accepts a valid amount within current holding", () => {
+    expect(validateSellAmount(1000, currentHoldingValue, versionId)).toEqual({ valid: true });
+    expect(validateSellAmount(5000, currentHoldingValue, versionId)).toEqual({ valid: true });
+  });
+
+  it("rejects amount greater than current holding", () => {
+    const result = validateSellAmount(6000, currentHoldingValue, versionId);
+    expect(result.valid).toBe(false);
+    expect((result as { message: string }).message).toBe("Sell amount cannot exceed your current holding.");
+  });
+
+  it("rejects zero or negative amount", () => {
+    expect(validateSellAmount(0, currentHoldingValue, versionId).valid).toBe(false);
+    expect(validateSellAmount(-1000, currentHoldingValue, versionId).valid).toBe(false);
+  });
+
+  it("rejects when current holding is zero", () => {
+    const result = validateSellAmount(1000, 0, versionId);
+    expect(result.valid).toBe(false);
+    expect((result as { message: string }).message).toBe("You do not hold this strategy in your demo portfolio.");
+  });
+
+  it("rejects missing or blank strategy id", () => {
+    expect(validateSellAmount(1000, currentHoldingValue, "").valid).toBe(false);
   });
 });

@@ -216,8 +216,8 @@ export function InvestingMadeSimpleSection() {
         </div>
 
         {/* RIGHT — text content */}
-        <div className="w-full lg:w-1/2 h-full flex items-center justify-center px-6 lg:pl-6 lg:pr-14">
-          <div className="relative w-full" style={{ maxWidth: 440 }}>
+        <div className="w-full lg:w-1/2 h-full flex items-center justify-center px-4 sm:px-6 lg:pl-6 lg:pr-14 pb-[min(220px,55vw)] lg:pb-0">
+          <div className="relative w-full min-w-0" style={{ maxWidth: 440 }}>
             {screens.map((s, i) => (
               <div
                 key={i}
@@ -283,8 +283,11 @@ export function InvestingMadeSimpleSection() {
             ))}
           </div>
 
-          {/* Mobile phone — same aspect slot, object-contain */}
-          <div className="lg:hidden absolute bottom-6 left-1/2 -translate-x-1/2 pointer-events-none overflow-visible w-[200px] aspect-[440/901]">
+          {/* Mobile phone — responsive width 320–430px, same aspect slot, object-contain */}
+          <div
+            className="lg:hidden absolute left-1/2 -translate-x-1/2 pointer-events-none overflow-visible aspect-[440/901]"
+            style={{ width: "min(200px, 55vw)", bottom: "1.5rem" }}
+          >
             {screens.map((s, i) => (
               // eslint-disable-next-line @next/next/no-img-element
               <img

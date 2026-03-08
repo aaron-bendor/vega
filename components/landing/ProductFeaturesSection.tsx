@@ -15,9 +15,9 @@ const features = [
 
 export function ProductFeaturesSection() {
   return (
-    <section id="built-for" className="relative z-0 w-full overflow-hidden py-16 md:py-24">
+    <section id="built-for" className="relative z-0 w-full min-w-0 overflow-hidden py-16 md:py-24">
       <div className="pointer-events-none absolute inset-0 z-0 bg-white" aria-hidden />
-      <div className="relative z-10 max-w-[1200px] mx-auto px-4 md:px-8">
+      <div className="relative z-10 max-w-[1200px] mx-auto w-full min-w-0 px-4 md:px-8">
         <AnimateOnScroll>
           <h2 className="font-maven-pro font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-[-2px] leading-[1.25] min-h-[2.6em]">
             <span className="text-black font-extrabold">Built for </span>

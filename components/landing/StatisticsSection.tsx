@@ -26,7 +26,7 @@ export function StatisticsSection() {
   return (
     <section
       id="market-stats"
-      className="relative w-full min-h-screen bg-white flex items-center overflow-hidden"
+      className="relative w-full min-h-0 md:min-h-screen bg-white flex items-center overflow-hidden"
     >
       <div className="relative max-w-[1200px] mx-auto px-4 md:px-8 py-16 md:py-20 w-full">
         <AnimateOnScroll>

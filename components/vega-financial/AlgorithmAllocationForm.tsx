@@ -13,10 +13,10 @@ import {
   loadPortfolioState,
   savePortfolioState,
   performDemoAllocation,
+  performDemoSell,
   subscribePortfolioUpdate,
-  getTotalCurrentValue,
 } from "@/lib/vega-financial/portfolio-store";
-import { validateAllocationAmount } from "@/lib/vega-financial/allocation-validation";
+import { validateAllocationAmount, validateSellAmount } from "@/lib/vega-financial/allocation-validation";
 import { formatCurrency } from "@/lib/utils/format";
 import { cn } from "@/lib/utils";
 
@@ -40,21 +40,19 @@ export function AlgorithmAllocationForm({
   const [, setAmount] = useState<number>(10000);
   const [amountInput, setAmountInput] = useState("10000");
   const [loading, setLoading] = useState(false);
+  const [action, setAction] = useState<"buy" | "sell" | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState<"buy" | "sell" | false>(false);
   const [disclosureOpen, setDisclosureOpen] = useState(false);
   const [accepted, setAccepted] = useState(false);
   const [onWatchlist, setOnWatchlist] = useState(false);
   const [availableCash, setAvailableCash] = useState(0);
-  const [totalEquity, setTotalEquity] = useState(0);
   const [currentHoldingValue, setCurrentHoldingValue] = useState(0);
 
   const refreshFromStore = useCallback(() => {
     if (typeof window === "undefined") return;
     const state = loadPortfolioState();
     setAvailableCash(state.availableCash);
-    const totalCurrentValue = getTotalCurrentValue(state.holdings);
-    setTotalEquity(state.availableCash + totalCurrentValue);
     setOnWatchlist(state.watchlist.includes(versionId));
     const existing = state.holdings.find((h) => h.algorithmId === versionId);
     setCurrentHoldingValue(existing?.currentValue ?? 0);
@@ -80,13 +78,13 @@ export function AlgorithmAllocationForm({
     setOnWatchlist(next.includes(versionId));
   }
 
-  function doAllocate() {
+  function doBuy() {
     setError(null);
     setSuccess(false);
     const num = Number(amountInput);
     const hasAmount = amountInput.trim() !== "";
     if (!hasAmount || amountInput.trim() === "") {
-      setError("Enter an amount to allocate.");
+      setError("Enter an amount to trade.");
       return;
     }
     const validation = validateAllocationAmount(num, availableCash, versionId);
@@ -95,10 +93,11 @@ export function AlgorithmAllocationForm({
       return;
     }
     setLoading(true);
+    setAction("buy");
     try {
       const result = performDemoAllocation(versionId, num, strategyName);
       if (result.success) {
-        setSuccess(true);
+        setSuccess("buy");
         setAmount(num);
         setAmountInput(String(num));
         refreshFromStore();
@@ -115,39 +114,71 @@ export function AlgorithmAllocationForm({
       }
     } finally {
       setLoading(false);
+      setAction(null);
     }
   }
 
-  function handleInvestClick() {
+  function doSell() {
+    setError(null);
+    setSuccess(false);
+    const num = Number(amountInput);
+    const hasAmount = amountInput.trim() !== "";
+    if (!hasAmount || amountInput.trim() === "") {
+      setError("Enter an amount to trade.");
+      return;
+    }
+    const validation = validateSellAmount(num, currentHoldingValue, versionId);
+    if (!validation.valid) {
+      setError(validation.message);
+      return;
+    }
+    setLoading(true);
+    setAction("sell");
+    try {
+      const result = performDemoSell(versionId, num, strategyName);
+      if (result.success) {
+        setSuccess("sell");
+        setAmount(num);
+        setAmountInput(String(num));
+        refreshFromStore();
+        setTimeout(() => setSuccess(false), 5000);
+      } else {
+        setError(result.error);
+      }
+    } catch (e) {
+      const msg =
+        e instanceof Error ? e.message : "Could not complete demo sell. Please try again.";
+      setError(msg);
+      if (process.env.NODE_ENV === "development") {
+        console.error("Demo sell error:", e);
+      }
+    } finally {
+      setLoading(false);
+      setAction(null);
+    }
+  }
+
+  function handleBuyClick() {
     if (!accepted) {
       setDisclosureOpen(true);
       return;
     }
-    doAllocate();
+    doBuy();
   }
 
   function handleDisclosureAccept() {
     setAccepted(true);
-    doAllocate();
+    doBuy();
   }
 
-  const numAmount = Number(amountInput);
-  const isValidNum = !Number.isNaN(numAmount) && numAmount > 0;
-  const maxAmount = Math.max(availableCash, 0);
-  const effectiveAmount = isValidNum ? Math.min(numAmount, maxAmount || numAmount) : 0;
-  const estimatedWeightPct =
-    totalEquity > 0
-      ? (((currentHoldingValue + effectiveAmount) / totalEquity) * 100).toFixed(1)
-      : effectiveAmount > 0
-        ? "100.0"
-        : "0";
-  const cashAfter = Math.max(0, availableCash - effectiveAmount);
+  const maxBuy = Math.max(availableCash, 0);
+  const maxSell = Math.max(currentHoldingValue, 0);
 
   return (
     <div className={cn("space-y-3", className)}>
       <div>
         <label htmlFor="algo-amount" className="text-xs font-medium text-foreground block mb-1.5">
-          Amount to allocate
+          Amount to trade
         </label>
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-sm text-muted-foreground">£</span>
@@ -155,7 +186,6 @@ export function AlgorithmAllocationForm({
             id="algo-amount"
             type="number"
             min={100}
-            max={maxAmount || undefined}
             step={1000}
             value={amountInput}
             onChange={(e) => {
@@ -185,13 +215,25 @@ export function AlgorithmAllocationForm({
             <button
               type="button"
               onClick={() => {
-                setAmount(maxAmount);
-                setAmountInput(String(maxAmount));
+                setAmount(maxBuy);
+                setAmountInput(String(maxBuy));
                 setError(null);
               }}
               className="min-h-[44px] sm:min-h-[36px] px-2.5 py-1.5 rounded-md border border-border bg-muted/30 text-xs font-medium text-foreground hover:bg-muted/50 hover:border-muted-foreground/30 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring transition-colors duration-200"
             >
-              Max
+              Max buy
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setAmount(maxSell);
+                setAmountInput(String(maxSell));
+                setError(null);
+              }}
+              disabled={maxSell <= 0}
+              className="min-h-[44px] sm:min-h-[36px] px-2.5 py-1.5 rounded-md border border-border bg-muted/30 text-xs font-medium text-foreground hover:bg-muted/50 hover:border-muted-foreground/30 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring transition-colors duration-200 disabled:opacity-50 disabled:pointer-events-none"
+            >
+              Max sell
             </button>
           </div>
         </div>
@@ -199,8 +241,8 @@ export function AlgorithmAllocationForm({
 
       {showAllocationHelper && (
         <div className="text-[11px] text-muted-foreground space-y-0.5">
-          <p>Portfolio weight: {estimatedWeightPct}%</p>
-          <p>Cash left: {formatCurrency(cashAfter)}</p>
+          <p>Available cash: {formatCurrency(availableCash)}</p>
+          <p>Current holding: {formatCurrency(currentHoldingValue)}</p>
         </div>
       )}
 
@@ -211,19 +253,29 @@ export function AlgorithmAllocationForm({
       )}
       {success && (
         <p className="text-sm text-brand-green font-medium" role="status">
-          Demo allocation added.
+          {success === "buy" ? "Bought in demo portfolio." : "Sold from demo portfolio."}
         </p>
       )}
 
       <div className="flex flex-col gap-2">
-        <Button
-          onClick={handleInvestClick}
-          disabled={loading}
-          className="w-full min-h-[44px] sm:min-h-[40px]"
-          data-tour="algo-add-paper"
-        >
-          {loading ? "Allocating…" : "Add to demo portfolio"}
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={handleBuyClick}
+            disabled={loading}
+            className="flex-1 min-h-[44px] sm:min-h-[40px]"
+            data-tour="algo-add-paper"
+          >
+            {loading && action === "buy" ? "Buying…" : "Buy"}
+          </Button>
+          <Button
+            onClick={doSell}
+            disabled={loading || currentHoldingValue <= 0}
+            variant="outline"
+            className="flex-1 min-h-[44px] sm:min-h-[40px]"
+          >
+            {loading && action === "sell" ? "Selling…" : "Sell"}
+          </Button>
+        </div>
         {success && (
           <Link
             href="/vega-financial/portfolio"

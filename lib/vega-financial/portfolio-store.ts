@@ -208,6 +208,8 @@ export interface DemoAllocationError {
   error: string;
 }
 
+export type DemoSellResult = DemoAllocationResult | DemoAllocationError;
+
 /**
  * Perform a demo allocation locally: deduct cash, add/update holding, append activity.
  * Does not call any API. Use for investor paper-trading only.
@@ -290,6 +292,103 @@ export function performDemoAllocation(
     return {
       success: false,
       error: err instanceof Error ? err.message : "Could not complete demo allocation. Please try again.",
+    };
+  }
+}
+
+/**
+ * Perform a demo sell: return cash, reduce or remove holding, append activity.
+ * Partial sell uses "reduce"; full exit uses "remove".
+ * Does not subtract amount directly from allocated; reduces allocated proportionally.
+ */
+export function performDemoSell(
+  versionId: string,
+  amount: number,
+  strategyName: string
+): DemoSellResult {
+  if (typeof window === "undefined") {
+    return { success: false, error: "Demo portfolio state is unavailable." };
+  }
+  try {
+    const state = loadPortfolioState();
+    if (amount <= 0) {
+      return { success: false, error: "Sell amount must be greater than £0." };
+    }
+    const existing = state.holdings.find((h) => h.algorithmId === versionId);
+    if (!existing) {
+      return { success: false, error: "You do not hold this strategy in your demo portfolio." };
+    }
+    if (amount > existing.currentValue) {
+      return { success: false, error: "Sell amount cannot exceed your current holding." };
+    }
+
+    const soldFraction = amount / existing.currentValue;
+    const newAllocated = existing.allocated * (1 - soldFraction);
+    const newCurrentValue = existing.currentValue - amount;
+    const isFullExit = newCurrentValue < 1e-6; // effectively zero
+
+    const newCash = state.availableCash + amount;
+    const activityType: ActivityLogEntry["type"] = isFullExit ? "remove" : "reduce";
+    const activityEntry: ActivityLogEntry = {
+      id: `act-${Date.now()}`,
+      type: activityType,
+      algorithmId: versionId,
+      algorithmName: strategyName,
+      amount,
+      previousAmount: existing.allocated,
+      at: new Date().toISOString(),
+    };
+
+    const newHoldings: PaperHolding[] = isFullExit
+      ? state.holdings
+          .filter((h) => h.algorithmId !== versionId)
+          .map((h) => ({
+            ...h,
+            weight: 0, // will recompute below
+          }))
+      : state.holdings.map((h) =>
+          h.algorithmId === versionId
+            ? {
+                ...h,
+                allocated: newAllocated,
+                currentValue: newCurrentValue,
+                returnPct:
+                  newAllocated > 0
+                    ? ((newCurrentValue - newAllocated) / newAllocated) * 100
+                    : 0,
+                weight: 0, // will recompute below
+              }
+            : { ...h, weight: 0 }
+        );
+
+    const totalEquity = getEquity(newCash, newHoldings);
+    const recomputedHoldings: PaperHolding[] = newHoldings.map((h) => ({
+      ...h,
+      weight: getHoldingWeightPct(h.currentValue, totalEquity),
+    }));
+
+    const newState: PortfolioState = {
+      ...state,
+      availableCash: newCash,
+      holdings: recomputedHoldings,
+      activityLog: [...state.activityLog, activityEntry],
+    };
+
+    if (!assertPortfolioInvariants(newState)) {
+      return {
+        success: false,
+        error: "Portfolio state would be inconsistent. Please refresh and try again.",
+      };
+    }
+    savePortfolioState(newState);
+    return { success: true, newState };
+  } catch (err) {
+    if (process.env.NODE_ENV === "development") {
+      console.error("Demo sell error:", err);
+    }
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Could not complete demo sell. Please try again.",
     };
   }
 }

@@ -10,22 +10,22 @@ const COLORFLOW_SRC =
 export function AlgorithmsHeroSection(): JSX.Element {
   return (
     <section
-      className="relative w-full min-h-screen flex flex-col bg-black pt-20"
+      className="relative w-full min-h-[100dvh] flex flex-col bg-black pt-20 overflow-hidden"
       aria-label="Algorithms hero"
     >
       {/* Same moving-background pattern as homepage: full-viewport iframe, no overlay so gradient stays clear */}
-      <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden>
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden>
         <iframe
           src={COLORFLOW_SRC}
           title="Algorithms page background animation"
-          className="absolute left-1/2 top-1/2 h-[160vh] w-[180vw] -translate-x-1/2 -translate-y-1/2 scale-110 border-0 opacity-90 md:h-[140vh] md:w-[140vw] md:opacity-95"
+          className="absolute left-1/2 top-1/2 h-[160vh] w-[180vw] max-w-[100vw] -translate-x-1/2 -translate-y-1/2 scale-110 border-0 opacity-90 md:h-[140vh] md:w-[140vw] md:max-w-none md:opacity-95"
           loading="eager"
           tabIndex={-1}
         />
       </div>
-      <div className="relative z-10 flex flex-col flex-1 min-h-0 overflow-visible">
+      <div className="relative z-10 flex flex-col flex-1 min-h-0 min-w-0 overflow-visible">
         {/* Layout matches reference: image left (975px equiv, ~64–68% width), text right (label, 80px headline, 3xl subtitle) */}
-        <div className="flex-1 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-0 px-0 md:px-4 lg:px-5 max-w-[1520px] mx-auto w-full py-6 md:py-8 min-h-0">
+        <div className="flex-1 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-0 px-4 md:px-4 lg:px-5 max-w-[1520px] mx-auto w-full py-6 md:py-8 min-h-0 min-w-0">
           {/* Left: iMac — reference 975×830, aspect 1.33; make it bigger (~65% width), flush left on desktop */}
           <div className="flex-shrink-0 w-full lg:w-[65%] xl:w-[67%] order-2 lg:order-1 lg:min-h-[830px] relative">
             <div className="relative w-full h-full min-h-[55vh] lg:min-h-[82vh] max-h-[90vh]">
@@ -42,7 +42,7 @@ export function AlgorithmsHeroSection(): JSX.Element {
           {/* Right: label, headline, subtitle — text block moved slightly toward centre (inset from right edge) */}
           <div className="flex-shrink-0 flex flex-col items-center lg:items-end justify-center text-center lg:text-right w-full lg:w-[33%] xl:w-[31%] lg:pl-4 xl:pl-6 lg:pr-10 xl:pr-14 2xl:pr-20 order-1 lg:order-2 py-8 lg:py-0">
             <AnimateOnScroll direction="up" delay={100} duration={700} distance={16}>
-            <p className="font-dm-mono font-normal text-[#793de1] text-xl tracking-[2px] leading-[17.6px] whitespace-nowrap">
+            <p className="font-dm-mono font-normal text-[#793de1] text-sm sm:text-base md:text-xl tracking-[2px] leading-[17.6px]">
               {"// WHAT IS AN ALGORITHM"}
             </p>
             <h1 className="font-syne font-extrabold text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[80px] leading-[1.05] tracking-[0] mt-4 text-white max-w-[673px]">
