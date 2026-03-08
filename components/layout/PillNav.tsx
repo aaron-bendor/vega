@@ -319,7 +319,8 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                     className="hidden md:flex relative items-center gap-1 lg:gap-2"
                     onMouseLeave={(e) => {
                       // Only clear hover when pointer leaves the whole nav area (avoids flicker when moving between items)
-                      if (!navContainerRef.current?.contains(e.relatedTarget as Node)) {
+                      const related = e.relatedTarget;
+                      if (!(related instanceof Node) || !navContainerRef.current?.contains(related)) {
                         setHoveredNavIndex(null);
                       }
                     }}
@@ -343,12 +344,14 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                         }}
                         onMouseEnter={() => setHoveredNavIndex(i)}
                         onFocus={(e) => {
-                          if (e.target !== e.currentTarget && navContainerRef.current?.contains(e.target as Node)) {
+                          const target = e.target;
+                          if (e.target !== e.currentTarget && target instanceof Node && navContainerRef.current?.contains(target)) {
                             setFocusedNavIndex(i);
                           }
                         }}
                         onBlur={(e) => {
-                          if (!navContainerRef.current?.contains(e.relatedTarget as Node)) {
+                          const related = e.relatedTarget;
+                          if (!(related instanceof Node) || !navContainerRef.current?.contains(related)) {
                             setFocusedNavIndex(null);
                           }
                         }}
