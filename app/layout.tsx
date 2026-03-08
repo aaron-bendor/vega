@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   description:
     "University prototype for algorithmic trading simulation. Paper trading only. Synthetic data. Not investment advice.",
   icons: {
-    icon: "/favicon.png",
+    icon: [{ url: "/favicon.png", type: "image/png", sizes: "32x32" }],
   },
 };
 
