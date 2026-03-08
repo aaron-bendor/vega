@@ -52,6 +52,14 @@ type Step = {
 const STEPS: Step[] = [
   {
     frame: "Frame_102",
+    region: "editor",
+    color: COLORS.lighterPurple,
+    label: "Start Tutorial",
+    title: "Welcome to the Vega Developer tour",
+    body: "Take a quick walkthrough of the IDE — file explorer, notebooks, backtesting, and one-click publish. Click next to begin.",
+  },
+  {
+    frame: "Frame_102",
     region: "sidebar",
     color: COLORS.lighterPurple,
     label: "01 — File Explorer",
@@ -220,13 +228,13 @@ function StepPill({
       style={{
         display: "flex",
         alignItems: "center",
-        gap: 10,
+        gap: 12,
         fontFamily: "'DM Mono', monospace",
       }}
     >
       <span
         style={{
-          fontSize: 10,
+          fontSize: 13,
           color,
           letterSpacing: "0.06em",
           opacity: 0.95,
@@ -236,7 +244,7 @@ function StepPill({
       </span>
       <span
         style={{
-          fontSize: 9,
+          fontSize: 12,
           color: COLORS.textMuted,
           letterSpacing: "0.04em",
         }}
@@ -267,12 +275,13 @@ function Card({
   return (
     <div
       style={{
-        width: 280,
+        width: 400,
+        maxWidth: "min(400px, calc(100vw - 32px))",
         background: COLORS.panel,
         border: `1px solid ${COLORS.border}`,
         borderTop: `1px solid ${step.color}88`,
-        borderRadius: 12,
-        padding: "18px 20px 16px",
+        borderRadius: 14,
+        padding: "24px 26px 22px",
         boxShadow: "0 18px 60px rgba(0,0,0,0.35)",
         opacity: visible ? 1 : 0,
         transform: visible ? "none" : "translateY(6px)",
@@ -284,11 +293,11 @@ function Card({
 
       <div
         style={{
-          fontSize: 14,
+          fontSize: 18,
           fontWeight: 500,
           color: COLORS.white,
           lineHeight: 1.35,
-          margin: "10px 0 7px",
+          margin: "14px 0 10px",
         }}
       >
         {step.title}
@@ -296,11 +305,11 @@ function Card({
 
       <div
         style={{
-          fontSize: 11.5,
+          fontSize: 14,
           fontWeight: 300,
           color: COLORS.textSoft,
           lineHeight: 1.72,
-          marginBottom: 16,
+          marginBottom: 20,
         }}
       >
         {step.body}
@@ -308,10 +317,10 @@ function Card({
 
       <div
         style={{
-          height: 2,
+          height: 3,
           background: "rgba(255,255,255,0.08)",
           borderRadius: 2,
-          marginBottom: 14,
+          marginBottom: 18,
           overflow: "hidden",
         }}
       >
@@ -327,7 +336,7 @@ function Card({
         />
       </div>
 
-      <div style={{ display: "flex", gap: 6 }}>
+      <div style={{ display: "flex", gap: 8 }}>
         <button
           type="button"
           onClick={onPrev}
@@ -336,9 +345,9 @@ function Card({
             background: "transparent",
             border: `1px solid ${COLORS.borderSoft}`,
             color: idx === 0 ? "#555555" : COLORS.textMuted,
-            borderRadius: 6,
-            padding: "6px 12px",
-            fontSize: 11,
+            borderRadius: 8,
+            padding: "9px 16px",
+            fontSize: 13,
             cursor: idx === 0 ? "default" : "pointer",
             fontFamily: "'DM Sans', sans-serif",
             transition: "color 0.15s, border-color 0.15s",
@@ -365,9 +374,9 @@ function Card({
             background: step.color,
             border: "none",
             color: COLORS.white,
-            borderRadius: 6,
-            padding: "6px 12px",
-            fontSize: 11,
+            borderRadius: 8,
+            padding: "9px 16px",
+            fontSize: 13,
             fontWeight: 600,
             cursor: "pointer",
             fontFamily: "'DM Mono', monospace",
@@ -390,9 +399,9 @@ function Card({
       <div
         style={{
           display: "flex",
-          gap: 5,
+          gap: 6,
           justifyContent: "center",
-          marginTop: 12,
+          marginTop: 16,
         }}
       >
         {Array.from({ length: total }, (_, i) => (
@@ -402,9 +411,9 @@ function Card({
             onClick={() => onJump(i)}
             aria-label={`Go to step ${i + 1}`}
             style={{
-              width: i === idx ? 14 : 4,
-              height: 4,
-              borderRadius: 2,
+              width: i === idx ? 18 : 6,
+              height: 6,
+              borderRadius: 3,
               cursor: "pointer",
               padding: 0,
               border: "none",

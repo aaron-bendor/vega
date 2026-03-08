@@ -32,6 +32,9 @@ export const metadata: Metadata = {
   title: "Vega — University Prototype",
   description:
     "University prototype for algorithmic trading simulation. Paper trading only. Synthetic data. Not investment advice.",
+  icons: {
+    icon: "/favicon.png?v=2",
+  },
 };
 
 export default function RootLayout({
