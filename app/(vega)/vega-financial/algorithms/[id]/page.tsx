@@ -12,6 +12,7 @@ import {
   METRICS_HELP_ID,
 } from "@/components/vega-financial/AlgorithmDetailLayout";
 import { StrategyHeroSummary } from "@/components/vega-financial/StrategyHeroSummary";
+import { AlgorithmDeveloperProfile } from "@/components/vega-financial/AlgorithmDeveloperProfile";
 import { AllocationSummaryCard } from "@/components/vega-financial/AllocationSummaryCard";
 import { AlgorithmAllocationForm } from "@/components/vega-financial/AlgorithmAllocationForm";
 import { StrategyMetricStrip } from "@/components/vega-financial/StrategyMetricStrip";
@@ -124,6 +125,7 @@ export default async function AlgorithmDetailPage({
       mainRisk={overviewCopy?.mainRisk ?? overviewCopy?.mainDrawback}
       trustPills={overviewCopy?.trustPills}
       replayTutorialSlot={<ReplayTutorialLink />}
+      slotBelowTitle={<AlgorithmDeveloperProfile algorithmId={id} algorithmName={displayName} />}
     />
   );
 

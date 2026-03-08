@@ -150,7 +150,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
     ? "bg-shell-banner border border-shell-border shadow-[0_1px_2px_0_rgb(0_0_0/0.04)]"
     : isStandalone
       ? "bg-black/50 backdrop-blur-xl border border-white/15"
-      : "bg-black/40 backdrop-blur-xl border border-white/15";
+      : "bg-white/25 backdrop-blur-xl border border-white/40";
 
   // Hero variant: match hero section CTA (Start Investing) — glass pill, white text
   const ctaClass = isStandalone
@@ -265,7 +265,8 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
               isInvestorAppCompact ? "border rounded-2xl md:rounded-[1.25rem]" : "rounded-full border-b border-transparent",
               pillBg,
               isInvestorAppCompact && "h-11 md:h-12",
-              !isInvestorAppCompact && isScrolled && "h-12 md:h-14 bg-black/60 backdrop-blur-xl shadow-lg shadow-black/25 border-white/10",
+              !isInvestorAppCompact && isScrolled && !isHeroPage && "h-12 md:h-14 bg-black/60 backdrop-blur-xl shadow-lg shadow-black/25 border-white/10",
+              !isInvestorAppCompact && isScrolled && isHeroPage && "h-12 md:h-14 bg-white/30 backdrop-blur-xl shadow-lg shadow-black/10 border-white/50",
               !isInvestorAppCompact && !isScrolled && "h-14 md:h-16"
             )}
           >

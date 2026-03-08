@@ -413,6 +413,36 @@ html {
   z-index: 1;
 }
 
+/* Hero: moving purple/blue gradient background */
+@keyframes hero-gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+.hero-moving-gradient {
+  background: linear-gradient(
+    -45deg,
+    #1a0a2e,
+    #2d1b4e,
+    #1e3a5f,
+    #16213e,
+    #0f3460,
+    #533483,
+    #1a0a2e
+  );
+  background-size: 400% 400%;
+  animation: hero-gradient-shift 12s ease infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-moving-gradient {
+    animation: none;
+    background-position: 50% 50%;
+  }
+}
+
 /* Spacer behind hero nav: same background as hero so no white band or seam */
 .hero-header-bg {
   background-color: #000;

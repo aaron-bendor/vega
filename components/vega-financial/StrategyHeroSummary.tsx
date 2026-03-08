@@ -26,6 +26,8 @@ interface StrategyHeroSummaryProps {
   trustPills?: string[];
   /** Optional: Walkthrough / Replay link (rendered next to Help button, client-safe) */
   replayTutorialSlot?: React.ReactNode;
+  /** Rendered directly under the algorithm title (e.g. developer profile block) */
+  slotBelowTitle?: React.ReactNode;
   className?: string;
 }
 
@@ -50,6 +52,7 @@ export function StrategyHeroSummary({
   mainRisk,
   trustPills = DEFAULT_TRUST_PILLS,
   replayTutorialSlot,
+  slotBelowTitle,
   className,
 }: StrategyHeroSummaryProps) {
   const decisionValues = { bestFit, portfolioRole, worksBestIn, mainRisk };
@@ -92,6 +95,8 @@ export function StrategyHeroSummary({
       <h1 className="font-maven-pro text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground tracking-tight">
         {name}
       </h1>
+
+      {slotBelowTitle != null ? <div className="mt-3">{slotBelowTitle}</div> : null}
 
       {/* One-line summary + microcopy */}
       <p className="text-sm sm:text-base text-muted-foreground leading-snug max-w-2xl">
