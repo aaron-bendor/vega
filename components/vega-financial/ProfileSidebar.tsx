@@ -61,8 +61,8 @@ export function ProfileSidebar({
         <Link
           href="/"
           className={cn(
-            "vf-brand-card flex items-center transition-opacity duration-[160ms] hover:opacity-95 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-shell-sidebar",
-            isCollapsed ? "vf-brand-card-collapsed justify-center" : "min-h-[84px] gap-0"
+            "vf-brand-card flex items-center justify-center transition-opacity duration-[160ms] hover:opacity-95 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-shell-sidebar",
+            isCollapsed ? "vf-brand-card-collapsed" : "min-h-[84px] gap-0"
           )}
           aria-label="Vega Financial home"
         >
@@ -73,7 +73,7 @@ export function ProfileSidebar({
             height={30}
             className={cn(
               "object-contain",
-              isCollapsed ? "max-w-[56px] h-auto" : "h-7 w-auto"
+              isCollapsed ? "max-w-[64px] h-auto" : "h-9 w-auto"
             )}
             priority
           />
