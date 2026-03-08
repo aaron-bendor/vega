@@ -87,7 +87,17 @@ Audit date: March 2025. Scope: landing and marketing routes at 320px–1280px, w
    `npm run test:e2e:mobile`
 
 5. **Manual check at specific widths**  
-   Open DevTools → toggle device toolbar → set widths 320, 360, 375, 390, 414, 768, 1024, 1280 and visit `/`, `/about-us`, `/algorithms`, `/faq`, `/vega-financial`, `/vega-developer`. Confirm no horizontal scroll and that CTAs and nav are usable.
+   Open DevTools → toggle device toolbar → set widths 320, 360, 375, 390, 414, 768, 1024, 1280 and visit `/`, `/about-us`, `/algorithms`, `/faq`, `/vega-financial`, `/vega-financial/marketplace`, `/vega-financial/portfolio`, `/vega-developer`. Confirm no horizontal scroll and that CTAs and nav are usable.
 
 6. **Lighthouse (optional)**  
    Run Lighthouse in mobile mode on the same routes to check performance and best practices.
+
+---
+
+## Follow-up: investor routes + safe-area
+
+- **`app/globals.css`**: Added `.safe-area-pb` for bottom inset (used by VegaFinancialBottomNav and MobileStickyAllocationBar). Nav-pill reduced blur below 768px already present.
+- **Landing roots**: About-us, FAQ, and vega-developer page roots use `overflow-x-clip`, `min-w-0`; about-us and vega-developer heroes use `min-h-[100dvh] md:min-h-screen` for mobile-safe height.
+- **AppShell**: Mobile menu button position uses `env(safe-area-inset-top, 0px)` and `env(safe-area-inset-left, 0px)` so it does not sit under the notch.
+- **InvestingMadeSimpleSection**: Section uses `min-w-0 overflow-x-clip`; content column has `pb-64 lg:pb-0` so step content clears the phone mockup on mobile. Dot buttons already have 44px tap targets via existing media query.
+- **E2E**: `e2e/mobile.spec.ts` includes `/vega-financial/marketplace` and `/vega-financial/portfolio`; viewports 320×568, 360×640, 414×896, 1024×768 added. `test:e2e:mobile` runs with `--project=mobile-chrome`. `test:e2e` and `test:e2e:mobile` are in `package.json`.

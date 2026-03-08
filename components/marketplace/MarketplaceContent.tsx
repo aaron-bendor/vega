@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 
 const SORT_OPTIONS = [
   { value: "best-fit", label: "Best fit for portfolio" },
@@ -133,40 +134,56 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
   ];
 
   return (
-    <div className="flex gap-8 lg:gap-10">
+    <div className="vega-demo flex gap-8 lg:gap-10">
       {/* Left: sticky filter rail — desktop only */}
       <div className="hidden lg:block">
         <MarketplaceFilterRail tagOptions={tagOptions} />
       </div>
 
       {/* Right: header + results */}
-      <div className="min-w-0 flex-1 space-y-6">
+      <div className="min-w-0 flex-1 space-y-6 md:space-y-8">
         {/* Mobile: inline filter links (rail hidden on small screens) */}
         <div className="flex flex-wrap gap-2 lg:hidden">
           <Link
             href="/vega-financial/marketplace"
-            className="rounded-md border border-border px-2.5 py-1.5 text-sm text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+            className="vf-chip-motion inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md border border-border bg-card px-2.5 py-1.5 text-sm text-foreground hover:border-primary/25 hover:bg-accent/50 sm:min-h-0 sm:min-w-0"
           >
             All
           </Link>
-          {(tagOptions.length > 0 ? tagOptions : ["Momentum", "Mean Reversion", "Quant"]).slice(0, 5).map((t) => (
-            <Link
-              key={t}
-              href={`/vega-financial/marketplace?tag=${encodeURIComponent(t)}`}
-              className="rounded-md border border-border px-2.5 py-1.5 text-sm text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-            >
-              {t}
-            </Link>
-          ))}
-          {["Low", "Medium", "High"].map((r) => (
-            <Link
-              key={r}
-              href={`/vega-financial/marketplace?risk=${encodeURIComponent(r)}`}
-              className="rounded-md border border-border px-2.5 py-1.5 text-sm text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-            >
-              Risk: {r}
-            </Link>
-          ))}
+          {(tagOptions.length > 0 ? tagOptions : ["Momentum", "Mean Reversion", "Quant"]).slice(0, 5).map((t) => {
+            const isActive = searchParams.get("tag") === t;
+            return (
+              <Link
+                key={t}
+                href={`/vega-financial/marketplace?tag=${encodeURIComponent(t)}`}
+                className={cn(
+                  "vf-chip-motion inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md border px-2.5 py-1.5 text-sm sm:min-h-0 sm:min-w-0",
+                  isActive
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-card text-foreground hover:border-primary/25 hover:bg-accent/50"
+                )}
+              >
+                {t}
+              </Link>
+            );
+          })}
+          {["Low", "Medium", "High"].map((r) => {
+            const isActive = searchParams.get("risk") === r;
+            return (
+              <Link
+                key={r}
+                href={`/vega-financial/marketplace?risk=${encodeURIComponent(r)}`}
+                className={cn(
+                  "vf-chip-motion inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md border px-2.5 py-1.5 text-sm sm:min-h-0 sm:min-w-0",
+                  isActive
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-card text-foreground hover:border-primary/25 hover:bg-accent/50"
+                )}
+              >
+                Risk: {r}
+              </Link>
+            );
+          })}
         </div>
 
         {/* Header: search, sort, count */}
@@ -198,40 +215,43 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
             </Select>
           </div>
         </div>
-        <p className="text-sm text-muted-foreground tabular-nums">
-          Showing {filtered.length} strateg{filtered.length === 1 ? "y" : "ies"}
+        <p className="text-sm text-muted-foreground tabular-nums no-midword-wrap" aria-live="polite">
+          Showing {filtered.length} {filtered.length === 1 ? "strategy" : "strategies"}
         </p>
 
-        {/* Collections — muted quick links */}
-        <div className="flex flex-wrap gap-2">
+        {/* Collections — soft tinted surfaces, navigation affordance */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 vf-fade-up">
           {COLLECTIONS.map((c) => (
             <Link
               key={c.label}
               href={c.href}
-              className="rounded-lg border border-border bg-card px-3 py-2 text-sm hover:border-primary/25 hover:bg-muted/30 transition-colors duration-150 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
+              className="vf-chip-motion rounded-lg border vf-border-soft vf-surface-2 px-3 py-2.5 text-sm hover:border-primary/30 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring min-h-[44px] flex flex-col justify-center"
             >
-              <span className="font-medium text-foreground">{c.label}</span>
-              <span className="text-muted-foreground text-xs block mt-0.5">{c.desc}</span>
+              <span className="font-medium text-foreground inline-flex items-center gap-1.5">
+                {c.label}
+                <span className="text-muted-foreground text-xs font-normal" aria-hidden>→</span>
+              </span>
+              <span className="vf-text-muted text-xs block mt-0.5">{c.desc}</span>
             </Link>
           ))}
         </div>
 
         {filtered.length === 0 ? (
-          <div className="rounded-xl border border-border bg-muted/30 py-12 px-6 text-center">
-            <p className="text-muted-foreground mb-4">
+          <div className="rounded-xl border vf-border-soft vf-surface-1 py-16 px-8 text-center max-w-2xl mx-auto">
+            <p className="vf-text-muted mb-4">
               {algorithms.length === 0
                 ? "No strategies yet. Run the database seed to populate the marketplace."
                 : "No strategies match your filters."}
             </p>
             {algorithms.length > 0 && (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm vf-text-muted">
                 Try adjusting filters or search to see more results.
               </p>
             )}
           </div>
         ) : (
           <>
-            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4 md:gap-5">
               {filtered.map((v) => (
                 <StrategyCard
                   key={v.id}
@@ -243,17 +263,49 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
                 />
               ))}
             </div>
-            {compareArray.length >= 2 && (
-              <div className="sticky bottom-0 left-0 right-0 z-20 flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-4 shadow-lg">
-                <span className="text-sm font-medium text-foreground">
-                  {compareArray.length} strategies selected
-                </span>
-                <Link
-                  href={compareHref ?? "#"}
-                  className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover transition-colors duration-150"
-                >
-                  Compare strategies
-                </Link>
+            {compareArray.length >= 1 && (
+              <div
+                className="vf-slide-up sticky bottom-0 left-0 right-0 z-20 flex flex-col gap-2 rounded-xl border vf-border-soft vf-surface-1 p-4 shadow-lg md:bottom-auto md:top-24"
+                role="region"
+                aria-live="polite"
+                aria-label="Compare selection"
+              >
+                <div className="flex items-center justify-between gap-4 flex-wrap">
+                  <span className="text-sm font-medium text-foreground" aria-live="polite">
+                    {compareArray.length} {compareArray.length === 1 ? "strategy" : "strategies"} selected
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setCompareIds(new Set())}
+                      className="text-sm font-medium vf-text-muted hover:text-foreground focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded min-h-[44px] px-3 inline-flex items-center"
+                    >
+                      Clear all
+                    </button>
+                    {compareArray.length >= 2 ? (
+                      <Link
+                        href={compareHref ?? "#"}
+                        className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover transition-colors duration-150 min-h-[44px] min-w-[44px] inline-flex items-center justify-center"
+                      >
+                        Compare strategies
+                      </Link>
+                    ) : (
+                      <span
+                        className="rounded-lg bg-muted px-4 py-2 text-sm font-medium text-muted-foreground min-h-[44px] min-w-[44px] inline-flex items-center justify-center cursor-not-allowed"
+                        aria-disabled
+                      >
+                        Compare strategies
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <p className="text-xs vf-text-muted">
+                  {compareArray.length >= 3
+                    ? "You can compare up to 3 strategies."
+                    : compareArray.length >= 2
+                      ? "Ready to compare."
+                      : "Select at least 2 strategies to compare."}
+                </p>
               </div>
             )}
           </>

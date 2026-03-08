@@ -28,18 +28,22 @@ function MetricCard({
   label,
   value,
   explanation,
+  valueClassName,
 }: {
   label: string;
   value: React.ReactNode;
   explanation: string;
+  valueClassName?: string;
 }) {
   return (
-    <div className="vf-glass-card rounded-xl p-3 min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink flex flex-col gap-0.5">
+    <div className="vf-surface-1 rounded-xl border vf-border-soft p-4 min-h-[88px] flex flex-col gap-2 min-w-[140px] sm:min-w-0">
       <div className="flex items-center gap-1.5">
-        <p className="text-[11px] font-medium text-muted-foreground">{label}</p>
+        <p className="text-[11px] font-medium vf-text-muted">{label}</p>
         <InfoTooltip content={explanation} />
       </div>
-      <p className="text-base font-semibold tabular-nums text-foreground">{value}</p>
+      <p className={cn("text-base font-semibold tabular-nums mt-0.5", valueClassName ?? "text-foreground")}>
+        {value}
+      </p>
     </div>
   );
 }
@@ -58,44 +62,49 @@ export function StrategyMetricStrip({
       label: "Return",
       value: formatPercent(returnPct),
       explanation: CARD_EXPLANATIONS.return,
+      valueClassName: returnPct >= 0 ? "vf-text-positive" : "vf-text-negative",
     },
     maxDrawdown != null && {
       key: "maxDrawdown",
       label: "Max drawdown",
       value: formatPercent(maxDrawdown),
       explanation: CARD_EXPLANATIONS.biggestDrop,
+      valueClassName: "vf-text-negative",
     },
     riskAdjustedReturn != null && {
       key: "sharpe",
       label: "Sharpe",
       value: riskAdjustedReturn.toFixed(2),
       explanation: CARD_EXPLANATIONS.riskAdjustedReturn,
+      valueClassName: undefined,
     },
     trackRecordLength && {
       key: "trackRecord",
       label: "Track record",
       value: trackRecordLength,
       explanation: CARD_EXPLANATIONS.trackRecordLength,
+      valueClassName: undefined,
     },
     dataConfidence && {
       key: "confidence",
       label: "Confidence",
       value: dataConfidence,
       explanation: CARD_EXPLANATIONS.dataConfidence,
+      valueClassName: undefined,
     },
-  ].filter(Boolean) as { key: string; label: string; value: React.ReactNode; explanation: string }[];
+  ].filter(Boolean) as { key: string; label: string; value: React.ReactNode; explanation: string; valueClassName?: string }[];
 
   return (
     <div className={cn("min-w-0", className)}>
-      <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory sm:grid sm:grid-cols-3 sm:overflow-visible sm:pb-0 lg:grid-cols-5">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
         {cards.map((c) => (
-          <div key={c.key} className="snap-start sm:snap-align-none">
-            <MetricCard
-              label={c.label}
-              value={c.value}
-              explanation={c.explanation}
-            />
-          </div>
+          <MetricCard
+            key={c.key}
+            label={c.label}
+            value={c.value}
+            explanation={c.explanation}
+            valueClassName={c.valueClassName}
+          />
         ))}
       </div>
     </div>

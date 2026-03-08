@@ -45,24 +45,21 @@ export function InvestmentStepsSection() {
         </AnimateOnScroll>
 
         <AnimateOnScroll delay={300}>
-          <div className="mt-10 flex flex-col items-center gap-2">
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link
-                href="/vega-financial"
-                className="inline-flex items-center justify-center min-h-[44px] h-14 px-7 rounded-[10px] bg-[#6b21e8] text-white font-dm-sans font-medium text-[15px] hover:bg-[#5a1bc4] hover:scale-[1.02] active:scale-[0.98] transition-[transform,background-color] duration-motion-normal ease-motion"
-              >
-                Open demo
-              </Link>
-              <a
-                href="https://tally.so/r/ZjaKj5"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center min-h-[44px] h-14 px-7 rounded-[10px] border border-[#6b21e84c] text-[#f0edff] font-dm-sans font-normal text-[15px] hover:border-[#6b21e899] hover:bg-[#6b21e80d] hover:scale-[1.02] active:scale-[0.98] transition-[transform,background-color,border-color] duration-motion-normal ease-motion"
-              >
-                Register Interest for Vega Developer&nbsp;→
-              </a>
-            </div>
-            <p className="text-[#7b7394] text-xs">Simulated experience only · No live funds</p>
+          <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
+            <Link
+              href="/vega-financial"
+              className="inline-flex items-center justify-center h-14 px-7 rounded-[10px] bg-[#6b21e8] text-white font-dm-sans font-medium text-[15px] hover:bg-[#5a1bc4] hover:scale-[1.02] active:scale-[0.98] transition-[transform,background-color] duration-motion-normal ease-motion"
+            >
+              Download Vega Financial
+            </Link>
+            <a
+              href="https://tally.so/r/ZjaKj5"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center h-14 px-7 rounded-[10px] border border-[#6b21e84c] text-[#f0edff] font-dm-sans font-normal text-[15px] hover:border-[#6b21e899] hover:bg-[#6b21e80d] hover:scale-[1.02] active:scale-[0.98] transition-[transform,background-color] duration-motion-normal ease-motion"
+            >
+              Register Interest for Vega Developer&nbsp;→
+            </a>
           </div>
         </AnimateOnScroll>
       </div>

@@ -9,10 +9,10 @@ export const metadata = {
 
 export default function AboutUsPage() {
   return (
-    <div className="flex flex-col w-full relative bg-white">
+    <div className="flex flex-col w-full min-w-0 overflow-x-clip relative bg-white">
       {/* Section 1: Hero — full viewport, then scroll */}
       <section
-        className="relative w-full min-h-screen flex flex-col"
+        className="relative w-full min-h-[100dvh] md:min-h-screen flex flex-col"
         aria-labelledby="about-heading"
       >
         <Image

@@ -31,37 +31,12 @@ export const TOUR_STEPS: TourStepConfig[] = [
   {
     route: "/vega-financial/marketplace",
     selector: "[data-tour=\"mp-filters\"]",
-    body: "Filter by style and risk. Start with Low or Low Risk if you are unsure.",
+    body: "Filter by style and risk. If you are unsure, start with Low risk.",
   },
   {
     route: "/vega-financial/marketplace",
     selector: "[data-tour=\"mp-card-alpha\"]",
-    body: "Open an algorithm to see its metrics and run a backtest.",
-  },
-  {
-    route: "/vega-financial/algorithms/demo-1",
-    selector: "[data-tour=\"algo-scores\"]",
-    body: "These scores summarise risk and behaviour. Hover for definitions.",
-  },
-  {
-    route: "/vega-financial/algorithms/demo-1",
-    selector: "[data-tour=\"algo-metrics\"]",
-    body: "Key metrics: cumulative return, Sharpe, max drawdown, volatility.",
-  },
-  {
-    route: "/vega-financial/algorithms/demo-1",
-    selector: "[data-tour=\"algo-timeframe\"]",
-    body: "Switch timeframe to see how performance changes.",
-  },
-  {
-    route: "/vega-financial/algorithms/demo-1",
-    selector: "[data-tour=\"algo-run-backtest\"]",
-    body: "Run a backtest with configurable parameters. Simulated only.",
-  },
-  {
-    route: "/vega-financial/algorithms/demo-1",
-    selector: "[data-tour=\"algo-add-paper\"]",
-    body: "Add to your paper portfolio to track allocation.",
+    body: "Open a strategy to see its metrics and try an allocation in your paper portfolio.",
   },
   {
     route: "/vega-financial",

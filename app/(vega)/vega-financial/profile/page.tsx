@@ -46,21 +46,6 @@ export default function VegaFinancialProfilePage() {
     router.push("/vega-financial");
   };
 
-  const handleResetOnboarding = () => {
-    if (!state) return;
-    savePortfolioState({
-      ...state,
-      onboardingCompleted: false,
-      tutorialState: 0,
-    });
-    if (typeof sessionStorage !== "undefined") {
-      sessionStorage.setItem(TOUR_START_SESSION_KEY, "1");
-    }
-    setTourStep(0);
-    refresh();
-    router.push("/vega-financial");
-  };
-
   const handleClearWatchlist = () => {
     if (!state) return;
     savePortfolioState({ ...state, watchlist: [] });

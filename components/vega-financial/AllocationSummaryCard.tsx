@@ -16,20 +16,20 @@ export function AllocationSummaryCard({
   return (
     <div
       className={cn(
-        "vf-glass-hero vf-glass-violet rounded-xl p-5 flex flex-col gap-4 lg:sticky lg:top-24 lg:self-start",
+        "vf-glass-hero vf-glass-violet vf-surface-1 rounded-xl p-5 flex flex-col gap-4 lg:sticky lg:top-24 lg:self-start border vf-border-soft",
         className
       )}
     >
       <div>
         <h2 className="text-sm font-semibold text-foreground">Simulate allocation</h2>
-        <p className="text-xs text-muted-foreground mt-0.5">See how this changes your demo portfolio.</p>
+        <p className="text-xs vf-text-muted mt-0.5">See how this changes your demo portfolio.</p>
       </div>
 
       <div className="flex flex-col gap-3">
         {children}
       </div>
 
-      <p className="text-[10px] text-muted-foreground leading-snug">Demo only. No real money invested.</p>
+      <p className="text-[10px] vf-text-muted leading-snug">Demo only. No real money invested.</p>
     </div>
   );
 }

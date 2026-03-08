@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Prevent mid-word breaks in key UI labels (e.g. "strategies") */
+.no-midword-wrap {
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
+  white-space: normal;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -131,6 +139,46 @@ html {
 
     --radius: 12px;
   }
+
+  /* Demo-only colour scope: calmer, premium purple (marketplace + algorithm detail) */
+  .vega-demo {
+    --primary: 111 66 232;
+    --primary-hover: 91 51 199;
+    --ring: 111 66 232;
+
+    --background: 247 245 251;
+    --surface: 255 255 255;
+    --surface-foreground: 20 17 26;
+
+    --card: 255 255 255;
+    --card-foreground: 20 17 26;
+
+    --muted: 247 245 251;
+    --muted-foreground: 95 88 112;
+
+    --border: 231 225 248;
+    --input: 231 225 248;
+
+    --accent: 241 235 255;
+    --accent-foreground: 91 51 199;
+
+    --success: 22 101 52;
+    --warning: 154 52 18;
+    --destructive: 185 28 28;
+  }
+
+  .vega-demo .vf-surface-1 { background: rgb(var(--surface)); }
+  .vega-demo .vf-surface-2 { background: rgb(var(--accent)); }
+  .vega-demo .vf-border-soft { border-color: rgb(var(--border)); }
+  .vega-demo .vf-text-muted { color: rgb(var(--muted-foreground)); }
+  .vega-demo .vf-text-positive { color: rgb(var(--success)); }
+  .vega-demo .vf-text-negative { color: rgb(var(--destructive)); }
+  .vega-demo .vf-text-warning { color: rgb(var(--warning)); }
+  .vega-demo .vf-badge-verified { background: rgb(var(--success) / 0.2); color: rgb(var(--success)); border: 1px solid rgb(var(--success) / 0.4); }
+  .vega-demo .vf-badge-simulated { background: rgb(var(--accent)); color: rgb(var(--accent-foreground)); border: 1px solid rgb(var(--primary) / 0.3); }
+  .vega-demo .vf-badge-risk-low { background: rgb(var(--success) / 0.2); color: rgb(var(--success)); border: 1px solid rgb(var(--success) / 0.4); }
+  .vega-demo .vf-badge-risk-medium { background: rgb(var(--warning) / 0.2); color: rgb(var(--warning)); border: 1px solid rgb(var(--warning) / 0.4); }
+  .vega-demo .vf-badge-risk-high { background: rgb(var(--destructive) / 0.2); color: rgb(var(--destructive)); border: 1px solid rgb(var(--destructive) / 0.4); }
 
   /* Vega Financial sidebar: floating brand card (frosted glass) */
   .vf-brand-card {
@@ -630,6 +678,11 @@ html {
   overflow: visible !important;
 }
 
+/* Bottom safe-area for fixed bottom nav / bars (notch devices) */
+.safe-area-pb {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
 /* Text link: underline thickens into block highlight on hover (multi-line safe, no layout shift) */
 .text-link-block-highlight {
   background:
@@ -646,6 +699,100 @@ html {
 @media (prefers-reduced-motion: reduce) {
   .text-link-block-highlight {
     transition-duration: 0.01ms;
+  }
+}
+
+/* Demo-only motion: deliberate, lightweight (marketplace + algorithm detail) */
+@media (prefers-reduced-motion: no-preference) {
+  .vega-demo .vf-card-lift {
+    transition:
+      transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      box-shadow 180ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      border-color 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .vega-demo .vf-card-lift:hover {
+    transform: translateY(-2px);
+  }
+
+  .vega-demo .vf-chip-motion {
+    transition:
+      background-color 120ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      border-color 120ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      color 120ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      transform 120ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .vega-demo .vf-chip-motion:active {
+    transform: scale(0.98);
+  }
+
+  .vega-demo .vf-fade-up {
+    animation: vf-fade-up 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .vega-demo .vf-slide-up {
+    animation: vf-slide-up 200ms cubic-bezier(0.33, 1, 0.68, 1);
+  }
+
+  @keyframes vf-fade-up {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes vf-slide-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vega-demo *,
+  .vega-demo *::before,
+  .vega-demo *::after {
+    animation: none !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Error slider UI: alert-style message that slides in (reference: vega-app alert + fadeUp) */
+.vega-demo .error-slider {
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.6;
+  background: rgb(var(--destructive) / 0.08);
+  border: 1px solid rgb(var(--destructive) / 0.35);
+  color: rgb(var(--destructive));
+}
+.vega-demo .error-slider[data-visible="true"] {
+  animation: error-slide-in 0.2s ease forwards;
+}
+.vega-demo .error-slider .error-slider-icon {
+  font-size: 15px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.vega-demo .error-slider p {
+  color: inherit;
+  margin: 0;
+}
+@keyframes error-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vega-demo .error-slider[data-visible="true"] {
+    animation: none;
   }
 }
 

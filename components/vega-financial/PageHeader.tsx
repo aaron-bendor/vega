@@ -38,6 +38,7 @@ export function PageHeader({ title, subtitle, action, showDisclaimer = true }: P
         <p
           className="mt-3 py-2 text-[11px] text-muted-foreground/90 border-t border-border/80"
           role="status"
+          data-tour="mp-demo-banner"
         >
           {INVESTOR_DISCLAIMER}
         </p>

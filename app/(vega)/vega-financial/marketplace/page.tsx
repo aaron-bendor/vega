@@ -42,7 +42,7 @@ export default async function VegaFinancialMarketplacePage({
 
   const algorithms = useDemo ? filteredDemo : versions;
   const tagOptions = useDemo
-    ? Array.from(new Set(demoAlgos.flatMap((a) => a.tags)))
+    ? Array.from(new Set(demoAlgos.flatMap((a) => a.tags))).filter((t) => t !== "Low Risk")
     : tags.map((t) => t.name);
 
   return (

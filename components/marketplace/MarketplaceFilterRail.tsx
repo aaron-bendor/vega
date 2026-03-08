@@ -38,11 +38,11 @@ function FilterGroup({
               <Link
                 href={href}
                 className={cn(
-                  "block rounded-md px-2.5 py-1.5 text-sm transition-colors duration-150",
+                  "vf-chip-motion block rounded-md px-2.5 py-1.5 text-sm min-h-[44px] flex items-center",
                   "focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
                   isActive
-                    ? "bg-primary/12 font-medium text-primary"
-                    : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                    ? "bg-primary border border-primary font-medium text-primary-foreground"
+                    : "border border-transparent bg-card text-foreground hover:bg-accent/50 hover:border-border"
                 )}
               >
                 {optLabel}
@@ -83,7 +83,9 @@ export function MarketplaceFilterRail({ tagOptions }: MarketplaceFilterRailProps
     router.push(basePath);
   }, [router]);
 
-  const categories = tagOptions.length > 0 ? tagOptions : ["Momentum", "Trend Following", "Mean Reversion", "Quant", "Multi-Asset", "Commodities"];
+  const categories = (tagOptions.length > 0 ? tagOptions : ["Momentum", "Trend Following", "Mean Reversion", "Quant", "Multi-Asset", "Commodities"]).filter(
+    (c) => c !== "Low Risk"
+  );
   const styleOptions = [{ value: "", label: "All" }, ...categories.map((c) => ({ value: c, label: c }))];
   const assetOptions = [{ value: "", label: "All" }, ...ASSET_OPTIONS.map((a) => ({ value: a, label: a }))];
   const riskOptions = [{ value: "", label: "All" }, ...RISK_OPTIONS.map((r) => ({ value: r, label: r }))];
@@ -92,6 +94,7 @@ export function MarketplaceFilterRail({ tagOptions }: MarketplaceFilterRailProps
     <aside
       className="sticky top-6 flex w-52 flex-shrink-0 flex-col gap-6 border-r border-border pr-6"
       aria-label="Filter strategies"
+      data-tour="mp-filters"
     >
       <h3 className="font-maven-pro text-sm font-semibold text-foreground">Filters</h3>
 
@@ -108,7 +111,7 @@ export function MarketplaceFilterRail({ tagOptions }: MarketplaceFilterRailProps
             {activeFilters.map(({ key, label }) => (
               <span
                 key={key}
-                className="inline-flex items-center gap-1 rounded-md border border-primary/25 bg-primary/10 px-2 py-1 text-xs text-foreground"
+                className="inline-flex items-center gap-1 rounded-md border border-primary bg-primary px-2 py-1 text-xs text-primary-foreground"
               >
                 {label}
                 <button

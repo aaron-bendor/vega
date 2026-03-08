@@ -6,7 +6,7 @@ import { Footer } from "@/components/landing/Footer";
 export default function VegaDeveloperPage() {
   return (
     <div
-      className="relative flex flex-col min-h-screen bg-cover bg-center bg-no-repeat"
+      className="relative flex flex-col min-h-[100dvh] md:min-h-screen w-full min-w-0 overflow-x-clip bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: "url(/backgroundDeveloper.png)" }}
     >
       <div className="absolute inset-0 bg-black/30 pointer-events-none" aria-hidden />

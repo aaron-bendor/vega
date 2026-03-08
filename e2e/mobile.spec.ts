@@ -1,18 +1,24 @@
 import { test, expect } from "@playwright/test";
 
-const LANDING_ROUTES = [
+const PRIORITY_ROUTES = [
   "/",
   "/about-us",
   "/algorithms",
   "/faq",
   "/vega-financial",
+  "/vega-financial/marketplace",
+  "/vega-financial/portfolio",
   "/vega-developer",
 ] as const;
 
 const VIEWPORTS = [
+  { width: 320, height: 568, name: "320x568" },
+  { width: 360, height: 640, name: "360x640" },
   { width: 375, height: 812, name: "375x812" },
   { width: 390, height: 844, name: "390x844" },
+  { width: 414, height: 896, name: "414x896" },
   { width: 768, height: 1024, name: "768x1024" },
+  { width: 1024, height: 768, name: "1024x768" },
   { width: 1280, height: 800, name: "1280x800" },
 ] as const;
 
@@ -20,8 +26,8 @@ for (const viewport of VIEWPORTS) {
   test.describe(`viewport ${viewport.name}`, () => {
     test.use({ viewport: { width: viewport.width, height: viewport.height } });
 
-    for (const route of LANDING_ROUTES) {
-      test(`landing route ${route || "/"} has no horizontal overflow`, async ({
+    for (const route of PRIORITY_ROUTES) {
+      test(`route ${route || "/"} has no horizontal overflow`, async ({
         page,
       }) => {
         await page.goto(route, { waitUntil: "networkidle" });
@@ -45,7 +51,7 @@ for (const viewport of VIEWPORTS) {
         ).toBe(false);
       });
 
-      test(`landing route ${route || "/"} loads and shows main content`, async ({
+      test(`route ${route || "/"} loads and shows main content`, async ({
         page,
       }) => {
         await page.goto(route, { waitUntil: "networkidle" });

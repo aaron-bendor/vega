@@ -50,7 +50,7 @@ export const DEMO_STAGES = {
 
 export const PAGE_SUBTITLES = {
   dashboard: "Allocation, performance, and next actions at a glance.",
-  explore: "Compare systematic strategies by risk, drawdown, and portfolio role before you allocate.",
+  explore: "Compare strategies by risk, biggest drop, and portfolio role before trying them in your paper portfolio.",
   portfolio: "See your current allocations, concentration, and overall portfolio behaviour.",
   algorithmDetail: "Review performance, risk and how it works before adding to your portfolio.",
 } as const;

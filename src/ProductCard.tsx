@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useCallback } from 'react';
+import Image from 'next/image';
 
 export interface ProductCardProps {
   name: string;
@@ -36,11 +37,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   return (
     <div className="border border-[rgba(51,51,51,0.12)] p-4 rounded-lg shadow-md max-w-sm bg-white">
-      <img
-        src={imageUrl}
-        alt={name}
-        className="w-full h-48 object-cover rounded-md mb-4"
-      />
+      <div className="relative w-full h-48 rounded-md mb-4 overflow-hidden">
+        <Image
+          src={imageUrl}
+          alt={name}
+          fill
+          className="object-cover"
+          sizes="(max-width: 384px) 100vw, 384px"
+        />
+      </div>
       <h2 className="text-xl font-semibold mb-2">{name}</h2>
       <p className="text-muted-foreground mb-2">{description}</p>
       <p className="text-lg font-bold mb-4">${price.toFixed(2)}</p>

@@ -8,7 +8,7 @@ import "driver.js/dist/driver.css";
 import { getStep, type TourStepConfig } from "./config";
 
 const POLL_MS = 100;
-const WAIT_MAX_MS = 3000;
+const WAIT_MAX_MS = 8000;
 
 export function waitForSelector(
   selector: string,
@@ -38,23 +38,33 @@ export function waitForSelector(
   });
 }
 
+export interface CreateDriverOverrides {
+  /** When true, show a non-anchored step (e.g. element missing in demo). */
+  noElement?: boolean;
+  /** Override body text for this step. */
+  body?: string;
+}
+
 export function createDriverForStep(
   stepIndex: number,
   callbacks: {
     onNext: () => void;
     onPrev: () => void;
     onClose: () => void;
-  }
+  },
+  overrides?: CreateDriverOverrides
 ): Driver | null {
   const config = getStep(stepIndex);
   if (!config) return null;
 
   const driverRef: { current: Driver | null } = { current: null };
+  const useElement = !overrides?.noElement && config.selector;
+  const description = overrides?.body ?? config.body;
 
   const step: DriveStep = {
-    ...(config.selector ? { element: config.selector } : {}),
+    ...(useElement ? { element: config.selector } : {}),
     popover: {
-      description: config.body,
+      description,
       showButtons: ["previous", "next", "close"],
       onNextClick: () => {
         driverRef.current?.destroy();

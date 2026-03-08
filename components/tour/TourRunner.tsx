@@ -66,7 +66,14 @@ export function TourRunner() {
     const run = async () => {
       const el = selector ? await waitForSelector(selector) : null;
       if (cancelled) return;
-      if (selector && !el) return;
+
+      const overrides =
+        selector && !el
+          ? {
+              noElement: true,
+              body: "This part may not appear in demo mode. Click Next to continue.",
+            }
+          : undefined;
 
       const driverObj = createDriverForStep(step, {
         onNext: () => {
@@ -97,7 +104,7 @@ export function TourRunner() {
           setTourDismissed();
           setStep(-1);
         },
-      });
+      }, overrides);
 
       if (driverObj && !cancelled) {
         driverObj.drive(0);

@@ -55,8 +55,14 @@ export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalT
       </a>
       {hideTopBar ? (
         <>
-          {/* Mobile: fixed menu button to open sidebar (no top bar) */}
-          <div className="lg:hidden fixed top-4 left-4 z-40">
+          {/* Mobile: fixed menu button; safe-area for notch */}
+          <div
+            className="lg:hidden fixed z-40"
+            style={{
+              top: "calc(1rem + env(safe-area-inset-top, 0px))",
+              left: "calc(1rem + env(safe-area-inset-left, 0px))",
+            }}
+          >
             <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
               <SheetTrigger asChild>
                 <Button

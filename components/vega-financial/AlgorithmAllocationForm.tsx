@@ -247,12 +247,17 @@ export function AlgorithmAllocationForm({
       )}
 
       {error && (
-        <p className="text-destructive text-sm" role="alert">
-          {error}
-        </p>
+        <div
+          className="error-slider"
+          data-visible="true"
+          role="alert"
+        >
+          <span className="error-slider-icon" aria-hidden>⚠</span>
+          <p>{error}</p>
+        </div>
       )}
       {success && (
-        <p className="text-sm text-brand-green font-medium" role="status">
+        <p className="text-sm vf-text-positive font-medium" role="status">
           {success === "buy" ? "Bought in demo portfolio." : "Sold from demo portfolio."}
         </p>
       )}
@@ -265,7 +270,7 @@ export function AlgorithmAllocationForm({
             className="flex-1 min-h-[44px] sm:min-h-[40px]"
             data-tour="algo-add-paper"
           >
-            {loading && action === "buy" ? "Buying…" : "Buy"}
+            {loading && action === "buy" ? "Buying…" : "Add to paper portfolio"}
           </Button>
           <Button
             onClick={doSell}
@@ -279,28 +284,28 @@ export function AlgorithmAllocationForm({
         {success && (
           <Link
             href="/vega-financial/portfolio"
-            className="text-center text-sm font-medium text-primary hover:underline focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded py-2"
+            className="text-center text-sm font-medium text-primary hover:underline focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded py-2 min-h-[44px] flex items-center justify-center"
           >
             Review portfolio
           </Link>
         )}
+        <Link
+          href="/vega-financial/marketplace"
+          className="text-center text-sm font-medium text-muted-foreground hover:text-foreground focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded py-2 min-h-[44px] flex items-center justify-center border border-border"
+        >
+          Compare
+        </Link>
         <Button
           type="button"
           variant="outline"
           size="sm"
-          className="w-full gap-2 min-h-[44px] sm:min-h-[36px]"
+          className="w-full gap-2 min-h-[44px] sm:min-h-[44px]"
           onClick={toggleWatchlist}
           aria-pressed={onWatchlist}
         >
           <Star className={cn("size-4", onWatchlist && "fill-primary text-primary")} aria-hidden />
           {onWatchlist ? "On watchlist" : "Add to watchlist"}
         </Button>
-        <Link
-          href="/vega-financial/marketplace"
-          className="text-center text-sm font-medium text-muted-foreground hover:text-foreground focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded py-2"
-        >
-          Compare
-        </Link>
       </div>
 
       <RiskDisclosureModal
