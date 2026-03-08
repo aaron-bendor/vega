@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatPercent } from "@/lib/utils/format";
@@ -46,17 +47,28 @@ export function StrategyCard({
   compareDisabled,
   dataTour,
 }: StrategyCardProps) {
+  const router = useRouter();
   const tags = getTags(algorithm);
   const verified = isDbVersion(algorithm) && algorithm.verificationStatus === "verified";
   const returnPct = isDbVersion(algorithm) ? algorithm.cachedReturn : undefined;
   const maxDrop = isDbVersion(algorithm) ? algorithm.cachedMaxDrawdown : undefined;
   const desc = algorithm.shortDesc ?? (isDbVersion(algorithm) ? algorithm.description : "") ?? "";
+  const algoHref = `/vega-financial/algorithms/${algorithm.id}`;
 
   return (
     <Card
       data-tour={dataTour}
+      role="button"
+      tabIndex={0}
+      onClick={() => router.push(algoHref)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          router.push(algoHref);
+        }
+      }}
       className={cn(
-        "vf-card-hover h-full flex flex-col rounded-xl border border-border bg-card",
+        "vf-card-hover h-full flex flex-col rounded-xl border border-border bg-card cursor-pointer",
         "hover:border-primary/25 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:outline-none"
       )}
     >
@@ -76,13 +88,8 @@ export function StrategyCard({
             </Badge>
           )}
         </div>
-        <CardTitle className="font-maven-pro text-base font-semibold leading-tight">
-          <Link
-            href={`/vega-financial/algorithms/${algorithm.id}`}
-            className="font-maven-pro text-foreground hover:text-primary transition-colors duration-150 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded"
-          >
-            {algorithm.name}
-          </Link>
+        <CardTitle className="font-maven-pro text-base font-semibold leading-tight text-foreground">
+          {algorithm.name}
         </CardTitle>
         <p className="line-clamp-2 text-sm text-muted-foreground leading-snug">
           {desc}
@@ -117,13 +124,7 @@ export function StrategyCard({
             </div>
           )}
         </div>
-        <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-border/80">
-          <Link
-            href={`/vega-financial/algorithms/${algorithm.id}`}
-            className="text-sm font-maven-pro font-medium text-primary hover:text-primary-hover transition-colors duration-150"
-          >
-            View details
-          </Link>
+        <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-border/80" onClick={(e) => e.stopPropagation()}>
           {onCompareToggle && (
             <button
               type="button"
@@ -138,7 +139,7 @@ export function StrategyCard({
             </button>
           )}
           <Link
-            href={`/vega-financial/algorithms/${algorithm.id}#invest`}
+            href={`${algoHref}#invest`}
             className="ml-auto text-muted-foreground hover:text-foreground transition-colors duration-150"
             aria-label="Add to watchlist"
           >

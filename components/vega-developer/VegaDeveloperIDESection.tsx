@@ -23,18 +23,24 @@ export function VegaDeveloperIDESection() {
                 Full Python IDE with everything you need
               </h2>
             </AnimateOnScroll>
-            <AnimateOnScroll delay={0.1}>
-              <ul className="mt-8 space-y-3">
-                {features.map((item) => (
-                  <li key={item} className="flex items-start gap-3">
-                    <span className="font-dm-mono text-violet-500 text-sm mt-1 shrink-0">→</span>
-                    <p className="font-dm-sans font-light text-white/90 text-base md:text-lg leading-relaxed">
+            <ul className="mt-8 space-y-1">
+              {features.map((item, i) => (
+                <li key={item}>
+                  <AnimateOnScroll
+                    delay={i * 90}
+                    direction="up"
+                    className="group flex items-start gap-3 rounded-lg px-3 py-2 -mx-3 transition-all duration-300 ease-out hover:bg-[rgba(167,139,250,0.12)] hover:translate-x-1 cursor-default"
+                  >
+                    <span className="font-dm-mono text-lg mt-0.5 shrink-0 transition-all duration-300 ease-out text-[#7c3aed] group-hover:translate-x-0.5 group-hover:scale-105" aria-hidden>
+                      →
+                    </span>
+                    <p className="font-dm-sans font-light text-base md:text-lg leading-[1.4] text-white/90 transition-colors duration-300 ease-out group-hover:text-[rgba(228,215,255,0.95)]">
                       {item}
                     </p>
-                  </li>
-                ))}
-              </ul>
-            </AnimateOnScroll>
+                  </AnimateOnScroll>
+                </li>
+              ))}
+            </ul>
             <AnimateOnScroll delay={0.2}>
               <Link
                 href="/#get-started"

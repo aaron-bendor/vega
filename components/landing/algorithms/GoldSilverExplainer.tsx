@@ -565,7 +565,7 @@ export function GoldSilverExplainer(): JSX.Element {
             </div>
           </div>
 
-          <div key={currentStep} className="desc-in mb-10">
+          <div key={currentStep} className="desc-in mt-6 mb-16">
             <div className="flex items-start gap-3">
               <div
                 className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full text-[15px] font-extrabold text-white"
