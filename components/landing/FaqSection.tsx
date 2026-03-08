@@ -15,14 +15,29 @@ const faqFinancial: { question: string; answer: string }[] = [
       "No. Every strategy is described in plain English with no jargon. We show you what the algorithm trades, how it has performed historically, and what level of risk it carries. All explained clearly.",
   },
   {
-    question: "How is this different from just buying stocks or index funds?",
+    question: "How do I know a strategy is safe to invest in?",
     answer:
-      "Traditional investing gives you exposure to company performance. Vega gives you exposure to trading strategies. Algorithms can generate returns regardless of whether the market is going up or down, depending on how they're designed.",
+      "Every strategy goes through human review before it's listed on the platform. You'll also see full backtested performance data, a risk rating, and a profile of the developer who built it. We don't publish strategies without verification.",
+  },
+  {
+    question: 'What does "backtested" mean?',
+    answer:
+      "Backtesting means running the algorithm against historical market data to see how it would have performed. It's a standard method for evaluating trading strategies, though past performance doesn't guarantee future results, and we're transparent about that.",
+  },
+  {
+    question: "Are my funds protected?",
+    answer:
+      "Vega is on the path to getting regulated by the FCA. We are working closely with the FCA and compliance experts to mitigate any risks before launching. All trades will also be handled by an already regulated third-party broker, ensuring even more protection to our users.",
   },
   {
     question: "What is a trading algorithm?",
     answer:
       "A trading algorithm is a set of rules that automatically buys and sells financial assets — like currencies, stocks, or commodities — based on data and pre-defined conditions. Unlike a human trader, it has no emotion, it doesn't panic when markets drop, or get greedy when they rise. It simply follows its rules, around the clock, without hesitation or error. For example, an algorithm might be programmed to buy gold when its price drops below a certain level relative to silver, then sell when the gap closes. It runs that logic continuously, far faster and more consistently than any human could.",
+  },
+  {
+    question: "How is this different from just buying stocks or index funds?",
+    answer:
+      "Traditional investing gives you exposure to company performance. Vega gives you exposure to trading strategies. Algorithms can generate returns regardless of whether the market is going up or down, depending on how they're designed.",
   },
   {
     question: "How is this different from a robo-advisor like Nutmeg or Moneybox?",
@@ -38,21 +53,6 @@ const faqFinancial: { question: string; answer: string }[] = [
     question: "Can I withdraw my money whenever I want?",
     answer:
       "Yes. There are no lock-in periods and no exit fees. You can sell your position at any time, just like selling a stock.",
-  },
-  {
-    question: "How do I know a strategy is safe to invest in?",
-    answer:
-      "Every strategy goes through human review before it's listed on the platform. You'll also see full backtested performance data, a risk rating, and a profile of the developer who built it. We don't publish strategies without verification.",
-  },
-  {
-    question: 'What does "backtested" mean?',
-    answer:
-      "Backtesting means running the algorithm against historical market data to see how it would have performed. It's a standard method for evaluating trading strategies, though past performance doesn't guarantee future results, and we're transparent about that.",
-  },
-  {
-    question: "Are my funds protected?",
-    answer:
-      "Vega is on the path to getting regulated by the FCA. We are working closely with the FCA and compliance experts to mitigate any risks before launching. All trades will also be handled by an already regulated third-party broker, ensuring even more protection to our users.",
   },
   {
     question: "Is there a mobile app?",
@@ -176,7 +176,7 @@ function FaqBlock({
 }
 
 export function FaqSection() {
-  const [financialOpen, setFinancialOpen] = useState<number | null>(0);
+  const [financialOpen, setFinancialOpen] = useState<number | null>(null);
   const [developerOpen, setDeveloperOpen] = useState<number | null>(null);
 
   return (
