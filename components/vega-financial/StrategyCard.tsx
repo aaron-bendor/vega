@@ -61,14 +61,11 @@ export function StrategyCard({
   return (
     <Card
       data-tour={dataTour}
-      className={cn(
-        "vf-card-lift h-full flex flex-col rounded-xl border border-border bg-card",
-        "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:outline-none"
-      )}
+      className="vf-card-lift h-full flex flex-col rounded-xl border border-border bg-card"
     >
       <Link
         href={algoHref}
-        className="flex flex-1 flex-col min-h-0 focus:outline-none rounded-xl"
+        className="flex flex-1 flex-col min-h-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         aria-label={`View details for ${algorithm.name}`}
       >
         <CardHeader className="pb-3 flex-shrink-0 space-y-4">

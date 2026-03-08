@@ -8,6 +8,7 @@ import { useState, useRef, useEffect, useLayoutEffect, useCallback } from "react
 import { cn } from "@/lib/utils";
 import { NavLink } from "@/components/ui/NavLink";
 import { NavDropdown, type NavDropdownItem } from "@/components/layout/NavDropdown";
+import { DemoCTADropdown } from "@/components/landing/DemoCTADropdown";
 import { getTourCompleted, TOUR_START_SESSION_KEY, setTourStep } from "@/lib/tour/storage";
 
 /** Lock body scroll when mobile menu is open; restore on close or pathname change. */
@@ -196,11 +197,6 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
       ? "bg-black/50 backdrop-blur-xl border border-white/15"
       : "bg-white/25 backdrop-blur-xl border border-white/40";
 
-  // Hero variant: match hero section CTA (Start Investing) — glass pill, white text
-  const ctaClass = isStandalone
-    ? "bg-primary hover:bg-primary/90 text-primary-foreground"
-    : "font-dm-sans bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 hover:border-white/40";
-
   const mobileMenuBg = "bg-black/80 backdrop-blur-xl border border-white/10";
 
   const isHeroPage = pathname === "/" || pathname === "/about-us" || pathname === "/algorithms";
@@ -264,7 +260,14 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
 
   const [isScrolled, setIsScrolled] = useState(false);
   useEffect(() => {
-    const onScroll = () => setIsScrolled((window.scrollY ?? 0) > 16);
+    const SCROLL_DOWN_THRESHOLD = 24;
+    const SCROLL_UP_THRESHOLD = 8;
+    const onScroll = () => {
+      const y = window.scrollY ?? 0;
+      setIsScrolled((prev) =>
+        prev ? y > SCROLL_UP_THRESHOLD : y > SCROLL_DOWN_THRESHOLD
+      );
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -423,19 +426,11 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                       </div>
                     ))}
                     {!isInvestor && (
-                      <Link
-                        href="/vega-financial"
-                        className={cn(
-                          "flex items-center justify-center gap-1.5 ml-2 px-5 h-9 md:h-10 font-bold text-sm md:text-base transition-[transform,background-color,border-color,box-shadow] duration-motion-chip ease-motion hover:scale-[1.02] active:scale-[0.98] shrink-0 focus-visible:outline focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
-                          isStandalone ? "rounded-full" : "rounded-[30px]",
-                          ctaClass,
-                          isScrolled && !isStandalone && "bg-primary text-primary-foreground border-primary hover:bg-primary/90 hover:border-primary/90 shadow-md shadow-primary/20"
-                        )}
-                        data-tour="try-it-now"
-                        onClick={handleTryItNow}
-                      >
-                        Open demo
-                      </Link>
+                      <DemoCTADropdown
+                        onInvest={handleTryItNow}
+                        variant="header"
+                        scrolled={isScrolled && !isStandalone}
+                      />
                     )}
                   </div>
 
@@ -459,18 +454,13 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                       )}
                     </button>
                     {!isInvestor && (
-                      <Link
-                        href="/vega-financial"
-                        className={cn(
-                          "flex items-center justify-center min-w-[90px] min-h-[44px] px-4 font-bold text-sm transition-[transform,background-color,border-color] duration-motion-chip ease-motion hover:scale-[1.02] active:scale-[0.98] focus-visible:outline focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2",
-                          isStandalone ? "rounded-full" : "rounded-[30px]",
-                          ctaClass
-                        )}
-                        data-tour="try-it-now"
-                        onClick={handleTryItNow}
-                      >
-                        Open demo
-                      </Link>
+                      <div className="min-w-[90px]">
+                        <DemoCTADropdown
+                          onInvest={handleTryItNow}
+                          variant="header"
+                          scrolled={isScrolled && !isStandalone}
+                        />
+                      </div>
                     )}
                   </div>
                 </>
@@ -539,24 +529,17 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
             )
           )}
           {!isInvestor && (
-            <div className="px-5 pt-2 pb-3">
-              <Link
-                href="/vega-financial"
-                className={cn(
-                  "flex items-center justify-center min-h-[44px] w-full font-bold text-sm transition-[background-color,border-color] duration-motion-normal ease-motion",
-                  isStandalone
-                    ? "rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
-                    : "rounded-[30px] bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30",
-                  "hover:scale-[1.02] active:scale-[0.98]"
-                )}
-                onClick={(e) => {
+            <div className="px-5 pt-2 pb-3 w-full [&_button]:w-full [&_button]:min-h-[44px]">
+              <DemoCTADropdown
+                onInvest={(e) => {
                   setMobileMenuOpen(false);
                   handleTryItNow(e);
                 }}
-                data-tour="try-it-now"
-              >
-                Open demo
-              </Link>
+                variant="header"
+                scrolled={isStandalone}
+                className="w-full"
+                onClose={() => setMobileMenuOpen(false)}
+              />
             </div>
           )}
         </nav>

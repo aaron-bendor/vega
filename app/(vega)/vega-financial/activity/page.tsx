@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { loadPortfolioState, type ActivityLogEntry } from "@/lib/vega-financial/portfolio-store";
-import { PageHeader } from "@/components/vega-financial/PageHeader";
+import { VegaFinancialPageScaffold } from "@/components/vega-financial/VegaFinancialPageScaffold";
 import { Card, CardContent } from "@/components/ui/card";
-import { Activity } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Plus, Star } from "lucide-react";
 
 function formatTime(iso: string): string {
   try {
@@ -60,6 +61,12 @@ function eventDescription(entry: ActivityLogEntry): string {
   }
 }
 
+const PLACEHOLDER_EVENTS = [
+  { type: "allocate", label: "Bought", desc: "Example allocation will appear here", muted: true },
+  { type: "reduce", label: "Sold", desc: "Example sale or reduction", muted: true },
+  { type: "remove", label: "Exited", desc: "Example exit from a strategy", muted: true },
+];
+
 export default function ActivityPage() {
   const [entries, setEntries] = useState<ActivityLogEntry[]>([]);
 
@@ -71,53 +78,86 @@ export default function ActivityPage() {
   const sortedEntries = [...entries].sort(
     (a, b) => new Date(b.at).getTime() - new Date(a.at).getTime()
   );
+  const isEmpty = sortedEntries.length === 0;
 
   return (
-    <div className="w-full max-w-6xl min-w-0 mx-auto px-4 py-6 sm:p-6 lg:p-8 space-y-8">
-      <PageHeader
-        title="Activity"
-        subtitle="Allocations, watchlist changes, and portfolio updates."
-      />
-
-      {sortedEntries.length === 0 ? (
-        <Card className="rounded-xl border border-border bg-card overflow-hidden">
-          <CardContent className="py-14 px-6 text-center">
-            <div className="size-14 rounded-full bg-muted border border-border flex items-center justify-center mx-auto mb-4">
-              <Activity className="size-7 text-primary/50" aria-hidden />
-            </div>
-            <h2 className="font-maven-pro text-lg font-semibold text-foreground mb-2">No activity yet</h2>
-            <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-              Allocations, watchlist changes, and portfolio updates will appear here.
-            </p>
-          </CardContent>
-        </Card>
-      ) : (
+    <VegaFinancialPageScaffold
+      title="Activity"
+      description="Allocations, watchlist changes, and portfolio updates."
+    >
+      <section aria-label="Activity timeline">
         <Card className="rounded-xl border border-border bg-card overflow-hidden">
           <CardContent className="p-0">
-            <ul className="divide-y divide-border">
-              {sortedEntries.map((entry) => (
-                <li key={entry.id} className="px-4 py-3 sm:px-6 sm:py-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-                    <div>
-                      <p className="font-medium text-foreground">{eventLabel(entry)}</p>
-                      <p className="text-sm text-muted-foreground">{eventDescription(entry)}</p>
-                    </div>
-                    <p className="text-xs text-muted-foreground shrink-0" aria-hidden>
-                      {formatTime(entry.at)}
+            {isEmpty ? (
+              <div className="p-6 sm:p-8">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                  <div>
+                    <h2 className="font-maven-pro text-base font-semibold text-foreground">
+                      Activity timeline
+                    </h2>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      What will appear here: when you allocate to a strategy, add or remove from your watchlist, or change your portfolio, those events will show up in order.
                     </p>
                   </div>
-                  <Link
-                    href={`/vega-financial/algorithms/${entry.algorithmId}`}
-                    className="text-sm font-medium text-primary hover:underline mt-1 inline-block"
-                  >
-                    View strategy
-                  </Link>
-                </li>
-              ))}
-            </ul>
+                  <div className="flex flex-wrap gap-2 shrink-0">
+                    <Link href="/vega-financial/marketplace" passHref legacyBehavior>
+                      <Button asChild variant="default" size="sm" className="min-h-[44px]">
+                        <a className="inline-flex items-center gap-2">
+                          <Plus className="size-4" aria-hidden />
+                          Add first strategy
+                        </a>
+                      </Button>
+                    </Link>
+                    <Link href="/vega-financial/watchlist" passHref legacyBehavior>
+                      <Button asChild variant="outline" size="sm" className="min-h-[44px]">
+                        <a className="inline-flex items-center gap-2">
+                          <Star className="size-4" aria-hidden />
+                          View watchlist
+                        </a>
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+                <ul className="divide-y divide-border" aria-hidden>
+                  {PLACEHOLDER_EVENTS.map((ev, i) => (
+                    <li key={i} className="px-4 py-3 sm:px-6 sm:py-4 opacity-50">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+                        <div>
+                          <p className="font-medium text-muted-foreground">{ev.label}</p>
+                          <p className="text-sm text-muted-foreground/80">{ev.desc}</p>
+                        </div>
+                        <p className="text-xs text-muted-foreground/60 shrink-0">Example</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <ul className="divide-y divide-border">
+                {sortedEntries.map((entry) => (
+                  <li key={entry.id} className="px-4 py-3 sm:px-6 sm:py-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+                      <div>
+                        <p className="font-medium text-foreground">{eventLabel(entry)}</p>
+                        <p className="text-sm text-muted-foreground">{eventDescription(entry)}</p>
+                      </div>
+                      <p className="text-xs text-muted-foreground shrink-0" aria-hidden>
+                        {formatTime(entry.at)}
+                      </p>
+                    </div>
+                    <Link
+                      href={`/vega-financial/algorithms/${entry.algorithmId}`}
+                      className="text-sm font-medium text-primary hover:underline mt-1 inline-block focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded"
+                    >
+                      View strategy
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
           </CardContent>
         </Card>
-      )}
-    </div>
+      </section>
+    </VegaFinancialPageScaffold>
   );
 }

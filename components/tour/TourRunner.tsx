@@ -33,9 +33,9 @@ export function TourRunner() {
   const router = useRouter();
   const [step, setStep] = useState(-1);
 
-  // Sync step from storage. Run tour only once (or when explicitly replayed via Help / Profile).
+  // Sync step from storage. Only run when user explicitly started (or replayed) or when resuming mid-tour.
   useEffect(() => {
-    // Explicit replay: user clicked "Replay tour" or "Reset tutorial"
+    // Explicit start: user clicked "Start tutorial" or "Replay tour" or "Reset tutorial"
     if (getTourStartRequested()) {
       clearTourStartRequested();
       setTourStep(0);
@@ -43,14 +43,18 @@ export function TourRunner() {
       setStep(0);
       return;
     }
-    // Already completed or dismissed: don't auto-show again
+    // Already completed or dismissed: don't show again
     if (getTourCompleted() || getTourDismissed()) {
       setStep(-1);
       return;
     }
-    // First time or resuming mid-tour
+    // Resuming mid-tour only (stored > 0). Never auto-start from step 0 so the tour doesn't start randomly.
     const stored = getTourStep();
-    setStep(stored);
+    if (stored > 0) {
+      setStep(stored);
+    } else {
+      setStep(-1);
+    }
   }, [pathname]);
 
   // When pathname or step matches a step's route, wait for element and show driver

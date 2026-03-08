@@ -3,8 +3,8 @@
 import { useCallback, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Search } from "lucide-react";
-import { MarketplaceFilterRail } from "./MarketplaceFilterRail";
+import { Search, ArrowRight } from "lucide-react";
+import { MarketplaceFilterRail, MarketplaceFiltersSheet } from "./MarketplaceFilterRail";
 import { StrategyCard } from "@/components/vega-financial/StrategyCard";
 import { Input } from "@/components/ui/input";
 import {
@@ -51,11 +51,14 @@ interface MarketplaceContentProps {
 }
 
 export function MarketplaceContent({ algorithms, tagOptions, useDemo }: MarketplaceContentProps) {
-  void useDemo; // reserved for future demo-specific UI
+  void useDemo;
   const searchParams = useSearchParams();
   const sort = searchParams.get("sort") ?? "newest";
+  const tag = searchParams.get("tag") ?? "";
+  const risk = searchParams.get("risk") ?? "";
   const [search, setSearch] = useState("");
   const [compareIds, setCompareIds] = useState<Set<string>>(new Set());
+  const [filtersSheetOpen, setFiltersSheetOpen] = useState(false);
   const router = useRouter();
   const setSort = useCallback(
     (value: string) => {
@@ -126,6 +129,13 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
     ? `/vega-financial/marketplace?compare=${compareArray.join(",")}`
     : null;
 
+  const activeFiltersList = useMemo(() => {
+    const a: { key: string; label: string }[] = [];
+    if (tag) a.push({ key: "tag", label: tag });
+    if (risk) a.push({ key: "risk", label: `Risk: ${risk}` });
+    return a;
+  }, [tag, risk]);
+
   const COLLECTIONS = [
     { label: "Low risk starters", href: "/vega-financial/marketplace?risk=Low", desc: "Strategies with lower volatility." },
     { label: "Diversifiers", href: "/vega-financial/marketplace?tag=Mean%20Reversion", desc: "May help balance your portfolio." },
@@ -134,61 +144,17 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
   ];
 
   return (
-    <div className="vega-demo flex gap-8 lg:gap-10">
-      {/* Left: sticky filter rail — desktop only */}
-      <div className="hidden lg:block">
+    <div className="vega-demo flex flex-col lg:flex-row gap-6 min-w-0">
+      {/* Desktop: left sticky filter rail 280px */}
+      <div className="hidden lg:block shrink-0">
         <MarketplaceFilterRail tagOptions={tagOptions} />
       </div>
 
-      {/* Right: header + results */}
-      <div className="min-w-0 flex-1 space-y-6 md:space-y-8">
-        {/* Mobile: inline filter links (rail hidden on small screens) */}
-        <div className="flex flex-wrap gap-2 lg:hidden">
-          <Link
-            href="/vega-financial/marketplace"
-            className="vf-chip-motion inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md border border-border bg-card px-2.5 py-1.5 text-sm text-foreground hover:border-primary/25 hover:bg-accent/50 sm:min-h-0 sm:min-w-0"
-          >
-            All
-          </Link>
-          {(tagOptions.length > 0 ? tagOptions : ["Momentum", "Mean Reversion", "Quant"]).slice(0, 5).map((t) => {
-            const isActive = searchParams.get("tag") === t;
-            return (
-              <Link
-                key={t}
-                href={`/vega-financial/marketplace?tag=${encodeURIComponent(t)}`}
-                className={cn(
-                  "vf-chip-motion inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md border px-2.5 py-1.5 text-sm sm:min-h-0 sm:min-w-0",
-                  isActive
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border bg-card text-foreground hover:border-primary/25 hover:bg-accent/50"
-                )}
-              >
-                {t}
-              </Link>
-            );
-          })}
-          {["Low", "Medium", "High"].map((r) => {
-            const isActive = searchParams.get("risk") === r;
-            return (
-              <Link
-                key={r}
-                href={`/vega-financial/marketplace?risk=${encodeURIComponent(r)}`}
-                className={cn(
-                  "vf-chip-motion inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md border px-2.5 py-1.5 text-sm sm:min-h-0 sm:min-w-0",
-                  isActive
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border bg-card text-foreground hover:border-primary/25 hover:bg-accent/50"
-                )}
-              >
-                Risk: {r}
-              </Link>
-            );
-          })}
-        </div>
-
-        {/* Header: search, sort, count */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="relative min-w-0 max-w-md flex-1" data-tour="mp-filters">
+      {/* Right: content column */}
+      <div className="min-w-0 flex-1 space-y-6 lg:space-y-8">
+        {/* 1. Search / sort toolbar */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between" data-tour="mp-filters">
+          <div className="relative min-w-0 max-w-md flex-1">
             <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground pointer-events-none" aria-hidden />
             <Input
               type="search"
@@ -215,27 +181,88 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
             </Select>
           </div>
         </div>
-        <p className="text-sm text-muted-foreground tabular-nums no-midword-wrap" aria-live="polite">
-          Showing {filtered.length} {filtered.length === 1 ? "strategy" : "strategies"}
-        </p>
 
-        {/* Collections — soft tinted surfaces, navigation affordance */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 vf-fade-up">
+        {/* 2. Mobile: one chip row + More filters */}
+        <div className="flex flex-wrap items-center gap-2 lg:hidden">
+          <Link
+            href="/vega-financial/marketplace"
+            className={cn(
+              "vf-chip-motion inline-flex items-center justify-center rounded-lg border px-3 py-2 text-sm min-h-[44px]",
+              !tag && !risk
+                ? "border-primary bg-primary text-primary-foreground"
+                : "border-border bg-card text-foreground hover:border-primary/25 hover:bg-accent/50"
+            )}
+          >
+            All
+          </Link>
+          {(tagOptions.length > 0 ? tagOptions : ["Momentum", "Mean Reversion", "Quant"]).slice(0, 3).map((t) => {
+            const isActive = tag === t;
+            return (
+              <Link
+                key={t}
+                href={`/vega-financial/marketplace?tag=${encodeURIComponent(t)}`}
+                className={cn(
+                  "vf-chip-motion inline-flex items-center justify-center rounded-lg border px-3 py-2 text-sm min-h-[44px]",
+                  isActive
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-card text-foreground hover:border-primary/25 hover:bg-accent/50"
+                )}
+              >
+                {t}
+              </Link>
+            );
+          })}
+          <MarketplaceFiltersSheet tagOptions={tagOptions} open={filtersSheetOpen} onOpenChange={setFiltersSheetOpen} />
+        </div>
+
+        {/* 3. Active filters row */}
+        {activeFiltersList.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs text-muted-foreground mr-1">Active:</span>
+            {activeFiltersList.map(({ label }) => (
+              <span
+                key={label}
+                className="inline-flex items-center rounded-md border border-primary bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary"
+              >
+                {label}
+              </span>
+            ))}
+            <Link
+              href="/vega-financial/marketplace"
+              className="text-xs font-medium text-muted-foreground hover:text-foreground focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded"
+            >
+              Clear all
+            </Link>
+          </div>
+        )}
+
+        {/* 4. Collections row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 vf-enter-stagger vf-stagger-visible">
           {COLLECTIONS.map((c) => (
             <Link
               key={c.label}
               href={c.href}
-              className="vf-chip-motion rounded-lg border vf-border-soft vf-surface-2 px-3 py-2.5 text-sm hover:border-primary/30 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring min-h-[44px] flex flex-col justify-center"
+              className={cn(
+                "vf-chip-motion rounded-xl border vf-border-soft vf-surface-2 px-4 py-3 text-sm flex flex-col justify-center min-h-[44px]",
+                "hover:border-primary/40 hover:shadow-md hover:vf-surface-2 transition-all duration-[var(--motion-duration-normal)]",
+                "focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
+              )}
             >
-              <span className="font-medium text-foreground inline-flex items-center gap-1.5">
+              <span className="font-medium text-foreground inline-flex items-center gap-2">
                 {c.label}
-                <span className="text-muted-foreground text-xs font-normal" aria-hidden>→</span>
+                <ArrowRight className="size-4 shrink-0 text-muted-foreground" aria-hidden />
               </span>
               <span className="vf-text-muted text-xs block mt-0.5">{c.desc}</span>
             </Link>
           ))}
         </div>
 
+        {/* 5. Results header row */}
+        <p className="text-sm text-muted-foreground tabular-nums" aria-live="polite">
+          Showing <span className="vf-results-count">{filtered.length} {filtered.length === 1 ? "strategy" : "strategies"}</span>
+        </p>
+
+        {/* 6. Strategy grid */}
         {filtered.length === 0 ? (
           <div className="rounded-xl border vf-border-soft vf-surface-1 py-16 px-8 text-center max-w-2xl mx-auto">
             <p className="vf-text-muted mb-4">
@@ -251,21 +278,31 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4 md:gap-5">
-              {filtered.map((v) => (
-                <StrategyCard
-                  key={v.id}
-                  algorithm={v}
-                  onCompareToggle={toggleCompare}
-                  compareSelected={compareIds.has(v.id)}
-                  compareDisabled={!compareIds.has(v.id) && compareIds.size >= 3}
-                  dataTour={v.id === "demo-1" ? "mp-card-alpha" : undefined}
-                />
+            <div className={cn(
+              "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6",
+              compareArray.length >= 1 && "pb-24 lg:pb-0"
+            )}>
+              {filtered.map((v, i) => (
+                <div key={v.id} className="vf-reveal" style={{ animationDelay: `${Math.min(i * 50, 300)}ms` }}>
+                  <StrategyCard
+                    algorithm={v}
+                    onCompareToggle={toggleCompare}
+                    compareSelected={compareIds.has(v.id)}
+                    compareDisabled={!compareIds.has(v.id) && compareIds.size >= 3}
+                    dataTour={v.id === "demo-1" ? "mp-card-alpha" : undefined}
+                  />
+                </div>
               ))}
             </div>
+
+            {/* 7. Compare bar: sticky bottom mobile, sticky inline desktop */}
             {compareArray.length >= 1 && (
               <div
-                className="vf-slide-up sticky bottom-0 left-0 right-0 z-20 flex flex-col gap-2 rounded-xl border vf-border-soft vf-surface-1 p-4 shadow-lg md:bottom-auto md:top-24"
+                className={cn(
+                  "flex flex-col gap-2 rounded-xl border vf-border-soft vf-surface-1 p-4 shadow-lg z-20",
+                  "lg:sticky lg:top-24",
+                  "fixed left-4 right-4 bottom-20 lg:static lg:left-auto lg:right-auto lg:bottom-auto"
+                )}
                 role="region"
                 aria-live="polite"
                 aria-label="Compare selection"

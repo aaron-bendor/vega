@@ -37,7 +37,9 @@ export function FirstRunWelcomeBanner() {
     }
     setTourStep(0);
     setLoading(false);
+    // Ensure TourRunner re-runs when already on /vega-financial (pathname wouldn't change on push)
     router.push("/vega-financial");
+    router.refresh();
   }, [router]);
 
   const handleSkip = useCallback(() => {

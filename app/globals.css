@@ -10,6 +10,88 @@
   white-space: normal;
 }
 
+/* Keep "X strategies" on one line in results label (avoid "strateg ies" wrap) */
+.vf-results-count {
+  white-space: nowrap;
+}
+
+/* ─── Vega Financial motion system (reusable classes) ─── */
+.vf-enter-fade {
+  opacity: 0;
+  transition: opacity var(--motion-duration-normal) var(--motion-ease);
+}
+.vf-enter-fade.vf-enter-visible,
+.vf-enter-fade.visible {
+  opacity: 1;
+}
+
+.vf-enter-up {
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity var(--motion-duration-normal) var(--motion-ease),
+    transform var(--motion-duration-normal) var(--motion-ease);
+}
+.vf-enter-up.vf-enter-visible,
+.vf-enter-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.vf-enter-stagger > * {
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity var(--motion-duration-normal) var(--motion-ease),
+    transform var(--motion-duration-normal) var(--motion-ease);
+}
+.vf-enter-stagger.vf-stagger-visible > *:nth-child(1) { transition-delay: 0ms; }
+.vf-enter-stagger.vf-stagger-visible > *:nth-child(2) { transition-delay: 50ms; }
+.vf-enter-stagger.vf-stagger-visible > *:nth-child(3) { transition-delay: 100ms; }
+.vf-enter-stagger.vf-stagger-visible > *:nth-child(4) { transition-delay: 150ms; }
+.vf-enter-stagger.vf-stagger-visible > *:nth-child(5) { transition-delay: 200ms; }
+.vf-enter-stagger.vf-stagger-visible > *:nth-child(6) { transition-delay: 250ms; }
+.vf-enter-stagger.vf-stagger-visible > *:nth-child(n+7) { transition-delay: 300ms; }
+.vf-enter-stagger.vf-stagger-visible > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.vf-shell-blur-in {
+  transition:
+    background-color var(--motion-duration-normal) var(--motion-ease),
+    box-shadow var(--motion-duration-normal) var(--motion-ease),
+    backdrop-filter var(--motion-duration-normal) var(--motion-ease);
+}
+
+.vf-nav-press {
+  transition: transform var(--motion-duration-fast) var(--motion-ease);
+}
+.vf-nav-press:active {
+  transform: scale(0.98);
+}
+
+.vf-section-shift {
+  transition: transform var(--motion-duration-card) var(--motion-ease),
+    box-shadow var(--motion-duration-card) var(--motion-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vf-enter-fade,
+  .vf-enter-up,
+  .vf-enter-stagger > * {
+    transition-duration: 0.01ms !important;
+  }
+  .vf-enter-fade,
+  .vf-enter-up { transform: none; opacity: 1; }
+  .vf-enter-stagger > * { transform: none; opacity: 1; }
+  .vf-enter-stagger.vf-stagger-visible > * { opacity: 1; }
+  .vf-shell-blur-in { transition: none; }
+  .vf-nav-press:active { transform: none; }
+  .vf-section-shift { transition: none; }
+  .vf-bottom-nav-icon { transform: none !important; }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

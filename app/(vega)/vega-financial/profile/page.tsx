@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { VegaFinancialPageScaffold } from "@/components/vega-financial/VegaFinancialPageScaffold";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   loadPortfolioState,
   savePortfolioState,
@@ -71,13 +73,15 @@ export default function VegaFinancialProfilePage() {
 
   if (state === null) {
     return (
-      <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 py-6">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 w-48 bg-muted rounded" />
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="h-32 bg-muted rounded-lg" />
-            <div className="h-32 bg-muted rounded-lg" />
-          </div>
+      <div className="w-full max-w-[1280px] min-w-0 mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8 space-y-6 lg:space-y-8">
+        <header className="space-y-2">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-4 w-72 max-w-full" />
+        </header>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 lg:gap-6">
+          {[1, 2, 3, 4].map((i) => (
+            <Skeleton key={i} className="h-40 rounded-xl" />
+          ))}
         </div>
       </div>
     );
@@ -87,87 +91,21 @@ export default function VegaFinancialProfilePage() {
   const watchlistCount = state.watchlist.length;
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 py-5 sm:py-6">
-      <h1 className="font-maven-pro text-2xl md:text-3xl font-bold text-foreground mb-5">
-        Settings
-      </h1>
-
-      {/* Demo controls — primary focus for demo users */}
-      <section aria-labelledby="demo-heading" className="mb-6 lg:mb-8">
-        <Card className="rounded-2xl border border-border">
-          <CardHeader>
-            <CardTitle id="demo-heading" className="font-maven-pro text-lg">
-              Demo controls
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleTutorialReset}
-                className="min-h-[44px]"
-              >
-                Restart tutorial
-              </Button>
-              <p className="text-xs text-muted-foreground mt-1.5">
-                Walk through the demo again.
-              </p>
-            </div>
-            <div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleResetDemoPortfolio}
-                className="min-h-[44px]"
-              >
-                Reset demo portfolio
-              </Button>
-              <p className="text-xs text-muted-foreground mt-1.5">
-                Restore the sample holdings and balances.
-              </p>
-            </div>
-            <div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleClearWatchlist}
-                disabled={watchlistCount === 0}
-                className="min-h-[44px]"
-              >
-                Clear watchlist
-              </Button>
-              <p className="text-xs text-muted-foreground mt-1.5">
-                Remove saved demo strategies.
-              </p>
-            </div>
-            <div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleRestoreWelcomeBanner}
-                className="min-h-[44px]"
-              >
-                Restore welcome banner
-              </Button>
-              <p className="text-xs text-muted-foreground mt-1.5">
-                Show the onboarding banner again.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      </section>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-6">
+    <VegaFinancialPageScaffold
+      title="Settings"
+      description="Profile, demo preferences, notifications, and risk settings."
+      showDisclaimer={false}
+    >
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
         {/* Profile */}
         <section aria-labelledby="profile-heading" className="min-w-0">
-          <Card className="rounded-2xl border border-border h-full">
-            <CardHeader>
+          <Card className="rounded-xl border border-border h-full">
+            <CardHeader className="p-4 sm:p-5 lg:p-6">
               <CardTitle id="profile-heading" className="font-maven-pro text-lg">
                 Profile
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="p-4 sm:p-5 lg:p-6 pt-0 space-y-4">
               <div className="flex items-center gap-4">
                 <div className="size-14 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <span className="text-lg font-medium text-primary">VF</span>
@@ -189,37 +127,134 @@ export default function VegaFinancialProfilePage() {
                   {state.beginnerMode ? "Beginner" : "Advanced"}
                 </span>
               </div>
+              {watchlistCount > 0 && (
+                <p className="text-sm text-muted-foreground pt-2">
+                  {watchlistCount} strategy{watchlistCount !== 1 ? "ies" : ""} on watchlist.{" "}
+                  <Link href="/vega-financial/watchlist" className="text-primary hover:underline">
+                    View watchlist
+                  </Link>
+                </p>
+              )}
             </CardContent>
           </Card>
         </section>
 
-        {/* Activity */}
-        <section id="activity" aria-labelledby="activity-heading" className="min-w-0">
-          <Card className="rounded-2xl border border-border h-full">
-            <CardHeader>
-              <CardTitle id="activity-heading" className="font-maven-pro text-lg">
-                Activity
+        {/* Demo preferences */}
+        <section aria-labelledby="demo-heading" className="min-w-0">
+          <Card className="rounded-xl border border-border h-full">
+            <CardHeader className="p-4 sm:p-5 lg:p-6">
+              <CardTitle id="demo-heading" className="font-maven-pro text-lg">
+                Demo preferences
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="p-4 sm:p-5 lg:p-6 pt-0 space-y-4">
               <div>
-                <h3 className="font-maven-pro text-sm font-medium text-foreground mb-2">
-                  Recent paper allocations
-                </h3>
-                {recentActivity.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">
-                    No recent activity.
-                  </p>
-                ) : (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleTutorialReset}
+                  className="min-h-[44px]"
+                >
+                  Restart tutorial
+                </Button>
+                <p className="text-xs text-muted-foreground mt-1.5">
+                  Walk through the demo again.
+                </p>
+              </div>
+              <div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleResetDemoPortfolio}
+                  className="min-h-[44px]"
+                >
+                  Reset demo portfolio
+                </Button>
+                <p className="text-xs text-muted-foreground mt-1.5">
+                  Restore the sample holdings and balances.
+                </p>
+              </div>
+              <div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleClearWatchlist}
+                  disabled={watchlistCount === 0}
+                  className="min-h-[44px]"
+                >
+                  Clear watchlist
+                </Button>
+                <p className="text-xs text-muted-foreground mt-1.5">
+                  Remove saved demo strategies.
+                </p>
+              </div>
+              <div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleRestoreWelcomeBanner}
+                  className="min-h-[44px]"
+                >
+                  Restore welcome banner
+                </Button>
+                <p className="text-xs text-muted-foreground mt-1.5">
+                  Show the onboarding banner again.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Notifications */}
+        <section aria-labelledby="notifications-heading" className="min-w-0">
+          <Card className="rounded-xl border border-border h-full">
+            <CardHeader className="p-4 sm:p-5 lg:p-6">
+              <CardTitle id="notifications-heading" className="font-maven-pro text-lg">
+                Notifications
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 sm:p-5 lg:p-6 pt-0 space-y-4">
+              <p className="text-sm text-muted-foreground">
+                In a full product you could choose how to be notified about portfolio updates, strategy alerts, and market events. This prototype does not send real notifications.
+              </p>
+              <div className="rounded-lg border border-border bg-muted/30 px-4 py-3">
+                <p className="text-xs text-muted-foreground">
+                  Placeholder: email and push preferences would appear here.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Risk preferences */}
+        <section aria-labelledby="risk-heading" className="min-w-0">
+          <Card className="rounded-xl border border-border h-full">
+            <CardHeader className="p-4 sm:p-5 lg:p-6">
+              <CardTitle id="risk-heading" className="font-maven-pro text-lg">
+                Risk preferences
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 sm:p-5 lg:p-6 pt-0 space-y-4">
+              <div>
+                <p className="text-sm font-medium text-foreground">Current preference</p>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  {RISK_LABELS[state.riskPreference]} — used to tailor strategy suggestions and portfolio insights in this demo.
+                </p>
+              </div>
+              <div className="rounded-lg border border-border bg-muted/30 px-4 py-3">
+                <p className="text-xs text-muted-foreground">
+                  Placeholder: in a full product you could adjust risk tolerance and time horizon here.
+                </p>
+              </div>
+              {recentActivity.length > 0 && (
+                <div className="pt-2 border-t border-border">
+                  <h3 className="font-maven-pro text-sm font-medium text-foreground mb-2">
+                    Recent activity
+                  </h3>
                   <ul className="space-y-1.5 text-sm">
                     {recentActivity.map((entry) => (
-                      <li
-                        key={entry.id}
-                        className="flex flex-wrap items-center gap-x-2 gap-y-0.5"
-                      >
-                        <span className="text-muted-foreground capitalize">
-                          {entry.type}
-                        </span>
+                      <li key={entry.id} className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                        <span className="text-muted-foreground capitalize">{entry.type}</span>
                         <span className="font-medium">{entry.algorithmName}</span>
                         <span className="text-muted-foreground">
                           {formatCurrency(entry.amount)}
@@ -227,85 +262,12 @@ export default function VegaFinancialProfilePage() {
                       </li>
                     ))}
                   </ul>
-                )}
-              </div>
-              <div>
-                <h3 className="font-maven-pro text-sm font-medium text-foreground mb-1">
-                  Watchlist summary
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  {watchlistCount} strategy{watchlistCount !== 1 ? "ies" : ""} on
-                  watchlist
-                </p>
-                {watchlistCount > 0 && (
-                  <Link
-                    href="/vega-financial/watchlist"
-                    className="text-sm text-primary hover:underline mt-1 inline-block"
-                  >
-                    View in Watchlist section
-                  </Link>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-
-        {/* Preferences — deprioritised placeholder */}
-        <section id="preferences" aria-labelledby="preferences-heading" className="min-w-0">
-          <Card className="rounded-2xl border border-border h-full opacity-90">
-            <CardHeader>
-              <CardTitle id="preferences-heading" className="font-maven-pro text-lg text-muted-foreground">
-                Preferences
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <label className="text-sm font-medium text-foreground block mb-1">
-                  Default allocation amount
-                </label>
-                <p className="text-sm text-muted-foreground">
-                  £1,000 (demo placeholder)
-                </p>
-              </div>
-              <p className="text-sm text-muted-foreground pt-2">
-                Demo notification preferences (placeholder) — no real
-                notifications in this prototype.
-              </p>
-            </CardContent>
-          </Card>
-        </section>
-
-        {/* Watchlist snippet */}
-        <section id="watchlist" aria-labelledby="watchlist-heading" className="min-w-0">
-          <Card className="rounded-2xl border border-border h-full">
-            <CardHeader>
-              <CardTitle id="watchlist-heading" className="font-maven-pro text-lg">
-                Watchlist
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {watchlistCount === 0 ? (
-                <p className="text-sm text-muted-foreground">
-                  No strategies on your watchlist. Add some from{" "}
-                  <Link
-                    href="/vega-financial/marketplace"
-                    className="text-primary hover:underline"
-                  >
-                    Explore
-                  </Link>
-                  .
-                </p>
-              ) : (
-                <p className="text-sm text-muted-foreground">
-                  You have {watchlistCount} strategy
-                  {watchlistCount !== 1 ? "ies" : ""} on your watchlist. Browse them
-                  from the Dashboard or Explore.
-                </p>
+                </div>
               )}
             </CardContent>
           </Card>
         </section>
       </div>
-    </div>
+    </VegaFinancialPageScaffold>
   );
 }

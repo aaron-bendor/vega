@@ -90,6 +90,22 @@ export function InvestingMadeSimpleSection() {
     if (isScrolling.current) return;
     isScrolling.current = true;
     setActive(clamped);
+
+    // Sync scroll position so scroll-driven state and dot/wheel navigation stay in sync
+    const section = containerRef.current;
+    if (section && typeof window !== "undefined") {
+      const rect = section.getBoundingClientRect();
+      const sectionTop = rect.top + window.scrollY;
+      const sectionHeight = rect.height;
+      const viewHeight = window.innerHeight;
+      const scrollable = Math.max(0, sectionHeight - viewHeight);
+      if (scrollable > 0) {
+        const targetProgress = clamped / screens.length;
+        const targetScrollY = sectionTop + targetProgress * scrollable;
+        window.scrollTo({ top: targetScrollY, behavior: "smooth" });
+      }
+    }
+
     setTimeout(() => { isScrolling.current = false; }, 800);
   }, []);
 
@@ -102,6 +118,7 @@ export function InvestingMadeSimpleSection() {
       if (rafId !== null) return;
       rafId = requestAnimationFrame(() => {
         rafId = null;
+        if (isScrolling.current) return; // Don’t override during dot/wheel/touch step change
         const rect = section.getBoundingClientRect();
         const sectionHeight = rect.height;
         const viewHeight = typeof window !== "undefined" ? window.innerHeight : 0;

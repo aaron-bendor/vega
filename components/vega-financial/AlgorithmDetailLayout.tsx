@@ -2,7 +2,7 @@
 
 import { useState, useEffect, type ReactNode } from "react";
 import Link from "next/link";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsListWithIndicator, TabsTrigger } from "@/components/ui/tabs";
 import { ALLOCATION_FORM_ID_EXPORT } from "./MobileStickyAllocationBar";
 import { Breadcrumb, type BreadcrumbItem } from "./Breadcrumb";
 import { ChevronLeft } from "lucide-react";
@@ -71,60 +71,60 @@ export function AlgorithmDetailLayout({
       {breadcrumb && breadcrumb.length > 0 && (
         <Breadcrumb items={breadcrumb} />
       )}
-      {/* Row 1: Hero (hero glass) + sticky allocation (hero glass) */}
-      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_360px] gap-6 lg:gap-8 mb-8 lg:mb-10">
-        <div className="vf-glass-hero vf-glass-violet rounded-xl px-6 py-6 xl:px-8 xl:py-8 min-h-[260px] flex flex-col justify-center min-w-0">
+      {/* Row 1: Hero 7+5 cols, more breathing room */}
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] gap-6 lg:gap-8 mb-10 lg:mb-12">
+        <div className="vf-glass-hero vf-glass-violet vf-section-shift rounded-xl px-6 py-6 xl:px-8 xl:py-8 min-h-[260px] flex flex-col justify-center min-w-0">
           {heroLeft}
         </div>
-        <div id={ALLOCATION_FORM_ID_EXPORT} className="lg:min-w-0 scroll-mt-28">
+        <div id={ALLOCATION_FORM_ID_EXPORT} className="lg:sticky lg:top-24 lg:min-w-0 scroll-mt-28 self-start">
           {heroRight}
         </div>
       </div>
 
-      {/* Row 2–4: metric strip + action insight */}
+      {/* Row 2: Metric strip (stagger on first paint handled by StrategyMetricStrip if needed) */}
       {metricStrip && (
-        <section className="mb-8 lg:mb-10 scroll-mt-28" aria-label="Key metrics">
+        <section className="mb-10 lg:mb-12 scroll-mt-28" aria-label="Key metrics" id="overview-metrics">
           {metricStrip}
         </section>
       )}
 
-      {/* Row 5: Tabs (sticky, translucent bar) */}
+      {/* Row 3: Tabs — sticky, blurred bar, sliding underline */}
       <Tabs value={tab} onValueChange={setTab} className="min-w-0">
-        <div className="sticky top-0 z-10 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-3 bg-background/80 backdrop-blur-md border-b border-border mb-5 rounded-b-lg">
+        <div className="sticky top-0 z-10 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-3 bg-white/80 backdrop-blur-md border-b border-border mb-5 rounded-b-lg transition-shadow duration-[var(--motion-duration-normal)]">
           <div className="max-w-[1100px] mx-auto">
-            <TabsList className="flex h-auto gap-1 w-full sm:w-auto bg-transparent border-0 p-0 rounded-none shadow-none min-w-0">
-              <TabsTrigger value="overview" className={tabTriggerClass}>
+            <TabsListWithIndicator className="flex h-auto gap-1 w-full sm:w-auto bg-transparent border-0 p-0 rounded-none shadow-none min-w-0">
+              <TabsTrigger value="overview" className={tabTriggerClass} id="tab-overview">
                 Overview
               </TabsTrigger>
-              <TabsTrigger value="performance" className={tabTriggerClass}>
+              <TabsTrigger value="performance" className={tabTriggerClass} id="tab-performance">
                 Performance
               </TabsTrigger>
-              <TabsTrigger value="risk" className={tabTriggerClass}>
+              <TabsTrigger value="risk" className={tabTriggerClass} id="tab-risk">
                 Risk
               </TabsTrigger>
-              <TabsTrigger value="portfolio-fit" className={tabTriggerClass}>
+              <TabsTrigger value="portfolio-fit" className={tabTriggerClass} id="tab-portfolio-fit">
                 Portfolio fit
               </TabsTrigger>
-              <TabsTrigger value="methodology" className={tabTriggerClass}>
+              <TabsTrigger value="methodology" className={tabTriggerClass} id="tab-methodology">
                 Methodology
               </TabsTrigger>
-            </TabsList>
+            </TabsListWithIndicator>
           </div>
         </div>
         <div className="min-w-0 scroll-mt-24">
-          <TabsContent value="overview" className="mt-0 focus-visible:outline-none vf-fade-in">
+          <TabsContent value="overview" className="mt-0 focus-visible:outline-none vf-fade-in" id="overview">
             {tabPanels.overview}
           </TabsContent>
-          <TabsContent value="performance" className="mt-0 focus-visible:outline-none vf-fade-in">
+          <TabsContent value="performance" className="mt-0 focus-visible:outline-none vf-fade-in" id="performance">
             {tabPanels.performance}
           </TabsContent>
-          <TabsContent value="risk" className="mt-0 focus-visible:outline-none vf-fade-in">
+          <TabsContent value="risk" className="mt-0 focus-visible:outline-none vf-fade-in" id="risk">
             {tabPanels.risk}
           </TabsContent>
-          <TabsContent value="portfolio-fit" className="mt-0 focus-visible:outline-none vf-fade-in">
+          <TabsContent value="portfolio-fit" className="mt-0 focus-visible:outline-none vf-fade-in" id="portfolio-fit">
             {tabPanels.portfolioFit}
           </TabsContent>
-          <TabsContent value="methodology" className="mt-0 focus-visible:outline-none vf-fade-in">
+          <TabsContent value="methodology" className="mt-0 focus-visible:outline-none vf-fade-in" id="methodology">
             {tabPanels.methodology}
           </TabsContent>
         </div>

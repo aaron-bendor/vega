@@ -94,10 +94,11 @@ export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalT
       ) : (
         <header
           className={cn(
-            "sticky top-0 z-50 shrink-0 border-b bg-white flex items-center justify-between px-4 lg:px-6 transition-[height,background-color,box-shadow,border-color] duration-200 ease-out",
+            "sticky top-0 z-50 shrink-0 border-b flex items-center justify-between px-4 lg:px-6 vf-shell-blur-in",
+            "transition-[height,background-color,box-shadow,border-color,backdrop-filter] duration-[var(--motion-duration-normal)] ease-[var(--motion-ease)]",
             scrolled
               ? "h-11 border-[rgba(51,51,51,0.12)] bg-white/90 backdrop-blur-md shadow-[0_1px_0_0_rgba(51,51,51,0.06)]"
-              : "h-12 border-[rgba(51,51,51,0.12)]"
+              : "h-12 border-[rgba(51,51,51,0.12)] bg-white backdrop-blur-none shadow-none"
           )}
           role="banner"
         >
@@ -162,9 +163,9 @@ export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalT
               id="main-content"
               tabIndex={-1}
               className={cn(
-                "min-w-0",
+                "min-w-0 vf-enter-up visible",
                 hideTopBar ? "pt-16 pl-16 lg:pt-4 lg:pl-0" : "pt-4 sm:pt-6",
-                bottomNav && "pb-16 lg:pb-0"
+                bottomNav && "pb-20 lg:pb-0"
               )}
             >
               {children}

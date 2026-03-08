@@ -1,4 +1,4 @@
-import { PageHeader } from "@/components/vega-financial/PageHeader";
+import { VegaFinancialPageScaffold } from "@/components/vega-financial/VegaFinancialPageScaffold";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const glossaryItems = [
@@ -87,12 +87,10 @@ const glassCardClass =
 
 export default function LearnPage() {
   return (
-    <div className="w-full max-w-6xl min-w-0 mx-auto px-4 py-6 sm:p-6 lg:p-8 space-y-8">
-      <PageHeader
-        title="Learn"
-        subtitle="Investor education on comparing strategies, risk, and building a diversified portfolio."
-      />
-
+    <VegaFinancialPageScaffold
+      title="Learn"
+      description="Investor education on comparing strategies, risk, and building a diversified portfolio."
+    >
       <section className="space-y-6">
         <Card className="rounded-xl border border-border bg-card overflow-hidden">
           <CardHeader>
@@ -171,6 +169,6 @@ export default function LearnPage() {
           ))}
         </div>
       </section>
-    </div>
+    </VegaFinancialPageScaffold>
   );
 }

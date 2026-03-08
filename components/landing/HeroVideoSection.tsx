@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { getTourCompleted, TOUR_START_SESSION_KEY, setTourStep } from "@/lib/tour/storage";
 import { AnimateOnScroll } from "./AnimateOnScroll";
+import { DemoCTADropdown } from "./DemoCTADropdown";
 
 export function HeroVideoSection() {
   const router = useRouter();
@@ -94,20 +94,8 @@ export function HeroVideoSection() {
             </AnimateOnScroll>
 
             <AnimateOnScroll delay={260}>
-              <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
-                <Link
-                  href="/vega-financial"
-                  className="font-dm-sans inline-flex items-center justify-center h-14 px-8 w-full sm:w-auto min-w-[174px] rounded-[30px] bg-white/20 backdrop-blur-sm border border-white/30 font-black text-white text-[15px] hover:bg-white/30 hover:scale-[1.02] active:scale-[0.98] transition-[transform,background-color,border-color] duration-motion-normal ease-motion"
-                  onClick={handleTryItNow}
-                >
-                  Start Investing
-                </Link>
-                <Link
-                  href="/vega-developer"
-                  className="font-dm-sans inline-flex items-center justify-center h-14 px-8 w-full sm:w-auto min-w-[206px] rounded-[30px] border border-white/50 font-normal text-white text-[15px] hover:bg-white/10 hover:scale-[1.02] active:scale-[0.98] transition-[transform,background-color,border-color] duration-motion-normal ease-motion"
-                >
-                  Build Algorithms&nbsp;→
-                </Link>
+              <div className="mt-6 flex justify-center">
+                <DemoCTADropdown onInvest={handleTryItNow} variant="hero" />
               </div>
             </AnimateOnScroll>
           </div>
