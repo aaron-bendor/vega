@@ -51,7 +51,7 @@ export function SuggestedAlgorithms({ algorithms, heldAlgorithmIds = [] }: Sugge
     <section aria-labelledby="suggested-heading" id="marketplace" data-tour="vf-algo-list">
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-4">
         <div>
-          <h2 id="suggested-heading" className="font-syne text-lg font-semibold text-foreground">
+          <h2 id="suggested-heading" className="font-maven-pro text-lg font-semibold text-foreground">
             Suggested for you
           </h2>
           <p className="text-sm text-muted-foreground mt-0.5">

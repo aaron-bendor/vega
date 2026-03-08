@@ -103,7 +103,7 @@ export default function VegaFinancialProfilePage() {
         <section aria-labelledby="profile-heading" className="min-w-0">
           <Card className="rounded-2xl border border-border h-full">
             <CardHeader>
-              <CardTitle id="profile-heading" className="text-lg">
+              <CardTitle id="profile-heading" className="font-maven-pro text-lg">
                 Profile
               </CardTitle>
             </CardHeader>
@@ -137,13 +137,13 @@ export default function VegaFinancialProfilePage() {
         <section id="activity" aria-labelledby="activity-heading" className="min-w-0">
           <Card className="rounded-2xl border border-border h-full">
             <CardHeader>
-              <CardTitle id="activity-heading" className="text-lg">
+              <CardTitle id="activity-heading" className="font-maven-pro text-lg">
                 Activity
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <h3 className="text-sm font-medium text-foreground mb-2">
+                <h3 className="font-maven-pro text-sm font-medium text-foreground mb-2">
                   Recent paper allocations
                 </h3>
                 {recentActivity.length === 0 ? (
@@ -170,7 +170,7 @@ export default function VegaFinancialProfilePage() {
                 )}
               </div>
               <div>
-                <h3 className="text-sm font-medium text-foreground mb-1">
+                <h3 className="font-maven-pro text-sm font-medium text-foreground mb-1">
                   Watchlist summary
                 </h3>
                 <p className="text-sm text-muted-foreground">
@@ -194,7 +194,7 @@ export default function VegaFinancialProfilePage() {
         <section id="preferences" aria-labelledby="preferences-heading" className="min-w-0">
           <Card className="rounded-2xl border border-border h-full">
             <CardHeader>
-              <CardTitle id="preferences-heading" className="text-lg">
+              <CardTitle id="preferences-heading" className="font-maven-pro text-lg">
                 Preferences
               </CardTitle>
             </CardHeader>
@@ -232,7 +232,7 @@ export default function VegaFinancialProfilePage() {
         <section id="watchlist" aria-labelledby="watchlist-heading" className="min-w-0">
           <Card className="rounded-2xl border border-border h-full">
             <CardHeader>
-              <CardTitle id="watchlist-heading" className="text-lg">
+              <CardTitle id="watchlist-heading" className="font-maven-pro text-lg">
                 Watchlist
               </CardTitle>
             </CardHeader>
@@ -264,7 +264,7 @@ export default function VegaFinancialProfilePage() {
       <section aria-labelledby="demo-heading" className="mt-5 lg:mt-6">
         <Card className="rounded-2xl border border-border">
           <CardHeader>
-            <CardTitle id="demo-heading" className="text-lg">
+            <CardTitle id="demo-heading" className="font-maven-pro text-lg">
               Demo controls
             </CardTitle>
           </CardHeader>

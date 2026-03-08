@@ -206,7 +206,7 @@ export default async function AlgorithmDetailPage({
             {/* Section 1: What this strategy does */}
             {overviewCopy?.whatItDoes && (
               <section id={METRICS_HELP_ID}>
-                <h3 className="text-sm font-semibold text-foreground mb-2">What this strategy does</h3>
+                <h3 className="font-maven-pro text-sm font-semibold text-foreground mb-2">What this strategy does</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed max-w-3xl">
                   {overviewCopy.whatItDoes}
                 </p>
@@ -216,7 +216,7 @@ export default async function AlgorithmDetailPage({
             {/* Section 2: Why investors use it (3 cards) */}
             {overviewCopy?.whereWorks && overviewCopy.whereWorks.length > 0 && (
               <section>
-                <h3 className="text-sm font-semibold text-foreground mb-3">Why investors use it</h3>
+                <h3 className="font-maven-pro text-sm font-semibold text-foreground mb-3">Why investors use it</h3>
                 <div className="grid gap-3 sm:grid-cols-3">
                   {overviewCopy.whereWorks.slice(0, 3).map((item, i) => (
                     <div key={i} className="rounded-xl border border-border bg-card p-3">
@@ -244,7 +244,7 @@ export default async function AlgorithmDetailPage({
             {/* Section 4: When it tends to work vs struggle */}
             {((overviewCopy?.whenWorksList?.length ?? 0) > 0 || (overviewCopy?.whenStrugglesList?.length ?? 0) > 0) ? (
               <section>
-                <h3 className="text-sm font-semibold text-foreground mb-3">When it tends to work vs struggle</h3>
+                <h3 className="font-maven-pro text-sm font-semibold text-foreground mb-3">When it tends to work vs struggle</h3>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="rounded-xl border border-border bg-card p-4">
                     <p className="text-xs font-medium text-muted-foreground mb-2">Tends to work in</p>
@@ -266,7 +266,7 @@ export default async function AlgorithmDetailPage({
               </section>
             ) : overviewCopy?.whereWorks && overviewCopy?.whereStruggles && (
               <section>
-                <h3 className="text-sm font-semibold text-foreground mb-3">When it tends to work vs struggle</h3>
+                <h3 className="font-maven-pro text-sm font-semibold text-foreground mb-3">When it tends to work vs struggle</h3>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="rounded-xl border border-border bg-card p-4">
                     <p className="text-xs font-medium text-muted-foreground mb-2">Tends to work in</p>
@@ -317,7 +317,7 @@ export default async function AlgorithmDetailPage({
               <>
                 <Card className="vf-glass-card vf-glass-blue rounded-xl overflow-hidden border-0 shadow-none bg-transparent">
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-base font-semibold">Performance chart</CardTitle>
+                    <CardTitle className="font-maven-pro text-base font-semibold">Performance chart</CardTitle>
                     <p className="text-xs text-muted-foreground">Cumulative return over the tested period.</p>
                   </CardHeader>
                   <CardContent>
@@ -326,7 +326,7 @@ export default async function AlgorithmDetailPage({
                 </Card>
                 <Card className="vf-glass-card vf-glass-amber rounded-xl overflow-hidden border-0 shadow-none bg-transparent">
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-base font-semibold">Biggest drop over time</CardTitle>
+                    <CardTitle className="font-maven-pro text-base font-semibold">Biggest drop over time</CardTitle>
                     <p className="text-xs text-muted-foreground">
                       This shows how far the strategy fell before recovering.
                     </p>
@@ -376,7 +376,7 @@ export default async function AlgorithmDetailPage({
             {equityPoints.length > 0 && (
               <Card className="vf-glass-card vf-glass-amber rounded-xl overflow-hidden border-0 shadow-none bg-transparent">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-base font-semibold">Drawdown chart</CardTitle>
+                  <CardTitle className="font-maven-pro text-base font-semibold">Drawdown chart</CardTitle>
                   <p className="text-xs text-muted-foreground">
                     This shows how far the strategy fell before recovering.
                   </p>
@@ -447,7 +447,7 @@ export default async function AlgorithmDetailPage({
                   note="Historical data helps compare strategies. Simulated results are not forecasts."
                 />
                 <div className="rounded-xl border border-border bg-card p-4">
-                  <h3 className="text-sm font-semibold text-foreground mb-2">Assumptions</h3>
+                  <h3 className="font-maven-pro text-sm font-semibold text-foreground mb-2">Assumptions</h3>
                   <p className="text-sm text-muted-foreground leading-snug">
                     Backtest uses historical data. Slippage and costs may apply in live trading. Exact code and trade-level details are not shown.
                   </p>

@@ -46,7 +46,7 @@ export function RiskExplainerSheet({
           </p>
 
           <div>
-            <h4 className="font-semibold mb-2">95% monthly VaR (Value at Risk)</h4>
+            <h4 className="font-maven-pro font-semibold mb-2">95% monthly VaR (Value at Risk)</h4>
             <p className="text-muted-foreground">
               {varPct != null ? (
                 <>
@@ -68,7 +68,7 @@ export function RiskExplainerSheet({
 
           {standardised && (
             <div>
-              <h4 className="font-semibold mb-2">Standardised risk</h4>
+              <h4 className="font-maven-pro font-semibold mb-2">Standardised risk</h4>
               <p className="text-muted-foreground">
                 This strategy is wrapped by the platform’s risk engine so that investor-facing
                 risk is held to a target. That makes it comparable with other standardised

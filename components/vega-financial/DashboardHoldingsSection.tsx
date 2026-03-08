@@ -275,7 +275,7 @@ export function DashboardHoldingsSection({ holdings, equity }: DashboardHoldings
     <section aria-labelledby="holdings-heading">
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-4">
         <div>
-          <h2 id="holdings-heading" className="font-syne text-lg font-semibold text-foreground">
+          <h2 id="holdings-heading" className="font-maven-pro text-lg font-semibold text-foreground">
             Your holdings
           </h2>
           <p className="text-sm text-muted-foreground mt-0.5">

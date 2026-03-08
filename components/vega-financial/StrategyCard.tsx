@@ -76,7 +76,7 @@ export function StrategyCard({
             </Badge>
           )}
         </div>
-        <CardTitle className="text-base font-semibold leading-tight">
+        <CardTitle className="font-maven-pro text-base font-semibold leading-tight">
           <Link
             href={`/vega-financial/algorithms/${algorithm.id}`}
             className="font-maven-pro text-foreground hover:text-primary transition-colors duration-150 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded"

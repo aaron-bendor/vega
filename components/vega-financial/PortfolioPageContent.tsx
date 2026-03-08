@@ -71,7 +71,7 @@ export function PortfolioPageContent() {
             <div className="size-14 rounded-full bg-muted border border-border flex items-center justify-center mx-auto mb-4">
               <Wallet className="size-7 text-primary/50" aria-hidden />
             </div>
-            <h2 className="text-lg font-semibold text-foreground mb-2">
+            <h2 className="font-maven-pro text-lg font-semibold text-foreground mb-2">
               {EMPTY_STATES.noHoldings.headline}
             </h2>
             <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">
@@ -120,7 +120,7 @@ export function PortfolioPageContent() {
       </section>
 
       <section aria-labelledby="holdings-heading">
-        <h2 id="holdings-heading" className="font-syne text-lg font-semibold text-foreground mb-4">
+        <h2 id="holdings-heading" className="font-maven-pro text-lg font-semibold text-foreground mb-4">
           Holdings
         </h2>
         <div className="rounded-xl border border-border bg-card overflow-hidden">
@@ -191,7 +191,7 @@ export function PortfolioPageContent() {
       </section>
 
       <section aria-labelledby="allocation-heading">
-        <h2 id="allocation-heading" className="font-syne text-lg font-semibold text-foreground mb-4">
+        <h2 id="allocation-heading" className="font-maven-pro text-lg font-semibold text-foreground mb-4">
           Allocation breakdown
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -227,7 +227,7 @@ export function PortfolioPageContent() {
       </section>
 
       <section aria-labelledby="diversification-heading">
-        <h2 id="diversification-heading" className="font-syne text-lg font-semibold text-foreground mb-4">
+        <h2 id="diversification-heading" className="font-maven-pro text-lg font-semibold text-foreground mb-4">
           Diversification insights
         </h2>
         <Card className="rounded-xl border border-border bg-card">
@@ -255,7 +255,7 @@ export function PortfolioPageContent() {
       </section>
 
       <section aria-labelledby="rebalancing-heading">
-        <h2 id="rebalancing-heading" className="font-syne text-lg font-semibold text-foreground mb-4">
+        <h2 id="rebalancing-heading" className="font-maven-pro text-lg font-semibold text-foreground mb-4">
           Rebalancing ideas
         </h2>
         <ul className="space-y-2">

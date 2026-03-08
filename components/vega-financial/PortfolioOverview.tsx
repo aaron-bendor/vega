@@ -28,7 +28,7 @@ export function PortfolioOverview({ account }: PortfolioOverviewProps) {
           <div className="size-14 rounded-full bg-muted border border-border flex items-center justify-center mx-auto mb-5 transition-transform duration-300 hover:scale-105 motion-reduce:hover:scale-100">
             <PiggyBank className="size-7 text-primary/60" aria-hidden />
           </div>
-          <h3 className="font-semibold mb-2 text-foreground text-base sm:text-lg">No paper allocations yet</h3>
+          <h3 className="font-maven-pro font-semibold mb-2 text-foreground text-base sm:text-lg">No paper allocations yet</h3>
           <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto break-words">
             Start by exploring two or three strategies with different styles. A simple first
             portfolio usually works better when it is diversified across approaches rather than

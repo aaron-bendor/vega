@@ -13,8 +13,8 @@ export interface PortfolioReconciliationBlockProps {
 }
 
 /**
- * Visible reconciliation block: five numbers and two invariant equations.
- * Gives users a built-in audit trail so the ledger maths are transparent.
+ * Visible reconciliation block: five numbers (available cash, holdings value,
+ * total equity, invested amount, unrealised PnL). No equation display.
  */
 export function PortfolioReconciliationBlock({
   availableCash,
@@ -24,9 +24,6 @@ export function PortfolioReconciliationBlock({
   unrealisedPnl,
   className,
 }: PortfolioReconciliationBlockProps) {
-  const equityCheck = Math.abs(totalEquity - (availableCash + holdingsValue)) < 0.02;
-  const pnlCheck = Math.abs(unrealisedPnl - (holdingsValue - invested)) < 0.02;
-
   return (
     <section
       className={cn(
@@ -35,10 +32,10 @@ export function PortfolioReconciliationBlock({
       )}
       aria-labelledby="reconciliation-heading"
     >
-      <h2 id="reconciliation-heading" className="font-medium text-foreground mb-3">
+      <h2 id="reconciliation-heading" className="font-maven-pro font-medium text-foreground mb-3">
         Ledger reconciliation
       </h2>
-      <dl className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-x-4 gap-y-2 mb-4">
+      <dl className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-x-4 gap-y-2">
         <div>
           <dt className="text-muted-foreground">Available cash</dt>
           <dd className="font-medium tabular-nums text-foreground">{formatCurrency(availableCash)}</dd>
@@ -67,22 +64,6 @@ export function PortfolioReconciliationBlock({
           </dd>
         </div>
       </dl>
-      <div className="space-y-1 text-muted-foreground border-t border-border pt-3">
-        <p className="tabular-nums" aria-label="Equity equation">
-          Available cash + Holdings value = Total equity →{" "}
-          <span className={equityCheck ? "text-brand-green" : "text-destructive"}>
-            {formatCurrency(availableCash)} + {formatCurrency(holdingsValue)} = {formatCurrency(totalEquity)}
-            {equityCheck ? " ✓" : " (mismatch)"}
-          </span>
-        </p>
-        <p className="tabular-nums" aria-label="PnL equation">
-          Holdings value − Invested amount = Unrealised PnL →{" "}
-          <span className={pnlCheck ? "text-brand-green" : "text-destructive"}>
-            {formatCurrency(holdingsValue)} − {formatCurrency(invested)} = {formatCurrency(unrealisedPnl)}
-            {pnlCheck ? " ✓" : " (mismatch)"}
-          </span>
-        </p>
-      </div>
     </section>
   );
 }

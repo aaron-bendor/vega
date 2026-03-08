@@ -12,7 +12,7 @@ export default function LearnPage() {
       <section className="space-y-6">
         <Card className="rounded-xl border border-border bg-card overflow-hidden">
           <CardHeader>
-            <CardTitle className="text-lg">How to compare strategies</CardTitle>
+            <CardTitle className="font-maven-pro text-lg">How to compare strategies</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm text-muted-foreground">
             <p>
@@ -23,7 +23,7 @@ export default function LearnPage() {
 
         <Card className="rounded-xl border border-border bg-card overflow-hidden">
           <CardHeader>
-            <CardTitle className="text-lg">How to read drawdown</CardTitle>
+            <CardTitle className="font-maven-pro text-lg">How to read drawdown</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm text-muted-foreground">
             <p>
@@ -34,7 +34,7 @@ export default function LearnPage() {
 
         <Card className="rounded-xl border border-border bg-card overflow-hidden">
           <CardHeader>
-            <CardTitle className="text-lg">Why correlation matters</CardTitle>
+            <CardTitle className="font-maven-pro text-lg">Why correlation matters</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm text-muted-foreground">
             <p>
@@ -45,7 +45,7 @@ export default function LearnPage() {
 
         <Card className="rounded-xl border border-border bg-card overflow-hidden">
           <CardHeader>
-            <CardTitle className="text-lg">How to build a diversified strategy portfolio</CardTitle>
+            <CardTitle className="font-maven-pro text-lg">How to build a diversified strategy portfolio</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm text-muted-foreground">
             <p>

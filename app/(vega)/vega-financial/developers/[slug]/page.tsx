@@ -126,7 +126,7 @@ export default async function DeveloperProfilePage({
       <section aria-labelledby="about-heading" className="mt-6">
         <Card className="rounded-2xl border border-border">
           <CardHeader>
-            <CardTitle id="about-heading" className="text-lg">
+            <CardTitle id="about-heading" className="font-maven-pro text-lg">
               About
             </CardTitle>
           </CardHeader>
@@ -142,7 +142,7 @@ export default async function DeveloperProfilePage({
       <section aria-labelledby="published-heading" className="mt-6">
         <Card className="rounded-2xl border border-border">
           <CardHeader>
-            <CardTitle id="published-heading" className="text-lg">
+            <CardTitle id="published-heading" className="font-maven-pro text-lg">
               Published strategies
             </CardTitle>
           </CardHeader>

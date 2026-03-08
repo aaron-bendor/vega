@@ -119,7 +119,7 @@ export function AlgorithmCard({
         <div className="flex flex-col gap-3 md:hidden pr-20">
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <h3 className="font-syne text-sm font-semibold text-foreground truncate">{name}</h3>
+              <h3 className="font-maven-pro text-sm font-semibold text-foreground truncate">{name}</h3>
               {verified && (
                 <ShieldCheck className="size-3.5 text-primary shrink-0" aria-label="Verified" />
               )}
@@ -209,7 +209,7 @@ export function AlgorithmCard({
         <div className="hidden md:block pr-24">
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <h3 className="font-syne text-sm font-semibold text-foreground truncate">{name}</h3>
+              <h3 className="font-maven-pro text-sm font-semibold text-foreground truncate">{name}</h3>
               {verified && (
                 <ShieldCheck className="size-3.5 text-primary shrink-0" aria-label="Verified" />
               )}

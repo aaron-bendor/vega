@@ -31,7 +31,7 @@ export function DashboardInsights({ account }: DashboardInsightsProps) {
             <Lightbulb className="size-4 text-primary" aria-hidden />
           </div>
           <div>
-            <h3 className="text-sm font-medium text-foreground mb-1">Insight</h3>
+            <h3 className="font-maven-pro text-sm font-medium text-foreground mb-1">Insight</h3>
             <p className="text-sm text-muted-foreground">{tips[0]}</p>
           </div>
         </div>

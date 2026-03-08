@@ -36,7 +36,7 @@ export function FinancialSidebar({ account }: FinancialSidebarProps) {
 
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-xs font-medium text-muted-foreground">Account summary</CardTitle>
+          <CardTitle className="font-maven-pro text-xs font-medium text-muted-foreground">Account summary</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
           <div className="flex justify-between">

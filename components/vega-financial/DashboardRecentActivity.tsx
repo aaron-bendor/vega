@@ -41,7 +41,7 @@ export function DashboardRecentActivity() {
     return (
       <section aria-labelledby="recent-activity-heading">
         <div className="mb-4">
-          <h2 id="recent-activity-heading" className="font-syne text-lg font-semibold text-foreground">
+          <h2 id="recent-activity-heading" className="font-maven-pro text-lg font-semibold text-foreground">
             Recent activity
           </h2>
           <p className="text-sm text-muted-foreground mt-0.5">
@@ -49,7 +49,7 @@ export function DashboardRecentActivity() {
           </p>
         </div>
         <div className="rounded-xl border border-border bg-card p-6 sm:p-8 text-center">
-          <h3 className="text-sm font-semibold text-foreground">
+          <h3 className="font-maven-pro text-sm font-semibold text-foreground">
             {EMPTY_STATES.noActivity.headline}
           </h3>
           <p className="text-sm text-muted-foreground mt-2 max-w-sm mx-auto">
@@ -69,7 +69,7 @@ export function DashboardRecentActivity() {
   return (
     <section aria-labelledby="recent-activity-heading">
       <div className="mb-4">
-        <h2 id="recent-activity-heading" className="font-syne text-lg font-semibold text-foreground">
+        <h2 id="recent-activity-heading" className="font-maven-pro text-lg font-semibold text-foreground">
           Recent activity
         </h2>
         <p className="text-sm text-muted-foreground mt-0.5">
