@@ -12,7 +12,7 @@ interface CountUpProps {
 
 export function CountUp({
   to,
-  duration = 1200,
+  duration = 2040,
   decimals = 0,
   prefix = "",
   suffix = "",

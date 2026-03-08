@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { DemoChromeIndicator } from "@/components/vega-financial/DemoChromeIndicator";
 import {
   LayoutDashboard,
   Wallet,
@@ -21,7 +22,7 @@ const ICON_SIZE = 18;
 
 const primaryNav = [
   { href: "/vega-financial", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { href: "/vega-financial/marketplace", label: "Strategies", icon: Store },
+  { href: "/vega-financial/marketplace", label: "Explore", icon: Store },
   { href: "/vega-financial/portfolio", label: "Portfolio", icon: Wallet },
   { href: "/vega-financial/watchlist", label: "Watchlist", icon: Star },
   { href: "/vega-financial/activity", label: "Activity", icon: Activity },
@@ -79,6 +80,10 @@ export function ProfileSidebar({
           />
         </Link>
 
+      </div>
+
+      <div className="shrink-0 px-4 pb-2">
+        <DemoChromeIndicator className="py-2 px-3 rounded-lg bg-muted/50 border border-border/80" />
       </div>
 
       <div className="shrink-0 h-px bg-shell-border/80 mx-4" aria-hidden />

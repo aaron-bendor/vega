@@ -27,6 +27,9 @@ import {
 import type { MockAccount, MockHolding } from "@/lib/mock/portfolio";
 import type { PaperHolding } from "@/lib/vega-financial/portfolio-store";
 import { PortfolioReconciliationBlock } from "@/components/vega-financial/PortfolioReconciliationBlock";
+import { FirstRunWelcomeBanner } from "@/components/vega-financial/FirstRunWelcomeBanner";
+import { DemoQuickStartStrip } from "@/components/vega-financial/DemoQuickStartStrip";
+import { DEMO_ONBOARDING } from "@/lib/vega-financial/investor-copy";
 import { formatCurrency, formatPercent } from "@/lib/utils/format";
 
 function portfolioStateToMockAccount(
@@ -128,6 +131,18 @@ export function DashboardPortfolioContent({
       <div className="vf-reveal vf-reveal-delay-0">
         <DashboardHeader />
       </div>
+
+      <div className="vf-reveal vf-reveal-delay-0 space-y-4">
+        <FirstRunWelcomeBanner />
+        <DemoQuickStartStrip />
+      </div>
+
+      <p
+        className="vf-reveal vf-reveal-delay-1 text-xs text-muted-foreground"
+        role="status"
+      >
+        {DEMO_ONBOARDING.simulatedDisclosure}
+      </p>
 
       <section
         className="vf-reveal vf-reveal-delay-1 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 gap-y-3 sm:gap-y-4"
