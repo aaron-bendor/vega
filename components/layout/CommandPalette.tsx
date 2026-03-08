@@ -148,6 +148,7 @@ export function CommandPalette() {
               </p>
               {filteredPages.map((p) => {
                 const isSelected = index === selectedIndex;
+                const Icon = p.icon;
                 index++;
                 return (
                   <button
@@ -161,7 +162,7 @@ export function CommandPalette() {
                         : "text-muted-foreground hover:bg-[rgba(51,51,51,0.04)] hover:text-foreground"
                     )}
                   >
-                    <p.icon className="size-4 shrink-0" />
+                    <Icon className="size-4 shrink-0" />
                     {p.label}
                   </button>
                 );

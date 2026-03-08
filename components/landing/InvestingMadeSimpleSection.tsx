@@ -2,14 +2,13 @@
 
 /**
  * Investing made simple — scroll-driven phone carousel.
- * Required images in public/: investingmadesimple1–5.png (phones), 1.png–4.png (step numbers).
- * Built for section uses builtforPhones.png (ProductFeaturesSection).
+ * Phone slot uses aspect-[440/901] and object-contain to avoid layout clipping.
+ * If slides 2–4 look truncated: the source PNGs (investingmadesimple2–4) are truncated in the
+ * design export. Re-export from the design file with the same full canvas and device frame as
+ * investingmadesimple1 / investingmadesimple5 (full bottom of phone + bottom nav).
  */
 
-import { useState, useEffect, useRef } from "react";
-
-const MAVEN_PRO_URL =
-  "https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;500;600;700;800;900&display=swap";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 const screens = [
   {
@@ -21,15 +20,13 @@ const screens = [
   {
     step: "1",
     heading: "Browse &\nDiscover",
-    sub:
-      "Explore trading strategies **verified by our own experienced developers.**\nFilter by risk, return, and timeframe.",
+    sub: "Explore trading strategies **verified by our own experienced developers.**\nFilter by risk, return, and timeframe.",
     phone: "/investingmadesimple2.png",
   },
   {
     step: "2",
     heading: "View\nperformance",
-    sub:
-      "See _plain-English descriptions_, past returns, developer background, etc.\nPick a strategy that matches how much risk **you're comfortable with.**",
+    sub: "See _plain-English descriptions_, past returns, developer background, etc.\nPick a strategy that matches how much risk **you're comfortable with.**",
     phone: "/investingmadesimple3.png",
   },
   {
@@ -41,8 +38,7 @@ const screens = [
   {
     step: "4",
     heading: "Watch\nit grow",
-    sub:
-      "The strategy trades for you automatically. Check your returns at any time in the app. Sell whenever you like.\n**No lock-in period, no exit fees.**",
+    sub: "The strategy trades for you automatically. Check your returns at any time in the app. Sell whenever you like.\n**No lock-in period, no exit fees.**",
     phone: "/investingmadesimple5.png",
   },
 ];
@@ -58,8 +54,7 @@ function RichText({ text }: { text: string }) {
         let m: RegExpExecArray | null;
         re.lastIndex = 0;
         while ((m = re.exec(line)) !== null) {
-          if (m.index > last)
-            tokens.push({ t: "plain", s: line.slice(last, m.index) });
+          if (m.index > last) tokens.push({ t: "plain", s: line.slice(last, m.index) });
           if (m[1] !== undefined) tokens.push({ t: "bold", s: m[1] });
           if (m[2] !== undefined) tokens.push({ t: "italic", s: m[2] });
           last = m.index + m[0].length;
@@ -69,21 +64,9 @@ function RichText({ text }: { text: string }) {
           <span key={li}>
             {tokens.map((tok, ti) =>
               tok.t === "bold" ? (
-                <strong
-                  key={ti}
-                  className="text-white font-extrabold"
-                  style={{ fontWeight: 800 }}
-                >
-                  {tok.s}
-                </strong>
+                <strong key={ti} className="text-white" style={{ fontWeight: 800 }}>{tok.s}</strong>
               ) : tok.t === "italic" ? (
-                <em
-                  key={ti}
-                  className="italic"
-                  style={{ color: "rgba(237,233,254,0.95)" }}
-                >
-                  {tok.s}
-                </em>
+                <em key={ti} style={{ fontStyle: "italic", color: "rgba(237,233,254,0.95)" }}>{tok.s}</em>
               ) : (
                 <span key={ti}>{tok.s}</span>
               )
@@ -98,235 +81,184 @@ function RichText({ text }: { text: string }) {
 
 export function InvestingMadeSimpleSection() {
   const [active, setActive] = useState(0);
-  const rightRef = useRef<HTMLDivElement>(null);
-  const secRefs = useRef<(HTMLElement | null)[]>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isScrolling = useRef(false);
 
-  useEffect(() => {
-    if (typeof document !== "undefined" && !document.querySelector(`link[href="${MAVEN_PRO_URL}"]`)) {
-      const link = document.createElement("link");
-      link.rel = "stylesheet";
-      link.href = MAVEN_PRO_URL;
-      document.head.appendChild(link);
-    }
+  const scrollToSlide = useCallback((index: number) => {
+    const clamped = Math.max(0, Math.min(index, screens.length - 1));
+    if (isScrolling.current) return;
+    isScrolling.current = true;
+    setActive(clamped);
+    setTimeout(() => { isScrolling.current = false; }, 800);
   }, []);
 
   useEffect(() => {
-    const container = rightRef.current;
-    if (!container) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            const idx = e.target.getAttribute("data-index");
-            if (idx != null) setActive(Number(idx));
-          }
-        });
-      },
-      { root: container, threshold: 0.55 }
-    );
-    secRefs.current.forEach((el) => el && io.observe(el));
-    return () => io.disconnect();
-  }, []);
+    const el = containerRef.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      if (isScrolling.current) { e.preventDefault(); return; }
+      if (Math.abs(e.deltaY) < 30) return;
+      e.preventDefault();
+      if (e.deltaY > 0) scrollToSlide(active + 1);
+      else scrollToSlide(active - 1);
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [active, scrollToSlide]);
 
-  const scrollToSlide = (index: number) => {
-    secRefs.current[index]?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
-  const bgImage = "/backgroundInvestingMadesimple.png";
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    let startY = 0;
+    const onTouchStart = (e: TouchEvent) => { startY = e.touches[0].clientY; };
+    const onTouchEnd = (e: TouchEvent) => {
+      const dy = startY - e.changedTouches[0].clientY;
+      if (Math.abs(dy) < 40) return;
+      if (dy > 0) scrollToSlide(active + 1);
+      else scrollToSlide(active - 1);
+    };
+    el.addEventListener("touchstart", onTouchStart, { passive: true });
+    el.addEventListener("touchend", onTouchEnd, { passive: true });
+    return () => {
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchend", onTouchEnd);
+    };
+  }, [active, scrollToSlide]);
 
   return (
     <section
       id="investing-made-simple"
-      className="relative w-full flex overflow-hidden"
+      ref={containerRef}
+      className="relative w-full overflow-visible"
       style={{
-        minHeight: "100vh",
         height: "100vh",
         fontFamily: "'Maven Pro', sans-serif",
       }}
     >
       <style>{`
-        .snap-r::-webkit-scrollbar { display: none; }
-        .snap-r { -ms-overflow-style: none; scrollbar-width: none; }
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(28px); }
-          to { opacity: 1; transform: translateY(0); }
+          to   { opacity: 1; transform: translateY(0); }
         }
-        .anim-fade-up {
-          animation: fadeUp 0.55s cubic-bezier(0.22,1,0.36,1) both;
-        }
-        .dot-indicator {
-          border: none;
-          cursor: pointer;
-          padding: 0;
-          height: 8px;
-          border-radius: 4px;
+        .anim-fade-up { animation: fadeUp 0.55s cubic-bezier(0.22,1,0.36,1) both; }
+        .dot-ind {
+          border: none; cursor: pointer; padding: 0; height: 8px; border-radius: 4px;
           transition: width 0.35s cubic-bezier(0.4,0,0.2,1), background 0.35s ease;
         }
       `}</style>
 
-      {/* Full-bleed background */}
+      {/* Background */}
       <div
         className="absolute inset-0 z-0"
-        style={{
-          backgroundImage: `url(${bgImage})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
+        style={{ backgroundImage: "url(/backgroundInvestingMadesimple.png)", backgroundSize: "cover", backgroundPosition: "center" }}
       />
-      <div
-        className="absolute inset-0 z-[1] pointer-events-none"
-        style={{ background: "rgba(20,0,60,0.18)" }}
-      />
+      <div className="absolute inset-0 z-[1]" style={{ background: "rgba(20,0,60,0.18)" }} />
 
-      {/* LEFT — sticky phone crossfade; container sized so no phone is cropped */}
-      <div
-        className="hidden lg:flex sticky top-0 z-[2] w-1/2 flex-shrink-0 items-center justify-center overflow-visible"
-        style={{ height: "100vh" }}
-      >
-        <div
-          className="absolute w-[280px] h-[280px] rounded-full pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(210,185,255,0.18) 0%, transparent 65%)",
-          }}
-        />
-        <div
-          className="relative flex items-center justify-center"
-          style={{
-            width: "min(320px, 28vw)",
-            height: "min(680px, 85vh)",
-            minHeight: 520,
-          }}
-        >
-          {screens.map((s, i) => (
-            <div
-              key={i}
-              className="absolute inset-0 flex items-center justify-center transition-opacity duration-[800ms]"
-              style={{
-                opacity: active === i ? 1 : 0,
-                transitionTimingFunction: "cubic-bezier(0.4,0,0.2,1)",
-                pointerEvents: active === i ? "auto" : "none",
-              }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
+      <div className="relative z-[2] flex h-full overflow-visible">
+        {/* LEFT — phone crossfade. Slot fixed to 440/901 aspect; object-contain prevents layout clipping.
+            Note: investingmadesimple2–4 are currently truncated in the source PNGs (they stop mid-content).
+            Re-export those three from the design file with the same full canvas and device frame as
+            investingmadesimple1 / investingmadesimple5, including the full bottom of the phone and bottom nav. */}
+        <div className="hidden lg:flex w-1/2 h-full items-center justify-center flex-shrink-0 overflow-visible">
+          <div
+            className="absolute w-[280px] h-[280px] rounded-full pointer-events-none"
+            style={{ background: "radial-gradient(circle, rgba(210,185,255,0.18) 0%, transparent 65%)" }}
+          />
+          <div className="relative w-[320px] max-w-[28vw] aspect-[440/901] overflow-visible">
+            {screens.map((s, i) => (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
+                key={s.phone}
                 src={s.phone}
                 alt=""
-                className="max-w-full max-h-full w-auto h-auto object-contain"
-                style={{
-                  filter: "drop-shadow(0 36px 80px rgba(50,0,140,0.6))",
-                }}
+                className="absolute inset-0 w-full h-full object-contain transition-opacity duration-700"
+                style={{ opacity: active === i ? 1 : 0 }}
               />
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* RIGHT — snap scroll */}
-      <div
-        ref={rightRef}
-        className="snap-r relative z-[2] w-full lg:w-1/2 overflow-y-auto"
-        style={{
-          height: "100vh",
-          scrollSnapType: "y mandatory",
-          scrollBehavior: "smooth",
-        }}
-      >
-        {screens.map((s, i) => (
-          <section
-            key={i}
-            data-index={i}
-            ref={(el) => { secRefs.current[i] = el; }}
-            className="flex flex-col justify-center min-h-screen py-12 lg:py-0 px-6 lg:pl-6 lg:pr-14"
-            style={{
-              scrollSnapAlign: "start",
-              scrollSnapStop: "always",
-            }}
-          >
-            <div
-              className={active === i ? "anim-fade-up" : ""}
-              style={{ maxWidth: 430 }}
-            >
-              {/* Step number: image 1.png–4.png */}
-              {s.step && (
-                <div className="flex justify-start mb-1">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`/${s.step}.png`}
-                    alt=""
-                    aria-hidden
-                    className="h-16 md:h-20 w-auto object-contain"
-                  />
+        {/* RIGHT — text content */}
+        <div className="w-full lg:w-1/2 h-full flex items-center justify-center px-6 lg:pl-6 lg:pr-14">
+          <div className="relative w-full" style={{ maxWidth: 440 }}>
+            {screens.map((s, i) => (
+              <div
+                key={i}
+                className={active === i ? "anim-fade-up" : ""}
+                style={{
+                  position: i === 0 ? "relative" : "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  opacity: active === i ? 1 : 0,
+                  transition: "opacity 0.6s ease",
+                  pointerEvents: active === i ? "auto" : "none",
+                  visibility: active === i ? "visible" : "hidden",
+                }}
+              >
+                {s.step && (
+                  <div className="mb-1">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`/${s.step}.png`}
+                      alt=""
+                      aria-hidden
+                      className="h-16 md:h-20 w-auto object-contain"
+                    />
+                  </div>
+                )}
+
+                <h2
+                  className="text-white font-extrabold leading-[1.08] mb-5 whitespace-pre-line tracking-tight"
+                  style={{
+                    fontSize: i === 0 ? "clamp(2rem, 4vw, 48px)" : "clamp(1.75rem, 3.5vw, 42px)",
+                    fontWeight: 900,
+                    letterSpacing: -1.5,
+                  }}
+                >
+                  {s.heading}
+                </h2>
+
+                <p
+                  className="text-[rgba(228,215,255,0.8)] leading-[1.75]"
+                  style={{ fontSize: 16, fontWeight: 400 }}
+                >
+                  <RichText text={s.sub} />
+                </p>
+
+                {/* Dot indicators */}
+                <div className="flex gap-2 items-center mt-10">
+                  {screens.map((_, di) => (
+                    <button
+                      key={di}
+                      type="button"
+                      className="dot-ind"
+                      onClick={() => scrollToSlide(di)}
+                      aria-label={`Go to step ${di + 1}`}
+                      style={{
+                        width: active === di ? 28 : 8,
+                        background: active === di ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.28)",
+                      }}
+                    />
+                  ))}
                 </div>
-              )}
-
-              <h2
-                className="text-white font-extrabold leading-[1.08] mb-5 whitespace-pre-line tracking-tight"
-                style={{
-                  fontSize: i === 0 ? "clamp(2rem, 4vw, 48px)" : "clamp(1.75rem, 3.5vw, 42px)",
-                  fontWeight: 900,
-                  letterSpacing: -1.5,
-                  fontFamily: "'Maven Pro', sans-serif",
-                }}
-              >
-                {s.heading}
-              </h2>
-
-              <p
-                className="text-[rgba(228,215,255,0.8)] font-normal leading-[1.75]"
-                style={{
-                  fontSize: 16,
-                  fontWeight: 400,
-                  fontFamily: "'Maven Pro', sans-serif",
-                }}
-              >
-                <RichText text={s.sub} />
-              </p>
-
-              {/* Dot indicators — all slides */}
-              <div className="flex gap-2 items-center mt-8">
-                {screens.map((_, di) => (
-                  <button
-                    key={di}
-                    type="button"
-                    className="dot-indicator"
-                    onClick={() => scrollToSlide(di)}
-                    aria-label={`Go to step ${di + 1}`}
-                    style={{
-                      width: active === di ? 28 : 8,
-                      background:
-                        active === di
-                          ? "rgba(255,255,255,0.95)"
-                          : "rgba(255,255,255,0.28)",
-                    }}
-                  />
-                ))}
               </div>
-            </div>
-          </section>
-        ))}
-      </div>
+            ))}
+          </div>
 
-      {/* Mobile: show single phone under content (no crop) */}
-      <div className="lg:hidden absolute bottom-8 left-0 right-0 z-[2] flex justify-center items-center pointer-events-none">
-        <div className="relative flex items-center justify-center w-[200px] min-h-[320px] max-h-[380px]">
-          {screens.map((s, i) => (
-            <div
-              key={i}
-              className="absolute inset-0 flex items-center justify-center transition-opacity duration-[800ms]"
-              style={{
-                opacity: active === i ? 1 : 0,
-                pointerEvents: "none",
-              }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
+          {/* Mobile phone — same aspect slot, object-contain */}
+          <div className="lg:hidden absolute bottom-6 left-1/2 -translate-x-1/2 pointer-events-none overflow-visible w-[200px] aspect-[440/901]">
+            {screens.map((s, i) => (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
+                key={s.phone}
                 src={s.phone}
                 alt=""
-                className="max-w-full max-h-full w-auto h-auto object-contain"
+                className="absolute inset-0 w-full h-full object-contain transition-opacity duration-700"
+                style={{ opacity: active === i ? 1 : 0 }}
               />
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>

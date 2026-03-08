@@ -33,7 +33,7 @@ export function ProductFeaturesSection() {
           <AnimateOnScroll direction="left" className="flex-shrink-0 w-full lg:w-1/2 flex justify-center">
             <div className="relative w-full max-w-[600px]">
               <Image
-                src="/builtforPhones.png"
+                src="/builtforPhones.png?v=2"
                 alt="Built for everyone — multiple phone mockups"
                 width={600}
                 height={450}
