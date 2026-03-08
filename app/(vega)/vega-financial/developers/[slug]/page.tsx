@@ -19,7 +19,7 @@ export default async function DeveloperProfilePage({
   const fromAlgoId = query.from?.trim();
   const fromAlgoName = query.fromName?.trim();
   const breadcrumbItems = [
-    { label: "Strategies", href: "/vega-financial/marketplace" },
+    { label: "Explore", href: "/vega-financial/marketplace" },
     ...(fromAlgoId && fromAlgoName
       ? [
           { label: fromAlgoName, href: `/vega-financial/algorithms/${fromAlgoId}` as const },

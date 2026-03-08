@@ -1,21 +1,19 @@
 "use client";
 
 /**
- * Investing made simple — scroll-driven phone carousel.
- * Phone slot uses aspect-[440/901] and object-contain to avoid layout clipping.
- * If slides 2–4 look truncated: the source PNGs (investingmadesimple2–4) are truncated in the
- * design export. Re-export from the design file with the same full canvas and device frame as
- * investingmadesimple1 / investingmadesimple5 (full bottom of phone + bottom nav).
+ * Investing made simple — manual stepper (no scroll/wheel hijacking).
+ * Desktop: one active concept at a time with prev/next and dots.
+ * Mobile: stacked cards with clear step labels (1, 2, 3, 4). Teaches, not impresses.
  */
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useCallback } from "react";
 
 const IMG_V = "?v=2";
 const screens = [
   {
     step: null as string | null,
     heading: "Investing\nmade simple",
-    sub: "Start investing in minutes. No experience needed.",
+    sub: "Explore the demo in minutes. No experience needed. Simulated experience only.",
     phone: "/investingmadesimple1.png" + IMG_V,
   },
   {
@@ -82,96 +80,18 @@ function RichText({ text }: { text: string }) {
 
 export function InvestingMadeSimpleSection() {
   const [active, setActive] = useState(0);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const isScrolling = useRef(false);
 
-  const scrollToSlide = useCallback((index: number) => {
-    const clamped = Math.max(0, Math.min(index, screens.length - 1));
-    if (isScrolling.current) return;
-    isScrolling.current = true;
-    setActive(clamped);
-    setTimeout(() => { isScrolling.current = false; }, 800);
+  const goToStep = useCallback((index: number) => {
+    setActive(Math.max(0, Math.min(index, screens.length - 1)));
   }, []);
-
-  // Scroll-driven: linear progress, rAF for smooth updates
-  useEffect(() => {
-    const section = containerRef.current;
-    if (!section) return;
-    let rafId: number | null = null;
-    const onScroll = () => {
-      if (rafId !== null) return;
-      rafId = requestAnimationFrame(() => {
-        rafId = null;
-        const rect = section.getBoundingClientRect();
-        const sectionHeight = rect.height;
-        const viewHeight = typeof window !== "undefined" ? window.innerHeight : 0;
-        const scrollable = Math.max(0, sectionHeight - viewHeight);
-        if (scrollable <= 0) return;
-        const scrolled = -rect.top;
-        const progress = Math.max(0, Math.min(1, scrolled / scrollable));
-        const stepIndex = Math.min(
-          screens.length - 1,
-          Math.floor(progress * screens.length)
-        );
-        setActive(stepIndex);
-      });
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      if (rafId !== null) cancelAnimationFrame(rafId);
-    };
-  }, []);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const onWheel = (e: WheelEvent) => {
-      if (isScrolling.current) { e.preventDefault(); return; }
-      if (Math.abs(e.deltaY) < 30) return;
-      e.preventDefault();
-      if (e.deltaY > 0) scrollToSlide(active + 1);
-      else scrollToSlide(active - 1);
-    };
-    el.addEventListener("wheel", onWheel, { passive: false });
-    return () => el.removeEventListener("wheel", onWheel);
-  }, [active, scrollToSlide]);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    let startY = 0;
-    const onTouchStart = (e: TouchEvent) => { startY = e.touches[0].clientY; };
-    const onTouchEnd = (e: TouchEvent) => {
-      const dy = startY - e.changedTouches[0].clientY;
-      if (Math.abs(dy) < 40) return;
-      if (dy > 0) scrollToSlide(active + 1);
-      else scrollToSlide(active - 1);
-    };
-    el.addEventListener("touchstart", onTouchStart, { passive: true });
-    el.addEventListener("touchend", onTouchEnd, { passive: true });
-    return () => {
-      el.removeEventListener("touchstart", onTouchStart);
-      el.removeEventListener("touchend", onTouchEnd);
-    };
-  }, [active, scrollToSlide]);
 
   return (
     <section
       id="investing-made-simple"
-      ref={containerRef}
-      className="relative w-full overflow-visible"
-      style={{
-        // Taller section: more scroll per step for a smoother, less twitchy feel
-        height: `calc(100vh + ${(screens.length - 1) * 70}vh)`,
-        fontFamily: "'Maven Pro', sans-serif",
-      }}
+      className="relative w-full min-h-screen overflow-hidden"
+      style={{ fontFamily: "'Maven Pro', sans-serif" }}
     >
-      <div
-        className="sticky top-0 left-0 w-full h-screen overflow-visible"
-        style={{ height: "100vh" }}
-      >
+      <div className="w-full min-h-screen flex flex-col" style={{ minHeight: "100vh" }}>
       <style>{`
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(28px); }
@@ -277,29 +197,49 @@ export function InvestingMadeSimpleSection() {
                 </p>
 
                 {/* Dot indicators — on mobile: step label + 44px touch targets */}
-                <div className="mt-6 lg:mt-10">
-                  <p className="lg:sr-only text-[rgba(228,215,255,0.9)] text-sm font-medium mb-2" aria-live="polite">
+                <div className="mt-6 lg:mt-10 flex flex-col gap-3">
+                  <p className="text-[rgba(228,215,255,0.9)] text-sm font-medium" aria-live="polite">
                     Step {active + 1} of {screens.length}
                   </p>
-                  <div className="flex gap-1 lg:gap-2 items-center">
-                    {screens.map((_, di) => (
-                      <button
-                        key={di}
-                        type="button"
-                        className="dot-ind-btn"
-                        onClick={() => scrollToSlide(di)}
-                        aria-label={`Go to step ${di + 1}`}
-                        aria-current={active === di ? "step" : undefined}
-                      >
-                        <span
-                          className="dot-ind"
-                          style={{
-                            width: active === di ? 28 : 8,
-                            background: active === di ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.28)",
-                          }}
-                        />
-                      </button>
-                    ))}
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => goToStep(active - 1)}
+                      disabled={active === 0}
+                      className="min-w-[44px] min-h-[44px] rounded-lg border border-white/30 text-white font-medium text-sm hover:bg-white/10 disabled:opacity-40 disabled:pointer-events-none focus-visible:outline focus-visible:ring-2 focus-visible:ring-white"
+                      aria-label="Previous step"
+                    >
+                      Previous
+                    </button>
+                    <div className="flex gap-1 lg:gap-2 items-center">
+                      {screens.map((_, di) => (
+                        <button
+                          key={di}
+                          type="button"
+                          className="dot-ind-btn"
+                          onClick={() => goToStep(di)}
+                          aria-label={`Go to step ${di + 1}`}
+                          aria-current={active === di ? "step" : undefined}
+                        >
+                          <span
+                            className="dot-ind"
+                            style={{
+                              width: active === di ? 28 : 8,
+                              background: active === di ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.28)",
+                            }}
+                          />
+                        </button>
+                      ))}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => goToStep(active + 1)}
+                      disabled={active === screens.length - 1}
+                      className="min-w-[44px] min-h-[44px] rounded-lg border border-white/30 text-white font-medium text-sm hover:bg-white/10 disabled:opacity-40 disabled:pointer-events-none focus-visible:outline focus-visible:ring-2 focus-visible:ring-white"
+                      aria-label="Next step"
+                    >
+                      Next
+                    </button>
                   </div>
                 </div>
               </div>

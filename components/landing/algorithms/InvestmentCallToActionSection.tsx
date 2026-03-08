@@ -17,21 +17,24 @@ export function InvestmentCallToActionSection(): JSX.Element {
           <span className="text-violet-500">in algorithms?</span>
         </h2>
       </div>
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12 px-4">
-        <Link
-          href="/vega-financial"
-          className="inline-flex justify-center items-center h-12 px-8 w-full sm:w-auto min-w-[247px] bg-[#6b21e8] rounded-[10px] shadow-[0px_0px_40px_#6b21e866] font-dm-sans font-medium text-white text-[15px] transition-all hover:bg-[#5a1bc4] active:scale-[0.98] focus-visible:outline focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-          aria-label="Download Vega Financial"
-        >
-          Download Vega Financial
-        </Link>
-        <Link
-          href="/vega-developer"
-          className="inline-flex justify-center items-center h-12 px-8 w-full sm:w-auto min-w-[243px] rounded-[10px] border border-[#6b21e84c] shadow-[0px_1px_5px_#531cb3] font-dm-sans font-normal text-[#f0edff] text-[15px] transition-all hover:border-violet-500 hover:shadow-[0px_1px_8px_#531cb3] active:scale-[0.98] focus-visible:outline focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-          aria-label="Register Interest for Vega Developer"
-        >
-          Register Interest for Vega Developer →
-        </Link>
+      <div className="flex flex-col items-center gap-2 mt-12 px-4">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <Link
+            href="/vega-financial"
+            className="inline-flex justify-center items-center min-h-[44px] h-12 px-8 w-full sm:w-auto min-w-[247px] bg-[#6b21e8] rounded-[10px] shadow-[0px_0px_40px_#6b21e866] font-dm-sans font-medium text-white text-[15px] transition-all hover:bg-[#5a1bc4] active:scale-[0.98] focus-visible:outline focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+            aria-label="Open Vega Financial demo"
+          >
+            Open demo
+          </Link>
+          <Link
+            href="/vega-developer"
+            className="inline-flex justify-center items-center min-h-[44px] h-12 px-8 w-full sm:w-auto min-w-[243px] rounded-[10px] border border-[#6b21e84c] shadow-[0px_1px_5px_#531cb3] font-dm-sans font-normal text-[#f0edff] text-[15px] transition-all hover:border-violet-500 hover:shadow-[0px_1px_8px_#531cb3] active:scale-[0.98] focus-visible:outline focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+            aria-label="Register Interest for Vega Developer"
+          >
+            Register Interest for Vega Developer →
+          </Link>
+        </div>
+        <p className="text-[#7b7394] text-xs">Simulated experience only · No live funds</p>
       </div>
       </AnimateOnScroll>
     </section>

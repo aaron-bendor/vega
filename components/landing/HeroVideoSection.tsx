@@ -94,20 +94,25 @@ export function HeroVideoSection() {
             </AnimateOnScroll>
 
             <AnimateOnScroll delay={260}>
-              <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
-                <Link
-                  href="/vega-financial"
-                  className="font-dm-sans inline-flex items-center justify-center h-14 px-8 w-full sm:w-auto min-w-[174px] rounded-[30px] bg-white/20 backdrop-blur-sm border border-white/30 font-black text-white text-[15px] hover:bg-white/30 hover:scale-[1.02] active:scale-[0.98] transition-[transform,background-color,border-color] duration-motion-normal ease-motion"
-                  onClick={handleTryItNow}
-                >
-                  Start Investing
-                </Link>
-                <Link
-                  href="/vega-developer"
-                  className="font-dm-sans inline-flex items-center justify-center h-14 px-8 w-full sm:w-auto min-w-[206px] rounded-[30px] border border-white/50 font-normal text-white text-[15px] hover:bg-white/10 hover:scale-[1.02] active:scale-[0.98] transition-[transform,background-color,border-color] duration-motion-normal ease-motion"
-                >
-                  Build Algorithms&nbsp;→
-                </Link>
+              <div className="mt-6 flex flex-col items-center gap-3">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Link
+                    href="/vega-financial"
+                    className="font-dm-sans inline-flex items-center justify-center h-14 px-8 w-full sm:w-auto min-w-[174px] rounded-[30px] bg-white/20 backdrop-blur-sm border border-white/30 font-black text-white text-[15px] hover:bg-white/30 hover:scale-[1.02] active:scale-[0.98] transition-[transform,background-color,border-color] duration-motion-normal ease-motion min-h-[44px]"
+                    onClick={handleTryItNow}
+                  >
+                    Launch demo
+                  </Link>
+                  <Link
+                    href="/vega-developer"
+                    className="font-dm-sans inline-flex items-center justify-center h-14 px-8 w-full sm:w-auto min-w-[206px] rounded-[30px] border border-white/50 font-normal text-white text-[15px] hover:bg-white/10 hover:scale-[1.02] active:scale-[0.98] transition-[transform,background-color,border-color] duration-motion-normal ease-motion min-h-[44px]"
+                  >
+                    Build Algorithms&nbsp;→
+                  </Link>
+                </div>
+                <p className="text-white/70 text-xs font-dm-sans">
+                  Simulated experience only · No live funds · Educational and illustrative only
+                </p>
               </div>
             </AnimateOnScroll>
           </div>

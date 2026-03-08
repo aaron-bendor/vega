@@ -434,7 +434,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                         data-tour="try-it-now"
                         onClick={handleTryItNow}
                       >
-                        Get Started
+                        Open demo
                       </Link>
                     )}
                   </div>
@@ -469,7 +469,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                         data-tour="try-it-now"
                         onClick={handleTryItNow}
                       >
-                        Get Started
+                        Open demo
                       </Link>
                     )}
                   </div>
@@ -555,7 +555,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                 }}
                 data-tour="try-it-now"
               >
-                Get Started
+                Open demo
               </Link>
             </div>
           )}

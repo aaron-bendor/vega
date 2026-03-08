@@ -12,7 +12,8 @@ import {
   type PortfolioState,
   type RiskPreference,
 } from "@/lib/vega-financial/portfolio-store";
-import { clearTourForReplay, setTourStep } from "@/lib/tour/storage";
+import { clearWelcomeBannerDismissed, recordDemoEvent } from "@/lib/vega-financial/demo-onboarding";
+import { clearTourForReplay, setTourStep, TOUR_START_SESSION_KEY } from "@/lib/tour/storage";
 import { formatCurrency } from "@/lib/utils/format";
 
 const RISK_LABELS: Record<RiskPreference, string> = {
@@ -27,6 +28,7 @@ export default function VegaFinancialProfilePage() {
 
   useEffect(() => {
     setState(loadPortfolioState());
+    recordDemoEvent("settings_opened");
   }, []);
 
   const refresh = () => {
@@ -35,8 +37,10 @@ export default function VegaFinancialProfilePage() {
   };
 
   const handleResetDemoPortfolio = () => {
+    recordDemoEvent("reset_demo_clicked");
     if (typeof window !== "undefined") {
       localStorage.removeItem(PORTFOLIO_STORAGE_KEY);
+      clearWelcomeBannerDismissed();
     }
     refresh();
     router.push("/vega-financial");
@@ -50,7 +54,7 @@ export default function VegaFinancialProfilePage() {
       tutorialState: 0,
     });
     if (typeof sessionStorage !== "undefined") {
-      sessionStorage.setItem("vega_tour_start", "1");
+      sessionStorage.setItem(TOUR_START_SESSION_KEY, "1");
     }
     setTourStep(0);
     refresh();
@@ -69,9 +73,14 @@ export default function VegaFinancialProfilePage() {
       savePortfolioState({ ...state, tutorialState: 0 });
     }
     if (typeof sessionStorage !== "undefined") {
-      sessionStorage.setItem("vega_tour_start", "1");
+      sessionStorage.setItem(TOUR_START_SESSION_KEY, "1");
     }
     setTourStep(0);
+    refresh();
+  };
+
+  const handleRestoreWelcomeBanner = () => {
+    clearWelcomeBannerDismissed();
     refresh();
   };
 
@@ -95,11 +104,77 @@ export default function VegaFinancialProfilePage() {
   return (
     <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 py-5 sm:py-6">
       <h1 className="font-maven-pro text-2xl md:text-3xl font-bold text-foreground mb-5">
-        Profile
+        Settings
       </h1>
 
+      {/* Demo controls — primary focus for demo users */}
+      <section aria-labelledby="demo-heading" className="mb-6 lg:mb-8">
+        <Card className="rounded-2xl border border-border">
+          <CardHeader>
+            <CardTitle id="demo-heading" className="font-maven-pro text-lg">
+              Demo controls
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleTutorialReset}
+                className="min-h-[44px]"
+              >
+                Restart tutorial
+              </Button>
+              <p className="text-xs text-muted-foreground mt-1.5">
+                Walk through the demo again.
+              </p>
+            </div>
+            <div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleResetDemoPortfolio}
+                className="min-h-[44px]"
+              >
+                Reset demo portfolio
+              </Button>
+              <p className="text-xs text-muted-foreground mt-1.5">
+                Restore the sample holdings and balances.
+              </p>
+            </div>
+            <div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleClearWatchlist}
+                disabled={watchlistCount === 0}
+                className="min-h-[44px]"
+              >
+                Clear watchlist
+              </Button>
+              <p className="text-xs text-muted-foreground mt-1.5">
+                Remove saved demo strategies.
+              </p>
+            </div>
+            <div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleRestoreWelcomeBanner}
+                className="min-h-[44px]"
+              >
+                Restore welcome banner
+              </Button>
+              <p className="text-xs text-muted-foreground mt-1.5">
+                Show the onboarding banner again.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-6">
-        {/* 1. Profile */}
+        {/* Profile */}
         <section aria-labelledby="profile-heading" className="min-w-0">
           <Card className="rounded-2xl border border-border h-full">
             <CardHeader>
@@ -133,7 +208,7 @@ export default function VegaFinancialProfilePage() {
           </Card>
         </section>
 
-        {/* 2. Activity */}
+        {/* Activity */}
         <section id="activity" aria-labelledby="activity-heading" className="min-w-0">
           <Card className="rounded-2xl border border-border h-full">
             <CardHeader>
@@ -190,11 +265,11 @@ export default function VegaFinancialProfilePage() {
           </Card>
         </section>
 
-        {/* 3. Preferences */}
+        {/* Preferences — deprioritised placeholder */}
         <section id="preferences" aria-labelledby="preferences-heading" className="min-w-0">
-          <Card className="rounded-2xl border border-border h-full">
+          <Card className="rounded-2xl border border-border h-full opacity-90">
             <CardHeader>
-              <CardTitle id="preferences-heading" className="font-maven-pro text-lg">
+              <CardTitle id="preferences-heading" className="font-maven-pro text-lg text-muted-foreground">
                 Preferences
               </CardTitle>
             </CardHeader>
@@ -207,19 +282,6 @@ export default function VegaFinancialProfilePage() {
                   £1,000 (demo placeholder)
                 </p>
               </div>
-              <div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleTutorialReset}
-                  className="mt-1"
-                >
-                  Reset tutorial
-                </Button>
-                <p className="text-xs text-muted-foreground mt-1.5">
-                  Restart the guided tour from the beginning.
-                </p>
-              </div>
               <p className="text-sm text-muted-foreground pt-2">
                 Demo notification preferences (placeholder) — no real
                 notifications in this prototype.
@@ -228,7 +290,7 @@ export default function VegaFinancialProfilePage() {
           </Card>
         </section>
 
-        {/* 4. Watchlist snippet (anchor for sidebar link) */}
+        {/* Watchlist snippet */}
         <section id="watchlist" aria-labelledby="watchlist-heading" className="min-w-0">
           <Card className="rounded-2xl border border-border h-full">
             <CardHeader>
@@ -259,50 +321,6 @@ export default function VegaFinancialProfilePage() {
           </Card>
         </section>
       </div>
-
-      {/* 5. Demo controls */}
-      <section aria-labelledby="demo-heading" className="mt-5 lg:mt-6">
-        <Card className="rounded-2xl border border-border">
-          <CardHeader>
-            <CardTitle id="demo-heading" className="font-maven-pro text-lg">
-              Demo controls
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Button
-              variant="outline"
-              onClick={handleResetDemoPortfolio}
-              className="w-full sm:w-auto"
-            >
-              Reset demo portfolio
-            </Button>
-            <p className="text-xs text-muted-foreground">
-              Clear all paper holdings and reset cash. You will start fresh.
-            </p>
-            <Button
-              variant="outline"
-              onClick={handleResetOnboarding}
-              className="w-full sm:w-auto mt-2"
-            >
-              Reset onboarding
-            </Button>
-            <p className="text-xs text-muted-foreground">
-              Show onboarding and tutorial again from the dashboard.
-            </p>
-            <Button
-              variant="outline"
-              onClick={handleClearWatchlist}
-              className="w-full sm:w-auto mt-2"
-              disabled={watchlistCount === 0}
-            >
-              Clear watchlist
-            </Button>
-            <p className="text-xs text-muted-foreground">
-              Remove all strategies from your watchlist.
-            </p>
-          </CardContent>
-        </Card>
-      </section>
     </div>
   );
 }

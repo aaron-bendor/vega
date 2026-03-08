@@ -66,9 +66,9 @@ export function UsageExplanationSection() {
             <AnimateOnScroll delay={0.3}>
               <Link
                 href="/vega-financial"
-                className="mt-10 inline-flex items-center justify-center h-[50px] px-8 rounded-[30px] bg-[#6b21e8] text-white font-dm-sans font-bold text-lg shadow-[0_0_40px_rgba(107,33,232,0.4)] hover:bg-[#5a1bc4] hover:shadow-[0_0_60px_rgba(107,33,232,0.5)] hover:scale-[1.02] active:scale-[0.98] transition-all"
+                className="mt-10 inline-flex items-center justify-center min-h-[44px] h-[50px] px-8 rounded-[30px] bg-[#6b21e8] text-white font-dm-sans font-bold text-lg shadow-[0_0_40px_rgba(107,33,232,0.4)] hover:bg-[#5a1bc4] hover:shadow-[0_0_60px_rgba(107,33,232,0.5)] hover:scale-[1.02] active:scale-[0.98] transition-all"
               >
-                Get Started
+                Open demo
               </Link>
             </AnimateOnScroll>
           </div>

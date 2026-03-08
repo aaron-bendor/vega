@@ -1,6 +1,6 @@
 "use client";
 
-import { PAGE_SUBTITLES } from "@/lib/vega-financial/investor-copy";
+import { PAGE_SUBTITLES, DEMO_STAGES } from "@/lib/vega-financial/investor-copy";
 
 const DISCLAIMER_ITEMS = ["Paper trading only", "University prototype", "Not investment advice"];
 
@@ -14,6 +14,9 @@ export function DashboardHeader() {
           </h1>
           <p className="text-sm text-muted-foreground mt-1.5 max-w-xl">
             {PAGE_SUBTITLES.dashboard}
+          </p>
+          <p className="text-xs text-muted-foreground mt-1">
+            {DEMO_STAGES.understand} → {DEMO_STAGES.explore} → {DEMO_STAGES.personalise}
           </p>
         </div>
         <div

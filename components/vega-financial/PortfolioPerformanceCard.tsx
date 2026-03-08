@@ -63,7 +63,7 @@ export function PortfolioPerformanceCard({
         <div>
           <h3 className="text-sm font-semibold text-foreground">Portfolio performance</h3>
           <p className="text-xs text-muted-foreground mt-0.5">
-            How your account value has changed over time
+            How your demo account value has changed over time. Values are simulated.
           </p>
         </div>
         {showChart && (

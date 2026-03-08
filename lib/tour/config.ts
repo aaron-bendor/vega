@@ -71,7 +71,7 @@ export const TOUR_STEPS: TourStepConfig[] = [
   {
     route: "/vega-financial",
     selector: "",
-    body: "You are set. You can replay this tour from Help.",
+    body: "You are set. You can replay this tutorial from Settings.",
   },
 ];
 

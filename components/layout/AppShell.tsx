@@ -47,6 +47,12 @@ export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalT
 
   return (
     <div className={naturalScroll ? "bg-white" : "min-h-screen flex flex-col bg-white"}>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+      >
+        Skip to content
+      </a>
       {hideTopBar ? (
         <>
           {/* Mobile: fixed menu button to open sidebar (no top bar) */}
@@ -147,6 +153,8 @@ export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalT
               </div>
             ) : null}
             <main
+              id="main-content"
+              tabIndex={-1}
               className={cn(
                 "min-w-0",
                 hideTopBar ? "pt-16 pl-16 lg:pt-4 lg:pl-0" : "pt-4 sm:pt-6",

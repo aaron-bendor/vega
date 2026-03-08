@@ -32,13 +32,20 @@ export const EMPTY_STATES = {
   noHoldings: {
     headline: "No holdings yet",
     body: "Explore strategies and add them to your portfolio to see performance here.",
-    cta: "Explore strategies",
+    cta: "Explore",
   },
   noActivity: {
     headline: "No recent activity",
-    body: "Allocations, watchlist changes, and portfolio updates will appear here.",
-    cta: "Explore strategies",
+    body: "Activity appears as you interact with the demo. Allocations, watchlist changes, and portfolio updates will appear here.",
+    cta: "Explore",
   },
+} as const;
+
+/** Three stages for demo entry (headings, empty states, tutorial). */
+export const DEMO_STAGES = {
+  understand: "Understand the demo",
+  explore: "Explore the dashboard",
+  personalise: "Personalise or reset in Settings",
 } as const;
 
 export const PAGE_SUBTITLES = {
