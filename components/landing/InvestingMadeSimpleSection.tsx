@@ -216,7 +216,7 @@ export function InvestingMadeSimpleSection() {
         </div>
 
         {/* RIGHT — text content */}
-        <div className="w-full lg:w-1/2 h-full flex items-center justify-center px-4 sm:px-6 lg:pl-6 lg:pr-14 pb-[min(220px,55vw)] lg:pb-0">
+        <div className="w-full lg:w-1/2 h-full flex items-start lg:items-center justify-center px-5 sm:px-6 lg:pl-6 lg:pr-14 pt-[14vh] lg:pt-0 lg:pb-0">
           <div className="relative w-full min-w-0" style={{ maxWidth: 440 }}>
             {screens.map((s, i) => (
               <div
@@ -234,7 +234,7 @@ export function InvestingMadeSimpleSection() {
                 }}
               >
                 {s.step && (
-                  <div className="-mt-4 mb-1">
+                  <div className="-mt-2 mb-1 lg:-mt-4">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={`/${s.step}.png`}
@@ -246,7 +246,7 @@ export function InvestingMadeSimpleSection() {
                 )}
 
                 <h2
-                  className="text-white font-extrabold leading-[1.08] mb-5 whitespace-pre-line tracking-tight"
+                  className="text-white font-extrabold leading-[1.08] mb-3 lg:mb-5 whitespace-pre-line tracking-tight"
                   style={{
                     fontSize: i === 0 ? "clamp(2rem, 4vw, 48px)" : "clamp(1.75rem, 3.5vw, 42px)",
                     fontWeight: 900,
@@ -257,14 +257,14 @@ export function InvestingMadeSimpleSection() {
                 </h2>
 
                 <p
-                  className="text-[rgba(228,215,255,0.8)] leading-[1.75]"
+                  className="text-[rgba(228,215,255,0.8)] leading-[1.55] lg:leading-[1.75]"
                   style={{ fontSize: 16, fontWeight: 400 }}
                 >
                   <RichText text={s.sub} />
                 </p>
 
                 {/* Dot indicators */}
-                <div className="flex gap-2 items-center mt-10">
+                <div className="flex gap-2 items-center mt-6 lg:mt-10">
                   {screens.map((_, di) => (
                     <button
                       key={di}
@@ -286,7 +286,7 @@ export function InvestingMadeSimpleSection() {
           {/* Mobile phone — responsive width 320–430px, same aspect slot, object-contain */}
           <div
             className="lg:hidden absolute left-1/2 -translate-x-1/2 pointer-events-none overflow-visible aspect-[440/901]"
-            style={{ width: "min(200px, 55vw)", bottom: "1.5rem" }}
+            style={{ width: "min(260px, 64vw)", bottom: "0.5rem" }}
           >
             {screens.map((s, i) => (
               // eslint-disable-next-line @next/next/no-img-element
