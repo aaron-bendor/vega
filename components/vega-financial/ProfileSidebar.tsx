@@ -68,13 +68,13 @@ export function ProfileSidebar({
           aria-label="Vega Financial home"
         >
           <Image
-            src="/logofordemo.png"
+            src={isCollapsed ? "/V.png" : "/logofordemo.png"}
             alt="Vega Financial"
-            width={120}
-            height={30}
+            width={isCollapsed ? 40 : 120}
+            height={isCollapsed ? 40 : 30}
             className={cn(
               "object-contain",
-              isCollapsed ? "max-w-[64px] h-auto" : "h-9 w-auto"
+              isCollapsed ? "size-10" : "h-9 w-auto"
             )}
             priority
           />
@@ -82,11 +82,14 @@ export function ProfileSidebar({
 
       </div>
 
-      <div className="shrink-0 px-4 pb-2">
-        <DemoChromeIndicator className="py-2 px-3 rounded-lg bg-muted/50 border border-border/80" />
-      </div>
-
-      <div className="shrink-0 h-px bg-shell-border/80 mx-4" aria-hidden />
+      {!isCollapsed && (
+        <>
+          <div className="shrink-0 px-4 pb-2">
+            <DemoChromeIndicator className="py-2 px-3 rounded-lg bg-muted/50 border border-border/80" />
+          </div>
+          <div className="shrink-0 h-px bg-shell-border/80 mx-4" aria-hidden />
+        </>
+      )}
 
       {/* 3. Primary nav group */}
       <nav className="flex-1 shrink-0 px-4 pt-4 pb-2" data-tour="vf-tabs">
