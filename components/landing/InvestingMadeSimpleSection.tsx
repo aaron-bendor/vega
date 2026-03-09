@@ -117,15 +117,32 @@ function progressToIndex(progress: number, lastIndex: number): number {
   return progress <= lastIndex / N - HYST ? raw : lastIndex;
 }
 
+const SWIPE_THRESHOLD_PX = 40;
+
 export function InvestingMadeSimpleSection() {
   const [active, setActive] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const lastIndexRef = useRef(0);
   const activeRef = useRef(0);
+  const touchStartX = useRef<number>(0);
+  const touchCurrentX = useRef<number>(0);
   activeRef.current = active;
   lastIndexRef.current = active;
 
-  // Dot click: scroll to the same progress target the scroll listener uses. No lock; scroll drives active.
+  const goTo = useCallback((index: number) => {
+    const clamped = Math.max(0, Math.min(index, N - 1));
+    setActive(clamped);
+  }, []);
+
+  const goToNext = useCallback(() => {
+    setActive((prev) => (prev + 1) % N);
+  }, []);
+
+  const goToPrev = useCallback(() => {
+    setActive((prev) => (prev - 1 + N) % N);
+  }, []);
+
+  // Dot click: scroll to the same progress target the scroll listener uses. No lock; scroll drives active. (Desktop only; mobile uses goTo.)
   const scrollToSlide = useCallback((index: number) => {
     const clamped = Math.max(0, Math.min(index, N - 1));
     const section = containerRef.current;
@@ -147,6 +164,7 @@ export function InvestingMadeSimpleSection() {
       if (rafId !== null) return;
       rafId = requestAnimationFrame(() => {
         rafId = null;
+        if (typeof window !== "undefined" && window.innerWidth < 1024) return;
         const data = getSectionProgress(section);
         if (!data) return;
         const last = lastIndexRef.current;
@@ -172,6 +190,7 @@ export function InvestingMadeSimpleSection() {
       if (rafId !== null) return;
       rafId = requestAnimationFrame(() => {
         rafId = null;
+        if (typeof window !== "undefined" && window.innerWidth < 1024) return;
         const data = getSectionProgress(section);
         if (!data) return;
         const last = lastIndexRef.current;
@@ -325,9 +344,15 @@ export function InvestingMadeSimpleSection() {
                         key={di}
                         type="button"
                         className="dot-ind-btn"
-                        onClick={() => scrollToSlide(di)}
-                        aria-label={`Go to step ${di + 1}`}
-                        aria-current={active === di ? "step" : undefined}
+                        onClick={() => {
+                          if (typeof window !== "undefined" && window.innerWidth >= 1024) {
+                            scrollToSlide(di);
+                          } else {
+                            goTo(di);
+                          }
+                        }}
+                        aria-label={`Go to slide ${di + 1}`}
+                        aria-current={active === di ? "true" : undefined}
                       >
                         <span
                           className="dot-ind"
@@ -344,24 +369,43 @@ export function InvestingMadeSimpleSection() {
             ))}
           </div>
 
-          {/* Mobile phone — stable aspect slot; only active screenshot in DOM to reduce mobile network/memory */}
+          {/* Mobile phone — single slide, swipe + dots; fixed container to prevent layout shift */}
           <div
-            className="lg:hidden absolute left-1/2 -translate-x-1/2 pointer-events-none overflow-hidden rounded-[2rem] aspect-[440/901]"
+            className="lg:hidden absolute left-1/2 -translate-x-1/2 overflow-hidden rounded-[2rem] aspect-[440/901] touch-pan-y select-none"
             style={{
               width: "min(260px, 64vw)",
               bottom: "0.5rem",
               contain: "layout paint",
               minHeight: 0,
             }}
+            aria-roledescription="carousel"
+            onTouchStart={(e) => {
+              touchStartX.current = e.touches[0].clientX;
+              touchCurrentX.current = e.touches[0].clientX;
+            }}
+            onTouchMove={(e) => {
+              touchCurrentX.current = e.touches[0].clientX;
+            }}
+            onTouchEnd={() => {
+              const delta = touchCurrentX.current - touchStartX.current;
+              if (delta < -SWIPE_THRESHOLD_PX) goToNext();
+              else if (delta > SWIPE_THRESHOLD_PX) goToPrev();
+            }}
           >
-            <img
-              key={screens[active].phone}
-              src={screens[active].phone}
-              alt=""
-              className="phone-slide-img absolute inset-0 w-full h-full object-contain"
-              loading="lazy"
-              decoding="async"
-            />
+            <span className="sr-only" aria-live="polite">
+              Slide {active + 1} of {screens.length}
+            </span>
+            <div className="absolute inset-0 w-full h-full" style={{ minHeight: 0 }}>
+              <img
+                key={screens[active].phone}
+                src={screens[active].phone}
+                alt=""
+                className="phone-slide-img absolute inset-0 w-full h-full object-contain"
+                loading={active === 0 ? "eager" : "lazy"}
+                decoding="async"
+                draggable={false}
+              />
+            </div>
           </div>
         </div>
       </div>
