@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { getTourCompleted, TOUR_START_SESSION_KEY, setTourStep } from "@/lib/tour/storage";
 import { AnimateOnScroll } from "./AnimateOnScroll";
 import { DemoCTADropdown } from "./DemoCTADropdown";
 
@@ -11,12 +10,6 @@ export function HeroVideoSection() {
 
   const handleTryItNow = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (!getTourCompleted()) {
-      if (typeof sessionStorage !== "undefined") {
-        sessionStorage.setItem(TOUR_START_SESSION_KEY, "1");
-      }
-      setTourStep(0);
-    }
     router.push("/vega-financial");
   };
 

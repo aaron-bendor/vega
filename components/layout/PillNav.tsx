@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils";
 import { NavLink } from "@/components/ui/NavLink";
 import { NavDropdown, type NavDropdownItem } from "@/components/layout/NavDropdown";
 import { DemoCTADropdown } from "@/components/landing/DemoCTADropdown";
-import { getTourCompleted, TOUR_START_SESSION_KEY, setTourStep } from "@/lib/tour/storage";
 
 /** Lock body scroll when mobile menu is open; restore on close or pathname change. */
 function useBodyScrollLock(locked: boolean) {
@@ -94,12 +93,6 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
 
   const handleTryItNow = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (!getTourCompleted()) {
-      if (typeof sessionStorage !== "undefined") {
-        sessionStorage.setItem(TOUR_START_SESSION_KEY, "1");
-      }
-      setTourStep(0);
-    }
     router.push("/vega-financial");
   };
   const isStandalone = variant === "standalone" || variant === "investor" || variant === "investorApp";
