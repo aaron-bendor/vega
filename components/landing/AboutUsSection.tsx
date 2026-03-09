@@ -109,9 +109,9 @@ export function AboutUsSection() {
         </div>
       </section>
 
-      {/* Section 4: What we stand for — full viewport */}
+      {/* Section 4: What we stand for — full viewport, boxes fill screen width on desktop */}
       <section className="relative w-full min-h-screen flex flex-col bg-white">
-        <div className="flex-1 flex flex-col justify-center max-w-[1200px] mx-auto px-4 md:px-8 lg:px-[184px] py-16 md:py-20 w-full">
+        <div className="flex-1 flex flex-col justify-center w-full max-w-[1200px] xl:max-w-[1600px] mx-auto px-4 md:px-8 lg:px-12 xl:px-16 py-16 md:py-20">
           <p className="font-dm-mono font-normal text-[#531cb3] text-base md:text-xl tracking-[2px] leading-tight">
             {"// WHAT WE STAND FOR"}
           </p>
@@ -119,7 +119,7 @@ export function AboutUsSection() {
             Built on three core principles.
           </h2>
 
-          <div className="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 lg:gap-14 w-full">
+          <div className="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 lg:gap-12 xl:gap-16 w-full">
             {principles.map((principle) => (
               <article
                 key={principle.id}
