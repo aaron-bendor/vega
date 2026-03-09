@@ -21,6 +21,12 @@ export function HeroVideoSection() {
       className="relative w-full min-h-[100dvh] flex flex-col overflow-hidden bg-black pt-20"
       aria-label="Hero"
     >
+      {/* Mobile: CSS animated gradient (no iframe for performance) */}
+      <div
+        className="absolute inset-0 z-0 pointer-events-none block md:hidden hero-moving-gradient"
+        aria-hidden
+      />
+      {/* Desktop: colorflow iframe */}
       <div className="absolute inset-0 z-0 pointer-events-none hidden md:block" aria-hidden>
         <iframe
           src={colorflowSrc}
