@@ -4,31 +4,25 @@ import { useEffect, useState } from "react";
 
 /**
  * PDF URL for the Business Report embed.
- * - Production: uses Google Drive preview so the embed works when deployed.
- * - Local: uses /api/business-report (file in public/ or project root) when on localhost.
- * Override with NEXT_PUBLIC_BUSINESS_REPORT_PDF_URL in env if needed.
+ * Default: Google Drive preview so the embed works when deployed (https://drive.google.com/file/d/1aaNfKrkIzetBuxZ3uTjOds9IKGmc-4e-/view).
+ * Override with NEXT_PUBLIC_BUSINESS_REPORT_PDF_URL to use a different URL (e.g. local /api/business-report).
  */
 const GOOGLE_DRIVE_PDF_PREVIEW =
   "https://drive.google.com/file/d/1aaNfKrkIzetBuxZ3uTjOds9IKGmc-4e-/preview";
-const LOCAL_PDF_API = "/api/business-report";
-
-function getPdfUrl(): string {
-  const env = typeof process !== "undefined" && process.env.NEXT_PUBLIC_BUSINESS_REPORT_PDF_URL?.trim();
-  if (env) return env;
-  if (typeof window !== "undefined" && (window.location?.hostname === "localhost" || window.location?.hostname === "127.0.0.1")) {
-    return LOCAL_PDF_API;
-  }
-  return GOOGLE_DRIVE_PDF_PREVIEW;
-}
-
-const PDF_URL = typeof window !== "undefined" ? getPdfUrl() : GOOGLE_DRIVE_PDF_PREVIEW;
+const PDF_URL =
+  (typeof process !== "undefined" && process.env.NEXT_PUBLIC_BUSINESS_REPORT_PDF_URL?.trim()) ||
+  GOOGLE_DRIVE_PDF_PREVIEW;
 
 export function AdminContent() {
   const [pdfAvailable, setPdfAvailable] = useState<boolean | null>(null);
 
   useEffect(() => {
+    if (PDF_URL.startsWith("http")) {
+      setPdfAvailable(true);
+      return;
+    }
     setPdfAvailable(null);
-    fetch(PDF_URL, { method: "GET", cache: "no-store", mode: "cors" })
+    fetch(PDF_URL, { method: "GET", cache: "no-store" })
       .then((r) => setPdfAvailable(r.ok))
       .catch(() => setPdfAvailable(false));
   }, []);

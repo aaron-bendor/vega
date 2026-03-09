@@ -54,5 +54,5 @@ and the app will serve it via `/api/business-report` and the embed will work.
 
 | Environment   | What to do |
 |---------------|------------|
-| **Production** | Set `NEXT_PUBLIC_BUSINESS_REPORT_PDF_URL` to a public PDF URL and redeploy. |
-| **Local**      | Keep the PDF in `public/` or project root; no env var required. |
+| **Production** | Uses Google Drive PDF by default; no config needed. Override with `NEXT_PUBLIC_BUSINESS_REPORT_PDF_URL` if needed. |
+| **Local**      | Same: Drive PDF by default. Set env to `/api/business-report` to use a local file in `public/` or project root. |
