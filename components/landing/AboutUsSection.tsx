@@ -86,7 +86,7 @@ export function AboutUsSection() {
           <p className="font-dm-mono font-normal text-[#531cb3] text-base md:text-xl tracking-[2px] leading-tight">
             {"// OUR MISSION"}
           </p>
-          <p className="font-maven-pro font-semibold text-[#111] text-2xl sm:text-3xl md:text-[50px] tracking-[-2px] leading-[1.5] mt-6 max-w-[900px]">
+          <p className="font-maven-pro font-semibold text-[#111] text-2xl sm:text-3xl md:text-[50px] tracking-[-2px] leading-[1.5] lg:leading-[1.65] mt-6 lg:mt-10 max-w-[900px]">
             To make sophisticated investing{" "}
             <span className="text-[#793de1]">accessible to everyone</span> — not
             just the 0.7%.
@@ -111,7 +111,7 @@ export function AboutUsSection() {
 
       {/* Section 4: What we stand for — full viewport */}
       <section className="relative w-full min-h-screen flex flex-col bg-white">
-        <div className="flex-1 flex flex-col justify-center max-w-[1200px] mx-auto px-4 md:px-8 lg:px-[184px] py-16 md:py-20 w-full">
+        <div className="flex-1 flex flex-col justify-center max-w-[1200px] xl:max-w-[1600px] mx-auto px-4 md:px-8 lg:px-12 xl:px-20 py-16 md:py-20 w-full">
           <p className="font-dm-mono font-normal text-[#531cb3] text-base md:text-xl tracking-[2px] leading-tight">
             {"// WHAT WE STAND FOR"}
           </p>
@@ -119,7 +119,7 @@ export function AboutUsSection() {
             Built on three core principles.
           </h2>
 
-          <div className="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 lg:gap-14 max-w-[1100px]">
+          <div className="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 lg:gap-14 xl:gap-16 max-w-[1100px] xl:max-w-[1400px]">
             {principles.map((principle) => (
               <article
                 key={principle.id}
