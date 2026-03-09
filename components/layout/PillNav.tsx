@@ -114,6 +114,7 @@ const mainNav: NavEntry[] = [
   { type: "link", href: "/algorithms", label: "Algorithms" },
   { type: "link", href: "/vega-developer", label: "Developer" },
   { type: "link", href: "/faq", label: "FAQ" },
+  { type: "link", href: "/admin", label: "Admin" },
 ];
 
 const investorNav: NavEntry[] = [
