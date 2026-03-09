@@ -9,13 +9,14 @@ import crypto from "crypto";
 const COOKIE_NAME = "vega-admin-session";
 const PAYLOAD = "authenticated";
 
+/** Admin password required to access /admin. Override with ADMIN_PASSWORD env if needed. */
+const DEFAULT_ADMIN_PASSWORD = "VegaFinancialTheBest";
+
 function getSecret(): string {
   const raw = process.env.ADMIN_PASSWORD;
-  const secret = typeof raw === "string" ? raw.trim() : "";
-  if (!secret || secret.length < 8) {
-    throw new Error("ADMIN_PASSWORD must be set and at least 8 characters");
-  }
-  return secret;
+  const fromEnv = typeof raw === "string" ? raw.trim() : "";
+  if (fromEnv && fromEnv.length >= 8) return fromEnv;
+  return DEFAULT_ADMIN_PASSWORD;
 }
 
 function sign(secret: string, value: string): string {
