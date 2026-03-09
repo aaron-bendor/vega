@@ -1,14 +1,16 @@
 /**
- * Ensures public/BusinessReport.pdf exists before build.
- * If missing, the deploy build fails so the PDF 404 on production is caught early.
+ * Ensures BusinessReport.pdf exists (public/ or project root) so the admin embed works.
  */
 const fs = require("fs");
 const path = require("path");
 
-const pdfPath = path.join(process.cwd(), "public", "BusinessReport.pdf");
-if (!fs.existsSync(pdfPath)) {
-  console.error(
-    "Build failed: public/BusinessReport.pdf is missing. Add the file and commit it so the admin page can serve it in production. See docs/DEPLOY-ADMIN.md."
-  );
-  process.exit(1);
+const cwd = process.cwd();
+const inPublic = path.join(cwd, "public", "BusinessReport.pdf");
+const inRoot = path.join(cwd, "BusinessReport.pdf");
+if (fs.existsSync(inPublic) || fs.existsSync(inRoot)) {
+  process.exit(0);
 }
+console.error(
+  "Build failed: BusinessReport.pdf not found. Add it to public/ or the project root (Vega folder). See docs/DEPLOY-ADMIN.md."
+);
+process.exit(1);

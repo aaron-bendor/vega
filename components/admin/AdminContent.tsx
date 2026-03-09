@@ -2,8 +2,11 @@
 
 import { useEffect, useState } from "react";
 
-/** Served by Next.js from public/BusinessReport.pdf — works in dev and production. */
-const PDF_URL = "/BusinessReport.pdf";
+/**
+ * Served by API (checks public/ then project root) so the PDF works whether it's in public/ or the Vega folder.
+ * Falls back to static /BusinessReport.pdf if you prefer.
+ */
+const PDF_URL = "/api/business-report";
 
 export function AdminContent() {
   const [pdfAvailable, setPdfAvailable] = useState<boolean | null>(null);
