@@ -58,7 +58,7 @@ export function FilterSheet() {
       if (updates.minRiskAdjustment) params.set("minRiskAdjustment", updates.minRiskAdjustment);
       else params.delete("minRiskAdjustment");
     }
-    router.push(`/vega-financial?${params.toString()}`);
+    router.push(`/vega-financial/marketplace?${params.toString()}`);
   };
 
   return (

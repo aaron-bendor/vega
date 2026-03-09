@@ -19,7 +19,7 @@ export function MarketplaceSearch() {
         const params = new URLSearchParams(searchParams.toString());
         if (val) params.set("q", val);
         else params.delete("q");
-        router.push(`/vega-financial?${params.toString()}`);
+        router.push(`/vega-financial/marketplace?${params.toString()}`);
       }}
       className="relative"
     >

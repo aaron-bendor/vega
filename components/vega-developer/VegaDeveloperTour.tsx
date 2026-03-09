@@ -524,6 +524,8 @@ function Done({ onRestart }: { onRestart: () => void }) {
   );
 }
 
+const MOBILE_BREAKPOINT_PX = 768;
+
 export default function VegaDeveloperTour() {
   const [idx, setIdx] = useState(0);
   const [vis, setVis] = useState(true);
@@ -532,6 +534,8 @@ export default function VegaDeveloperTour() {
   const [scale, setScale] = useState(0.1);
   const [imgW, setImgW] = useState(NW * 0.1);
   const [imgH, setImgH] = useState(NH * 0.1);
+  const [isMobile, setIsMobile] = useState(false);
+  const [mobileScale, setMobileScale] = useState(0.1);
 
   // Load DM Mono / DM Sans for inline fontFamily used in tour
   useEffect(() => {
@@ -546,7 +550,16 @@ export default function VegaDeveloperTour() {
   const recalc = useCallback(() => {
     const el = containerRef.current;
     if (!el) return;
-    const s = Math.min(el.clientWidth / NW, el.clientHeight / NH);
+    const w = el.clientWidth;
+    const h = el.clientHeight;
+    const mobile = w < MOBILE_BREAKPOINT_PX;
+    setIsMobile(mobile);
+    if (mobile) {
+      const viewportHeight = typeof window !== "undefined" ? window.innerHeight * 0.58 : h * 0.58;
+      const s = Math.min(w / NW, viewportHeight / NH);
+      setMobileScale(s);
+    }
+    const s = Math.min(w / NW, h / NH);
     setScale(s);
     setImgW(Math.round(NW * s));
     setImgH(Math.round(NH * s));
@@ -556,7 +569,11 @@ export default function VegaDeveloperTour() {
     recalc();
     const ro = new ResizeObserver(recalc);
     if (containerRef.current) ro.observe(containerRef.current);
-    return () => ro.disconnect();
+    window.addEventListener("resize", recalc);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", recalc);
+    };
   }, [recalc]);
 
   const goTo = useCallback((i: number) => {
@@ -584,6 +601,125 @@ export default function VegaDeveloperTour() {
 
   const step = STEPS[idx];
   const pad = Math.max(12, Math.round(16 * scale));
+  const effectiveScale = isMobile ? mobileScale : scale;
+  const effectiveImgW = isMobile ? Math.round(NW * mobileScale) : imgW;
+  const effectiveImgH = isMobile ? Math.round(NH * mobileScale) : imgH;
+
+  if (isMobile) {
+    return (
+      <div
+        ref={containerRef}
+        style={{
+          height: "100vh",
+          width: "100%",
+          maxWidth: "100%",
+          background: COLORS.black,
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+          paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
+        }}
+      >
+        <div
+          style={{
+            height: "58vh",
+            minHeight: 0,
+            overflow: "hidden",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            position: "relative",
+          }}
+        >
+          <div
+            style={{
+              position: "relative",
+              width: effectiveImgW,
+              height: effectiveImgH,
+              flexShrink: 0,
+            }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              key={step.frame}
+              src={`/${step.frame}.png`}
+              width={effectiveImgW}
+              height={effectiveImgH}
+              style={{
+                display: "block",
+                userSelect: "none",
+                animation: "fin .22s ease",
+              }}
+              draggable={false}
+              alt=""
+            />
+            <Highlight region={step.region} color={step.color} scale={effectiveScale} />
+          </div>
+          <div
+            style={{
+              position: "absolute",
+              top: 8,
+              left: "50%",
+              transform: "translateX(-50%)",
+              zIndex: 20,
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              background: "rgba(17,17,17,0.82)",
+              backdropFilter: "blur(12px)",
+              padding: "6px 12px",
+              borderRadius: 999,
+              border: `1px solid ${COLORS.borderSoft}`,
+              whiteSpace: "nowrap",
+            }}
+          >
+            <img
+              src={LOGO_SRC}
+              alt="Vega Developer"
+              style={{ height: 14, width: "auto", display: "block" }}
+            />
+            <span
+              style={{
+                color: COLORS.textMuted,
+                fontFamily: "'DM Mono', monospace",
+                fontSize: 10,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+              }}
+            >
+              interactive tour
+            </span>
+          </div>
+        </div>
+        <div
+          style={{
+            flex: 1,
+            minHeight: 0,
+            overflow: "auto",
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "center",
+            padding: "12px 12px 0",
+            width: "100%",
+            boxSizing: "border-box",
+          }}
+        >
+          <div style={{ width: "100%", maxWidth: "calc(100% - 24px)" }}>
+            <Card
+              step={step}
+              idx={idx}
+              total={STEPS.length}
+              onNext={next}
+              onPrev={prev}
+              onJump={goTo}
+              visible={vis}
+            />
+          </div>
+        </div>
+        <style>{`@keyframes fin { from { opacity:.2; } to { opacity:1; } }`}</style>
+      </div>
+    );
+  }
 
   return (
     <div

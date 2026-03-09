@@ -93,15 +93,18 @@ const LABELS = ALL_DATA.map((_, i) => {
 
 // ─────────────────────────────────────────
 // CANVAS CHART (pure: render only from arguments)
+// skipCanvasLabels: on small screens we draw labels/legend in HTML instead of tiny canvas text
 // ─────────────────────────────────────────
 function drawChart(
   canvas: HTMLCanvasElement | null,
   revealedTo: number,
   hoverIdx: number | null,
   _currentStep: number,
-  showTradeAnno: boolean
+  showTradeAnno: boolean,
+  options?: { skipCanvasLabels?: boolean; leftPad?: number }
 ) {
   if (!canvas) return;
+  const skipLabels = options?.skipCanvasLabels ?? false;
   const dpr = window.devicePixelRatio || 1;
   const W = canvas.offsetWidth;
   const H = canvas.offsetHeight;
@@ -116,7 +119,8 @@ function drawChart(
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.clearRect(0, 0, W, H);
 
-  const PAD = { top: 40, right: 90, bottom: 24, left: 48 };
+  const leftPad = options?.leftPad ?? 48;
+  const PAD = { top: 40, right: skipLabels ? 24 : 90, bottom: 24, left: leftPad };
   const cW = W - PAD.left - PAD.right;
   const cH = H - PAD.top - PAD.bottom;
   const minR = 70,
@@ -135,13 +139,15 @@ function drawChart(
     ctx.stroke();
   });
 
-  ctx.fillStyle = "#374151";
-  ctx.font = "11px monospace";
-  ctx.textAlign = "right";
-  ctx.textBaseline = "middle";
-  [75, 80, 85, 90, 95].forEach((v) => {
-    ctx.fillText(String(v), PAD.left - 8, toY(v));
-  });
+  if (!skipLabels) {
+    ctx.fillStyle = "#374151";
+    ctx.font = "11px monospace";
+    ctx.textAlign = "right";
+    ctx.textBaseline = "middle";
+    [75, 80, 85, 90, 95].forEach((v) => {
+      ctx.fillText(String(v), PAD.left - 8, toY(v));
+    });
+  }
 
   ctx.save();
   ctx.strokeStyle = "rgba(167,139,250,0.45)";
@@ -160,15 +166,17 @@ function drawChart(
   ctx.stroke();
   ctx.restore();
 
-  ctx.save();
-  ctx.font = "10px monospace";
-  ctx.textAlign = "left";
-  ctx.textBaseline = "middle";
-  ctx.fillStyle = "rgba(167,139,250,0.6)";
-  ctx.fillText("avg 80", W - PAD.right + 6, toY(AVG));
-  ctx.fillStyle = "rgba(52,211,153,0.55)";
-  ctx.fillText("trigger 90", W - PAD.right + 6, toY(TRIGGER));
-  ctx.restore();
+  if (!skipLabels) {
+    ctx.save();
+    ctx.font = "10px monospace";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "rgba(167,139,250,0.6)";
+    ctx.fillText("avg 80", W - PAD.right + 6, toY(AVG));
+    ctx.fillStyle = "rgba(52,211,153,0.55)";
+    ctx.fillText("trigger 90", W - PAD.right + 6, toY(TRIGGER));
+    ctx.restore();
+  }
 
   if (revealedTo >= 1) {
     const grad = ctx.createLinearGradient(0, PAD.top, 0, PAD.top + cH);
@@ -219,62 +227,64 @@ function drawChart(
     ctx.stroke();
   }
 
-  ctx.save();
-  ctx.setLineDash([]);
-  ctx.textBaseline = "top";
+  if (!skipLabels) {
+    ctx.save();
+    ctx.setLineDash([]);
+    ctx.textBaseline = "top";
 
-  const drawAnnoLines = (
-    x: number,
-    y: number,
-    align: CanvasTextAlign,
-    lines: string[]
-  ) => {
-    const lineH = 18;
-    ctx.textAlign = align;
-    lines.forEach((line, i) => {
-      const bold = line.startsWith("**");
-      const text = bold ? line.replace(/\*\*/g, "") : line;
-      ctx.font = bold
-        ? "bold 12.5px 'DM Sans', system-ui, sans-serif"
-        : "12px 'DM Sans', system-ui, sans-serif";
-      ctx.fillStyle = bold ? "rgba(255,255,255,0.95)" : "rgba(200,210,225,0.82)";
-      ctx.fillText(text, x, y + i * lineH);
-    });
-  };
+    const drawAnnoLines = (
+      x: number,
+      y: number,
+      align: CanvasTextAlign,
+      lines: string[]
+    ) => {
+      const lineH = 18;
+      ctx.textAlign = align;
+      lines.forEach((line, i) => {
+        const bold = line.startsWith("**");
+        const text = bold ? line.replace(/\*\*/g, "") : line;
+        ctx.font = bold
+          ? "bold 12.5px 'DM Sans', system-ui, sans-serif"
+          : "12px 'DM Sans', system-ui, sans-serif";
+        ctx.fillStyle = bold ? "rgba(255,255,255,0.95)" : "rgba(200,210,225,0.82)";
+        ctx.fillText(text, x, y + i * lineH);
+      });
+    };
 
-  // ① Watching — always visible once line starts
-  if (revealedTo >= 8) {
-    drawAnnoLines(PAD.left + 4, PAD.top + 4, "left", [
-      "The algorithm watches",
-      "the gold/silver ratio, 24/7.",
-    ]);
+    // ① Watching — always visible once line starts
+    if (revealedTo >= 8) {
+      drawAnnoLines(PAD.left + 4, PAD.top + 4, "left", [
+        "The algorithm watches",
+        "the gold/silver ratio, 24/7.",
+      ]);
+    }
+
+    // ② Signal — above the line at idx=51, right-aligned so text sits left of the dot
+    if (revealedTo >= 51) {
+      drawAnnoLines(toX(51) - 26, PAD.top + 48, "right", [
+        "Ratio crosses the trigger —",
+        "**opportunity identified.**",
+      ]);
+    }
+
+    // ③ Trade placed — below the curve in the high region (shown 2s after idx=51)
+    if (showTradeAnno) {
+      drawAnnoLines(toX(51) + 54, toY(85.5) + 10, "left", [
+        "**Trade placed** — buys gold,",
+        "sells silver. No human needed.",
+      ]);
+    }
+
+    // ④ Profit — top-right, once line returns to avg at idx=87
+    if (revealedTo >= 87) {
+      drawAnnoLines(toX(89), PAD.top + 4, "left", [
+        "Ratio returns to normal.",
+        "**Position closed. Profit taken.**",
+      ]);
+    }
+
+    ctx.restore();
   }
-
-  // ② Signal — above the line at idx=51, right-aligned so text sits left of the dot
-  if (revealedTo >= 51) {
-    drawAnnoLines(toX(51) - 26, PAD.top + 48, "right", [
-      "Ratio crosses the trigger —",
-      "**opportunity identified.**",
-    ]);
-  }
-
-  // ③ Trade placed — below the curve in the high region (shown 2s after idx=51)
-  if (showTradeAnno) {
-    drawAnnoLines(toX(51) + 54, toY(85.5) + 10, "left", [
-      "**Trade placed** — buys gold,",
-      "sells silver. No human needed.",
-    ]);
-  }
-
-  // ④ Profit — top-right, once line returns to avg at idx=87
-  if (revealedTo >= 87) {
-    drawAnnoLines(toX(89), PAD.top + 4, "left", [
-      "Ratio returns to normal.",
-      "**Position closed. Profit taken.**",
-    ]);
-  }
-
-  ctx.restore();
 
   if (hoverIdx !== null && hoverIdx <= revealedTo) {
     const hx = toX(hoverIdx);
@@ -304,10 +314,10 @@ function drawChart(
   }
 }
 
-function xToIdx(canvas: HTMLCanvasElement | null, clientX: number): number | null {
+function xToIdx(canvas: HTMLCanvasElement | null, clientX: number, rightPad = 90, leftPad = 48): number | null {
   if (!canvas) return null;
   const rect = canvas.getBoundingClientRect();
-  const PAD = { left: 48, right: 90 };
+  const PAD = { left: leftPad, right: rightPad };
   const cW = canvas.offsetWidth - PAD.left - PAD.right;
   const rx = clientX - rect.left - PAD.left;
   const idx = Math.round((rx / cW) * (N - 1));
@@ -331,6 +341,12 @@ const STEP_DESCS = [
 
 const VP = "#7c3aed";
 
+/** Chart padding: smaller on mobile so plot area stays readable at 320px. */
+const CHART_PAD_RIGHT_DESKTOP = 90;
+const CHART_PAD_RIGHT_MOBILE = 24;
+const CHART_PAD_LEFT_DESKTOP = 48;
+const CHART_PAD_LEFT_MOBILE = 32;
+
 export function GoldSilverExplainer(): JSX.Element {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -343,6 +359,17 @@ export function GoldSilverExplainer(): JSX.Element {
   const [revealedTo, setRevealedTo] = useState(0);
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
   const [showTradeAnno, setShowTradeAnno] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const isPointerDownRef = useRef(false);
+
+  // Match (max-width: 768px) for mobile: show labels/legend in HTML, use pointer/touch for chart.
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   /** Push ref state to React state so canvas and UI re-render from same values. */
   const syncToReact = useCallback(() => {
@@ -516,25 +543,89 @@ export function GoldSilverExplainer(): JSX.Element {
     resetAnimationState();
   }, [resetAnimationState]);
 
-  const onMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
-    const idx = xToIdx(canvasRef.current, e.clientX);
+  /** Scrub chart to a given index (used by pointer drag on chart). */
+  const scrubToIndex = useCallback((idx: number) => {
+    const clamped = Math.max(0, Math.min(N - 1, idx));
+    cancelPlayback();
+    animRef.current = {
+      ...animRef.current,
+      mode: "idle",
+      revealedTo: clamped,
+      currentStep: getStepForIndex(clamped),
+      showTradeAnno: clamped > 51,
+      phase: "reveal",
+      phaseStartTime: 0,
+      signalPauseElapsedMs: 0,
+    };
+    setRevealedTo(clamped);
+    setCurrentStep(getStepForIndex(clamped));
+    setShowTradeAnno(clamped > 51);
+    setIsPlaying(false);
+  }, [cancelPlayback]);
+
+  const rightPad = isMobile ? CHART_PAD_RIGHT_MOBILE : CHART_PAD_RIGHT_DESKTOP;
+  const leftPad = isMobile ? CHART_PAD_LEFT_MOBILE : CHART_PAD_LEFT_DESKTOP;
+
+  const onPointerDown = useCallback((e: React.PointerEvent<HTMLCanvasElement>) => {
+    e.currentTarget.setPointerCapture(e.pointerId);
+    isPointerDownRef.current = true;
+    const idx = xToIdx(canvasRef.current, e.clientX, rightPad, leftPad);
     const revealed = animRef.current.revealedTo;
-    if (idx !== null && idx <= revealed) setHoverIdx(idx);
-    else setHoverIdx(null);
+    if (idx !== null && idx <= revealed) {
+      setHoverIdx(idx);
+    } else if (idx !== null) {
+      scrubToIndex(idx);
+      setHoverIdx(idx);
+    }
+  }, [rightPad, leftPad, scrubToIndex]);
+
+  const onPointerMove = useCallback((e: React.PointerEvent<HTMLCanvasElement>) => {
+    const idx = xToIdx(canvasRef.current, e.clientX, rightPad, leftPad);
+    const revealed = animRef.current.revealedTo;
+    if (isPointerDownRef.current) {
+      if (idx !== null) {
+        scrubToIndex(idx);
+        setHoverIdx(idx <= revealed ? idx : null);
+      }
+    } else {
+      if (idx !== null && idx <= revealed) setHoverIdx(idx);
+      else setHoverIdx(null);
+    }
+  }, [rightPad, leftPad, scrubToIndex]);
+
+  const onPointerUp = useCallback(() => {
+    isPointerDownRef.current = false;
+    setHoverIdx(null);
   }, []);
 
-  const onMouseLeave = useCallback(() => setHoverIdx(null), []);
+  const onPointerLeave = useCallback(() => {
+    isPointerDownRef.current = false;
+    setHoverIdx(null);
+  }, []);
+
+  const onPointerCancel = useCallback(() => {
+    isPointerDownRef.current = false;
+    setHoverIdx(null);
+  }, []);
 
   // Render canvas from current React state (single source of truth for draw)
   useEffect(() => {
-    drawChart(canvasRef.current, revealedTo, hoverIdx, currentStep, showTradeAnno);
-  }, [revealedTo, hoverIdx, currentStep, showTradeAnno]);
+    drawChart(canvasRef.current, revealedTo, hoverIdx, currentStep, showTradeAnno, {
+      skipCanvasLabels: isMobile,
+      leftPad,
+    });
+  }, [revealedTo, hoverIdx, currentStep, showTradeAnno, isMobile, leftPad]);
 
   // Resize: redraw from current state only (no mixed ref/state)
   useEffect(() => {
     const ro = new ResizeObserver(() => {
       const a = animRef.current;
-      drawChart(canvasRef.current, a.revealedTo, null, a.currentStep, a.showTradeAnno);
+      const skipLabels = window.matchMedia("(max-width: 768px)").matches;
+      const padLeft = skipLabels ? CHART_PAD_LEFT_MOBILE : CHART_PAD_LEFT_DESKTOP;
+      drawChart(canvasRef.current, a.revealedTo, null, a.currentStep, a.showTradeAnno, {
+        skipCanvasLabels: skipLabels,
+        leftPad: padLeft,
+      });
     });
     if (canvasRef.current) ro.observe(canvasRef.current);
     return () => ro.disconnect();
@@ -591,15 +682,17 @@ export function GoldSilverExplainer(): JSX.Element {
           <div className="relative">
             <canvas
               ref={canvasRef}
-              className="block w-full cursor-crosshair"
-              style={{ height: 380 }}
-              onMouseMove={onMouseMove}
-              onMouseLeave={onMouseLeave}
-              aria-label="Gold/silver ratio chart"
+              className="block w-full cursor-crosshair touch-none h-[280px] sm:h-[320px] md:h-[380px]"
+              onPointerDown={onPointerDown}
+              onPointerMove={onPointerMove}
+              onPointerUp={onPointerUp}
+              onPointerLeave={onPointerLeave}
+              onPointerCancel={onPointerCancel}
+              aria-label="Gold/silver ratio chart. Tap a point to select; drag to scrub the timeline."
             />
             {hoveredPoint && (
               <div
-                className="pointer-events-none absolute right-3 top-3 min-w-[140px] rounded-lg border border-[#793de14d] bg-[#080618f0] p-2 px-3 font-mono text-[11px]"
+                className="pointer-events-none absolute top-3 left-3 right-auto min-w-[120px] max-w-[calc(100%-24px)] rounded-lg border border-[#793de14d] bg-[#080618f0] p-2 px-3 font-mono text-[11px] md:left-auto md:right-3"
                 role="status"
                 aria-live="polite"
               >
@@ -619,64 +712,94 @@ export function GoldSilverExplainer(): JSX.Element {
               </div>
             )}
           </div>
+          {/* Mobile: key labels and legend in HTML so text is readable (not tiny canvas text) */}
+          {isMobile && (
+            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm" role="list" aria-label="Chart legend">
+              <span className="flex items-center gap-1.5 text-[#a78bfa]">
+                <span className="inline-block h-1 w-5 rounded-sm bg-[#a78bfa]/70" aria-hidden />
+                Avg 80
+              </span>
+              <span className="flex items-center gap-1.5 text-[#34d399]">
+                <span className="inline-block h-1 w-5 rounded-sm border-2 border-[#34d399]/60 border-dashed bg-transparent" aria-hidden />
+                Trigger 90
+              </span>
+            </div>
+          )}
         </div>
 
-        <div className="mx-auto max-w-[1100px] px-6 pt-5 md:px-12">
+        <div className="mx-auto max-w-[1100px] px-6 pt-5 md:px-12 min-w-0">
+          {/* Mobile: 2x2 grid for steps + second row for Reset/Play. Desktop: single row with border-bottom. */}
           <div
-            className="mb-5 flex items-center border-b border-white/[0.06]"
+            className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:flex-wrap sm:border-b sm:border-white/[0.06]"
             style={{ marginBottom: -1 }}
           >
-            {[
-              "1 · Watching",
-              "2 · Signal",
-              "3 · Trade",
-              "4 · Profit",
-            ].map((label, i) => {
-              const active = i === currentStep;
-              const done = i < currentStep;
-              return (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => jumpToStep(i)}
-                  className="border-b-2 px-4 py-2.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#793de1] focus:ring-offset-2 focus:ring-offset-[#080618]"
-                  style={{
-                    borderBottomColor: active ? VP : "transparent",
-                    color: active ? "#a78bfa" : done ? "#374151" : "#1f2937",
-                    fontWeight: active ? 800 : 600,
-                    letterSpacing: 0.2,
-                  }}
-                >
-                  {label}
-                </button>
-              );
-            })}
-            <div className="flex-1" />
-            <div className="flex gap-2 pb-2">
+            <div className="grid grid-cols-2 gap-1 min-w-0 sm:flex sm:flex-wrap">
+              {[
+                "1 · Watching",
+                "2 · Signal",
+                "3 · Trade",
+                "4 · Profit",
+              ].map((label, i) => {
+                const active = i === currentStep;
+                const done = i < currentStep;
+                return (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => jumpToStep(i)}
+                    className="min-h-[44px] min-w-0 border-b-2 px-3 py-2.5 text-[11px] font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#793de1] focus:ring-offset-2 focus:ring-offset-[#080618] sm:min-w-[44px] sm:px-4 sm:py-2.5 sm:text-xs sm:border-b-2"
+                    style={{
+                      borderBottomColor: active ? VP : "transparent",
+                      color: active ? "#a78bfa" : done ? "#374151" : "#1f2937",
+                      fontWeight: active ? 800 : 600,
+                      letterSpacing: 0.2,
+                    }}
+                    aria-label={`Step ${i + 1}: ${STEP_TITLES[i]}. ${active ? "Current step." : "Select to jump to this step."}`}
+                    aria-current={active ? "step" : undefined}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="flex-1 min-w-0 hidden sm:block" />
+            <div className="flex w-full sm:w-auto justify-end gap-2 pb-2 sm:pb-2">
               <button
                 type="button"
                 onClick={reset}
-                className="rounded-lg border border-white/[0.08] bg-white/[0.03] px-3.5 py-1.5 text-xs font-bold text-[#374151] transition-colors hover:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-[#793de1] focus:ring-offset-2 focus:ring-offset-[#080618]"
+                className="min-h-[44px] min-w-[44px] rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-[11px] font-bold text-[#374151] transition-colors hover:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-[#793de1] focus:ring-offset-2 focus:ring-offset-[#080618] sm:px-3.5 sm:text-xs"
+                aria-label="Reset chart to start"
               >
                 ↺ Reset
               </button>
               <button
                 type="button"
                 onClick={togglePlay}
-                className="rounded-lg px-5 py-2 text-[13px] font-extrabold text-white shadow-[0_0_20px_rgba(124,58,237,0.25)] transition-colors focus:outline-none focus:ring-2 focus:ring-[#793de1] focus:ring-offset-2 focus:ring-offset-[#080618]"
+                className="min-h-[44px] min-w-[44px] rounded-lg px-4 py-2 text-xs font-extrabold text-white shadow-[0_0_20px_rgba(124,58,237,0.25)] transition-colors focus:outline-none focus:ring-2 focus:ring-[#793de1] focus:ring-offset-2 focus:ring-offset-[#080618] sm:px-5 sm:text-[13px]"
                 style={{
                   background: isPlaying ? "rgba(109,40,217,0.7)" : VP,
                 }}
+                aria-label={isPlaying ? "Pause animation" : atEnd ? "Replay animation" : "Play animation"}
               >
                 {buttonLabel}
               </button>
             </div>
           </div>
 
+          {/* Screen reader: readable summary of active step (non-canvas fallback) */}
+          <div
+            className="sr-only"
+            role="status"
+            aria-live="polite"
+            aria-atomic
+          >
+            Step {currentStep + 1} of 4: {STEP_TITLES[currentStep]}.
+          </div>
+
           <div key={currentStep} className="desc-in mt-6 mb-16">
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-3 md:gap-3">
               <div
-                className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full text-[15px] font-extrabold text-white"
+                className="flex h-10 w-10 md:h-[38px] md:w-[38px] shrink-0 items-center justify-center rounded-full text-base md:text-[15px] font-extrabold text-white"
                 style={{
                   background: VP,
                   boxShadow: "0 0 0 4px rgba(124,58,237,0.15)",
@@ -684,11 +807,11 @@ export function GoldSilverExplainer(): JSX.Element {
               >
                 {currentStep + 1}
               </div>
-              <div>
-                <div className="mb-1 text-base font-extrabold leading-snug tracking-tight text-[#f1f5f9]">
+              <div className="min-w-0">
+                <div className="mb-2 md:mb-1 text-base md:text-base font-extrabold leading-snug tracking-tight text-[#f1f5f9]">
                   {STEP_TITLES[currentStep]}
                 </div>
-                <div className="max-w-[600px] text-sm leading-[1.75] text-[#6b7280]">
+                <div className="max-w-[600px] text-[15px] md:text-sm leading-[1.8] md:leading-[1.75] text-[#6b7280]">
                   {STEP_DESCS[currentStep]}
                 </div>
               </div>

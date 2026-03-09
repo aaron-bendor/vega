@@ -611,14 +611,14 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                     )}
                   </div>
 
-                  <div className="flex md:hidden items-center gap-2">
+                  <div className="flex md:hidden items-center gap-1.5 min-w-0 shrink-0">
                     <button
                       type="button"
                       id="mobile-nav-menu-button"
                       ref={mobileMenuButtonRef}
                       onClick={() => setMobileMenuOpen((o) => !o)}
                       className={cn(
-                        "flex items-center justify-center min-w-[44px] min-h-[44px] rounded-full transition-colors",
+                        "flex items-center justify-center min-w-[44px] min-h-[44px] rounded-full transition-colors shrink-0",
                         mobileTriggerClass
                       )}
                       aria-expanded={mobileMenuOpen}
@@ -629,7 +629,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                     </button>
 
                     {!isInvestor && (
-                      <div className="min-w-[90px]">
+                      <div className="min-w-0 max-w-full shrink">
                         <DemoCTADropdown
                           onInvest={handleTryItNow}
                           variant="header"

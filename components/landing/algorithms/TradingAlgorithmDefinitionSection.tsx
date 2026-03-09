@@ -14,7 +14,7 @@ export function TradingAlgorithmDefinitionSection(): JSX.Element {
   };
 
   return (
-    <section className="relative w-full min-h-screen bg-white flex flex-col justify-center">
+    <section className="relative w-full min-h-0 md:min-h-screen bg-white flex flex-col justify-center">
       <div className="max-w-[1210px] mx-auto px-6 md:px-10 lg:px-[190px] py-16 md:py-20 w-full">
         <AnimateOnScroll direction="up" duration={600} distance={20}>
         <h2 className="font-dm-mono font-normal text-[#531cb3] text-xl tracking-[2px] leading-[17.6px]">

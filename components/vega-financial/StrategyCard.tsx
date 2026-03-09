@@ -62,6 +62,8 @@ export function StrategyCard({
   dataTour,
 }: StrategyCardProps) {
   const tags = getTags(algorithm);
+  const mobileTags = tags.slice(0, 2);
+  const desktopTags = tags.slice(0, 4);
   const verified = isDbVersion(algorithm) && algorithm.verificationStatus === "verified";
   const returnPct = isDbVersion(algorithm) ? algorithm.cachedReturn : undefined;
   const maxDrop = isDbVersion(algorithm) ? algorithm.cachedMaxDrawdown : undefined;
@@ -112,14 +114,29 @@ export function StrategyCard({
             </p>
           )}
           <div className="flex flex-wrap gap-1.5">
-            {tags.slice(0, 4).map((t) => (
+            {mobileTags.map((t) => (
               <span
-                key={t}
-                className="rounded bg-muted/60 px-2 py-0.5 text-[11px] text-muted-foreground"
+                key={`mobile-${t}`}
+                className="rounded bg-muted/60 px-2 py-0.5 text-[11px] text-muted-foreground sm:hidden"
               >
                 {t}
               </span>
             ))}
+
+            {desktopTags.map((t) => (
+              <span
+                key={`desktop-${t}`}
+                className="hidden rounded bg-muted/60 px-2 py-0.5 text-[11px] text-muted-foreground sm:inline-flex"
+              >
+                {t}
+              </span>
+            ))}
+
+            {tags.length > 2 && (
+              <span className="rounded bg-muted/40 px-2 py-0.5 text-[11px] text-muted-foreground sm:hidden">
+                +{tags.length - 2}
+              </span>
+            )}
           </div>
         </CardHeader>
         <CardContent className="pt-0 flex-1 flex flex-col justify-end space-y-4">

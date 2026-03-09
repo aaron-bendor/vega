@@ -21,7 +21,7 @@ const humanTraderLimitations = [
 
 export function AlgorithmImportanceSection(): JSX.Element {
   return (
-    <section className="relative w-full min-h-screen bg-white flex flex-col justify-center py-16 md:py-20">
+    <section className="relative w-full min-h-0 md:min-h-screen bg-white flex flex-col justify-center py-16 md:py-20">
       <div className="max-w-[1400px] xl:max-w-[1520px] mx-auto px-6 md:px-10 lg:px-12 xl:px-16 w-full">
         <AnimateOnScroll direction="up" duration={600} distance={24}>
         <header className="flex flex-col gap-[33px] mb-12">
@@ -34,14 +34,14 @@ export function AlgorithmImportanceSection(): JSX.Element {
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-0 border border-[#793de1] rounded-[20px] overflow-hidden">
-          <div className="bg-[#f0edff80] border-r border-[#793de1] p-8 md:p-10">
-            <h3 className="font-maven-pro font-bold text-[#333333] text-[22px] tracking-[-0.55px] leading-[35px]">
+          <div className="bg-[#f0edff80] border-b border-[#793de1] md:border-b-0 md:border-r md:border-[#793de1] p-6 md:p-10 rounded-t-[20px] md:rounded-tr-none">
+            <h3 className="font-maven-pro font-bold text-[#333333] text-xl md:text-[22px] tracking-[-0.55px] leading-[1.4] md:leading-[35px]">
               Algorithms
             </h3>
-            <p className="font-maven-pro font-normal text-[#333333] text-base tracking-[-0.55px] leading-[35px] mt-1">
+            <p className="font-maven-pro font-normal text-[#333333] text-sm md:text-base tracking-[-0.55px] leading-[1.5] md:leading-[35px] mt-1">
               <span className="font-semibold">Rules-based, automated, consistent</span>
             </p>
-            <ul className="mt-6 list-none space-y-[9px] font-maven-pro text-base tracking-[-0.55px] leading-[35px] text-black">
+            <ul className="mt-4 md:mt-6 list-none space-y-2 md:space-y-[9px] font-maven-pro text-sm md:text-base tracking-[-0.55px] leading-[1.5] md:leading-[35px] text-black">
               {algorithmFeatures.map((feature, index) => (
                 <li key={index} className="flex items-start gap-3">
                   <span className="shrink-0 w-[15px] h-[15px] relative mt-[0.4em]" style={{ lineHeight: 1 }}>
@@ -55,14 +55,14 @@ export function AlgorithmImportanceSection(): JSX.Element {
               ))}
             </ul>
           </div>
-          <div className="bg-white border border-l-0 border-[#793de180] rounded-[0_20px_20px_0] p-8 md:p-10 opacity-90">
-            <h3 className="font-maven-pro font-bold text-[#333333] text-[22px] tracking-[-0.55px] leading-[35px] opacity-76">
+          <div className="bg-white border border-t-0 md:border-t border-l-0 border-[#793de180] rounded-b-[20px] md:rounded-bl-none md:rounded-[0_20px_20px_0] p-6 md:p-10 opacity-90">
+            <h3 className="font-maven-pro font-bold text-[#333333] text-xl md:text-[22px] tracking-[-0.55px] leading-[1.4] md:leading-[35px] opacity-76">
               Human Trader
             </h3>
-            <p className="font-maven-pro font-normal text-[#333333] text-base tracking-[-0.55px] leading-[35px] mt-1 opacity-80">
+            <p className="font-maven-pro font-normal text-[#333333] text-sm md:text-base tracking-[-0.55px] leading-[1.5] md:leading-[35px] mt-1 opacity-80">
               <span className="font-semibold">Intuition-based, manual, variable</span>
             </p>
-            <ul className="mt-6 list-none space-y-[9px] font-maven-pro font-normal text-[#333333] text-base tracking-[-0.55px] leading-[35px] opacity-70">
+            <ul className="mt-4 md:mt-6 list-none space-y-2 md:space-y-[9px] font-maven-pro font-normal text-[#333333] text-sm md:text-base tracking-[-0.55px] leading-[1.5] md:leading-[35px] opacity-70">
               {humanTraderLimitations.map((limitation, index) => (
                 <li key={index} className="flex items-start gap-3">
                   <span className="shrink-0 w-[15px] h-[15px] relative mt-[0.4em] opacity-40" style={{ lineHeight: 1 }}>

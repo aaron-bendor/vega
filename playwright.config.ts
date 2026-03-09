@@ -20,6 +20,7 @@ export default defineConfig({
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
     { name: "mobile-chrome", use: { ...devices["Pixel 5"] } },
+    { name: "webkit", use: { ...devices["Desktop Safari"] } },
   ],
   webServer: process.env.CI
     ? undefined

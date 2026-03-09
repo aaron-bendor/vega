@@ -270,16 +270,11 @@ export function InvestingMadeSimpleSection() {
     <section
       id="investing-made-simple"
       ref={containerRef}
-      className="ims-reduce-motion relative w-full min-w-0 overflow-x-clip overflow-y-visible"
-      style={{
-        // Taller section: more scroll per step for a smoother, less twitchy feel
-        height: `calc(100vh + ${(screens.length - 1) * 70}vh)`,
-        fontFamily: "'Maven Pro', sans-serif",
-      }}
+      className="ims-reduce-motion relative w-full min-w-0 overflow-x-clip overflow-y-visible min-h-screen lg:min-h-0 lg:h-[calc(100vh+280vh)]"
+      style={{ fontFamily: "'Maven Pro', sans-serif" }}
     >
       <div
-        className="sticky top-0 left-0 w-full h-screen overflow-visible"
-        style={{ height: "100vh" }}
+        className="ims-sticky-wrapper sticky top-0 left-0 w-full min-h-screen overflow-visible lg:min-h-0 lg:h-screen"
       >
       <style>{`
         @keyframes fadeUp {
@@ -321,11 +316,8 @@ export function InvestingMadeSimpleSection() {
       />
       <div className="absolute inset-0 z-[1]" style={{ background: "rgba(20,0,60,0.18)" }} />
 
-      <div className="relative z-[2] flex h-full overflow-visible">
-        {/* LEFT — phone crossfade. Slot fixed to 440/901 aspect; object-contain prevents layout clipping.
-            Note: investingmadesimple2–4 are currently truncated in the source PNGs (they stop mid-content).
-            Re-export those three from the design file with the same full canvas and device frame as
-            investingmadesimple1 / investingmadesimple5, including the full bottom of the phone and bottom nav. */}
+      <div className="relative z-[2] flex flex-col lg:flex-row h-full min-h-0 overflow-visible">
+        {/* LEFT — phone crossfade (desktop only). Slot fixed to 440/901 aspect; object-contain prevents layout clipping. */}
         <div className="hidden lg:flex w-1/2 h-full items-center justify-center flex-shrink-0 overflow-visible">
           <div
             className="absolute w-[280px] h-[280px] rounded-full pointer-events-none"
@@ -345,9 +337,9 @@ export function InvestingMadeSimpleSection() {
           </div>
         </div>
 
-        {/* RIGHT — text content; on mobile bottom padding so content clears phone mockup */}
-        <div className="w-full lg:w-1/2 h-full flex items-start lg:items-center justify-center px-5 sm:px-6 lg:pl-6 lg:pr-14 pt-[14vh] lg:pt-0 pb-64 lg:pb-0">
-          <div className="relative w-full min-w-0" style={{ maxWidth: 440 }}>
+        {/* RIGHT — text content; on mobile column layout with phone below in flow */}
+        <div className="w-full lg:w-1/2 h-full min-h-0 flex flex-col items-start lg:items-center justify-center px-5 sm:px-6 lg:pl-6 lg:pr-14 pt-[14vh] lg:pt-0 pb-6 lg:pb-0 overflow-y-auto">
+          <div className="relative w-full min-w-0 shrink-0" style={{ maxWidth: 440 }}>
             {screens.map((s, i) => (
               <div
                 key={i}
@@ -429,14 +421,10 @@ export function InvestingMadeSimpleSection() {
             ))}
           </div>
 
-          {/* Mobile phone */}
+          {/* Mobile phone — in flow below content, no overlap */}
           <div
-            className="lg:hidden absolute left-1/2 -translate-x-1/2 overflow-hidden rounded-[2rem] aspect-[440/901] select-none"
+            className="lg:hidden relative mx-auto mt-8 w-[min(280px,72vw)] shrink-0 overflow-hidden rounded-[2rem] aspect-[440/901] select-none"
             style={{
-              width: "min(260px, 64vw)",
-              bottom: "0.5rem",
-              contain: "layout paint",
-              minHeight: 0,
               touchAction: "pan-y",
               WebkitUserSelect: "none",
               userSelect: "none",
