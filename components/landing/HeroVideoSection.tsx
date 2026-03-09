@@ -51,7 +51,7 @@ export function HeroVideoSection() {
               alt="Vega Financial mobile app"
               width={524}
               height={1063}
-              className="w-[min(360px,25vw)] h-auto max-h-[85vh] object-contain object-top drop-shadow-2xl transition-transform duration-500 hover:scale-[1.02]"
+              className="w-[min(360px,25vw)] h-auto max-h-[85vh] object-contain object-top drop-shadow-2xl"
               sizes="(max-width: 1024px) 0px, 360px"
               priority
             />
@@ -60,7 +60,7 @@ export function HeroVideoSection() {
           {/* Content */}
           <div className="flex flex-col items-center text-center flex-1 min-w-0 max-w-[839px]">
             <h1 className="font-syne text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold text-white tracking-[-3px] leading-[1.05]">
-              <AnimateOnScroll delay={50} duration={700}>
+              <AnimateOnScroll delay={0} duration={700}>
                 Algorithmic
                 <br />
                 trading,
@@ -86,7 +86,7 @@ export function HeroVideoSection() {
               </p>
             </AnimateOnScroll>
 
-            <AnimateOnScroll delay={260}>
+            <AnimateOnScroll delay={140}>
               <div className="mt-6 flex flex-col items-center gap-2">
                 <DemoCTADropdown onInvest={handleTryItNow} variant="hero" />
               </div>

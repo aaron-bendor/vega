@@ -20,11 +20,11 @@ export function AnimateOnScroll({
   children,
   className = "",
   delay = 0,
-  duration = 650,
-  distance = 24,
+  duration = 420,
+  distance = 16,
   direction = "up",
   once = true,
-  scaleFrom = 1,
+  scaleFrom = 0.985,
 }: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [visible, setVisible] = useState(false);
@@ -48,7 +48,7 @@ export function AnimateOnScroll({
           setVisible(false);
         }
       },
-      { threshold: 0.15 }
+      { threshold: 0.08, rootMargin: "0px 0px -10% 0px" }
     );
 
     observer.observe(el);
@@ -73,7 +73,7 @@ export function AnimateOnScroll({
           opacity ${duration}ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms,
           transform ${duration}ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms
         `,
-        willChange: "opacity, transform",
+        willChange: visible ? "auto" : "transform, opacity",
       }}
     >
       {children}

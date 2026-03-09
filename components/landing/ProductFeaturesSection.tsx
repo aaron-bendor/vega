@@ -71,12 +71,12 @@ export function ProductFeaturesSection() {
                   <AnimateOnScroll
                     delay={i * 90}
                     direction="up"
-                    className="flex items-start gap-3 rounded-lg px-3 py-2 -mx-3 transition-all duration-300 ease-out hover:bg-[#531cb3]/10 hover:translate-x-1 cursor-default group"
+                    className="flex items-start gap-3 rounded-lg px-3 py-2 -mx-3 transition-all duration-300 ease-out hover:bg-[#531cb3]/10 motion-safe:hover:translate-x-0 cursor-default group"
                   >
-                    <span className="font-dm-mono text-sm mt-0.5 shrink-0 transition-all duration-300 ease-out text-[#531cb3] group-hover:translate-x-1 group-hover:text-[#7c3aed] group-hover:scale-110">
+                    <span className="font-dm-mono text-sm mt-0.5 shrink-0 transition-all duration-300 ease-out text-[#531cb3] motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:text-[#6d28d9]">
                       →
                     </span>
-                    <p className="font-dm-sans font-light text-base md:text-lg leading-[1.4] text-[#333] transition-colors duration-300 ease-out group-hover:text-[#531cb3]">
+                    <p className="font-dm-sans font-light text-base md:text-lg leading-[1.4] text-[#333] transition-colors duration-300 ease-out motion-safe:group-hover:text-[#5b21b6]">
                       {feature}
                     </p>
                   </AnimateOnScroll>

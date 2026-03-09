@@ -52,7 +52,6 @@ const mainNav: NavEntry[] = [
   { type: "link", href: "/algorithms", label: "Algorithms" },
   { type: "link", href: "/vega-developer", label: "Developer" },
   { type: "link", href: "/faq", label: "FAQ" },
-  { type: "link", href: "/admin", label: "Admin" },
 ];
 
 const investorNav: NavEntry[] = [
@@ -89,6 +88,31 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
+  }, [mobileMenuOpen, isInvestorApp]);
+
+  // Focus: when mobile menu opens, focus first link; when it closes, return focus to menu button
+  const prevMobileMenuOpen = useRef(false);
+  useEffect(() => {
+    if (isInvestorApp) return;
+    if (mobileMenuOpen && !prevMobileMenuOpen.current) {
+      mobileMenuFirstLinkRef.current?.focus();
+    } else if (!mobileMenuOpen && prevMobileMenuOpen.current) {
+      mobileMenuButtonRef.current?.focus();
+    }
+    prevMobileMenuOpen.current = mobileMenuOpen;
+  }, [mobileMenuOpen, isInvestorApp]);
+
+  // When mobile menu is closed, hide from assistive tech and remove from tab order (no duplicate nav exposure)
+  useEffect(() => {
+    const panel = mobileMenuPanelRef.current;
+    if (!panel || isInvestorApp) return;
+    if (mobileMenuOpen) {
+      panel.removeAttribute("aria-hidden");
+      panel.removeAttribute("inert");
+    } else {
+      panel.setAttribute("aria-hidden", "true");
+      panel.setAttribute("inert", "");
+    }
   }, [mobileMenuOpen, isInvestorApp]);
 
   const handleTryItNow = (e: React.MouseEvent) => {
@@ -199,6 +223,9 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
   const [indicator, setIndicator] = useState({ left: 0, top: 0, width: 0, height: 0 });
   const navContainerRef = useRef<HTMLDivElement>(null);
   const navItemRefs = useRef<(HTMLDivElement | HTMLButtonElement | null)[]>([]);
+  const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
+  const mobileMenuFirstLinkRef = useRef<HTMLAnchorElement>(null);
+  const mobileMenuPanelRef = useRef<HTMLDivElement>(null);
 
   const activeNavIndex = navItems.findIndex((entry: NavEntry) => {
     if (entry.type !== "link") return false;
@@ -252,6 +279,14 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
   }, [updateIndicator]);
 
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isDesktopNavVisible, setIsDesktopNavVisible] = useState(true);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const update = () => setIsDesktopNavVisible(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
   useEffect(() => {
     const SCROLL_DOWN_THRESHOLD = 24;
     const SCROLL_UP_THRESHOLD = 8;
@@ -358,6 +393,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                   <div
                     ref={navContainerRef}
                     className="hidden md:flex relative items-center gap-1 lg:gap-2"
+                    aria-hidden={!isDesktopNavVisible}
                     onMouseLeave={(e) => {
                       // Only clear hover when pointer leaves the whole nav area (avoids flicker when moving between items)
                       const related = e.relatedTarget;
@@ -404,6 +440,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                             variant="light"
                             noUnderline
                             className="text-sm lg:text-base whitespace-nowrap font-normal"
+                            {...(activeNavIndex === i ? { "aria-current": "page" as const } : {})}
                           >
                             {entry.label}
                           </NavLink>
@@ -430,6 +467,8 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                   <div className="flex md:hidden items-center gap-2">
                     <button
                       type="button"
+                      id="mobile-nav-menu-button"
+                      ref={mobileMenuButtonRef}
                       onClick={() => setMobileMenuOpen((o) => !o)}
                       className={cn(
                         "flex items-center justify-center min-w-[44px] min-h-[44px] rounded-full transition-colors",
@@ -438,6 +477,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                           : "text-white hover:bg-white/20"
                       )}
                       aria-expanded={mobileMenuOpen}
+                      aria-controls="mobile-nav-menu"
                       aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
                     >
                       {mobileMenuOpen ? (
@@ -473,6 +513,8 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
 
       {!isInvestorApp && (
         <div
+          ref={mobileMenuPanelRef}
+          id="mobile-nav-menu"
           className={cn(
             "md:hidden fixed left-4 right-4 z-50 rounded-2xl shadow-2xl overflow-hidden border transition-[transform,opacity] duration-motion-normal ease-motion",
             mobileMenuBg,
@@ -486,13 +528,24 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
           role="dialog"
           aria-modal="true"
           aria-label="Mobile navigation menu"
+          aria-hidden={!mobileMenuOpen}
         >
           <nav className="py-3" aria-label="Mobile navigation">
-          {navItems.map((entry: NavEntry) =>
+          {navItems.map((entry: NavEntry, idx) =>
             entry.type === "link" ? (
               <Link
                 key={entry.href}
+                ref={idx === 0 ? mobileMenuFirstLinkRef : undefined}
                 href={entry.href}
+                aria-current={
+                  entry.exact === true
+                    ? pathname === entry.href
+                      ? "page"
+                      : undefined
+                    : !entry.href.startsWith("/#") && pathname?.startsWith(entry.href)
+                      ? "page"
+                      : undefined
+                }
                 className={cn(
                   "flex items-center min-h-[44px] px-5 py-3.5 font-medium transition-colors duration-200 ease-out active:scale-[0.99] focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                   isStandalone

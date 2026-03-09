@@ -13,13 +13,13 @@ declare global {
 const LIQUID_GL_OPTIONS = {
   snapshot: "body",
   target: ".liquidGL-nav",
-  resolution: 1.5,
+  resolution: 1,
   refraction: 0.01,
   bevelDepth: 0.08,
   bevelWidth: 0.15,
   frost: 1,
-  shadow: true,
-  specular: true,
+  shadow: false,
+  specular: false,
   reveal: "fade" as const,
   tilt: false,
 };
@@ -38,7 +38,18 @@ export function LiquidGLInit() {
 
     let cancelled = false;
 
+    function shouldSkipLiquidGL(): boolean {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return true;
+      if (window.matchMedia("(max-width: 767px)").matches) return true; // below tablet
+      if (window.matchMedia("(pointer: coarse)").matches) return true;
+      const nav = navigator as Navigator & { deviceMemory?: number };
+      if (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) return true;
+      return false;
+    }
+
     async function init() {
+      if (shouldSkipLiquidGL()) return;
+
       const waitFor = (key: keyof Window): Promise<void> =>
         new Promise((resolve) => {
           const t = setInterval(() => {
@@ -64,7 +75,7 @@ export function LiquidGLInit() {
       await new Promise<void>((r) => requestAnimationFrame(() => r()));
       if (cancelled) return;
 
-      if (!document.querySelector(".liquidGL-nav")) return;
+      if (shouldSkipLiquidGL() || !document.querySelector(".liquidGL-nav")) return;
 
       try {
         window.liquidGL?.(LIQUID_GL_OPTIONS);

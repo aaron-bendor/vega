@@ -15,7 +15,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 
 const IMG_V = "?v=2";
 const N = 5;
-const HYST = 0.025; // Dead zone at slide boundaries so index does not flicker
+const HYST = 0.045; // Dead zone at slide boundaries so index does not flip too eagerly
 
 const screens = [
   {
@@ -210,7 +210,7 @@ export function InvestingMadeSimpleSection() {
         .anim-fade-up { animation: fadeUp 0.55s cubic-bezier(0.22,1,0.36,1) both; }
         .dot-ind {
           border: none; cursor: pointer; padding: 0; height: 8px; border-radius: 4px;
-          transition: width 0.35s cubic-bezier(0.4,0,0.2,1), background 0.35s ease;
+          transition: width 0.22s cubic-bezier(0.4,0,0.2,1), background 0.22s ease;
         }
         .dot-ind-btn {
           display: flex; align-items: center; justify-content: center;
@@ -228,7 +228,8 @@ export function InvestingMadeSimpleSection() {
         .ims-crossfade { will-change: opacity; }
         /* Reduced motion: no smooth scroll (handled in scrollToSlide), no crossfade or fade-up animation */
         @media (prefers-reduced-motion: reduce) {
-          .anim-fade-up { animation: none; }
+          .anim-fade-up { animation: none !important; }
+          .ims-reduce-motion .anim-fade-up { animation: none !important; }
           .ims-reduce-motion * { transition-duration: 0.01ms !important; }
           .ims-reduce-motion .ims-crossfade { will-change: auto; }
         }
@@ -258,7 +259,7 @@ export function InvestingMadeSimpleSection() {
                 key={s.phone}
                 src={s.phone}
                 alt=""
-                className="ims-crossfade absolute inset-0 w-full h-full object-contain transition-opacity duration-700"
+                className="ims-crossfade absolute inset-0 w-full h-full object-contain transition-opacity duration-300"
                 style={{ opacity: active === i ? 1 : 0 }}
               />
             ))}
@@ -278,7 +279,7 @@ export function InvestingMadeSimpleSection() {
                   left: 0,
                   width: "100%",
                   opacity: active === i ? 1 : 0,
-                  transition: "opacity 0.6s ease",
+                  transition: "opacity 0.24s ease-out",
                   pointerEvents: active === i ? "auto" : "none",
                   visibility: active === i ? "visible" : "hidden",
                 }}
@@ -359,7 +360,7 @@ export function InvestingMadeSimpleSection() {
                 key={s.phone}
                 src={s.phone}
                 alt=""
-                className="ims-crossfade phone-slide-img absolute inset-0 w-full h-full object-contain transition-opacity duration-500"
+                className="ims-crossfade phone-slide-img absolute inset-0 w-full h-full object-contain transition-opacity duration-[250ms]"
                 style={{ opacity: active === i ? 1 : 0 }}
                 loading="eager"
                 decoding="async"
