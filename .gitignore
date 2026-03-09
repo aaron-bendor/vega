@@ -20,7 +20,7 @@
 .DS_Store
 *.pem
 *.pdf
-!public/Financial Report.pdf
+!public/FinancialReport.pdf
 
 # debug
 npm-debug.log*

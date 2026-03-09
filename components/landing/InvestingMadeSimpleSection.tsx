@@ -80,16 +80,26 @@ function RichText({ text }: { text: string }) {
   );
 }
 
+const SCROLL_LOCK_MS = 1200;
+
 export function InvestingMadeSimpleSection() {
   const [active, setActive] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const isScrolling = useRef(false);
+  const programmaticTargetRef = useRef<number | null>(null);
+  const scrollLockTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const scrollToSlide = useCallback((index: number) => {
     const clamped = Math.max(0, Math.min(index, screens.length - 1));
     if (isScrolling.current) return;
     isScrolling.current = true;
+    programmaticTargetRef.current = clamped;
     setActive(clamped);
+
+    if (scrollLockTimeoutRef.current) {
+      clearTimeout(scrollLockTimeoutRef.current);
+      scrollLockTimeoutRef.current = null;
+    }
 
     // Sync scroll position so scroll-driven state and dot/wheel navigation stay in sync
     const section = containerRef.current;
@@ -106,7 +116,11 @@ export function InvestingMadeSimpleSection() {
       }
     }
 
-    setTimeout(() => { isScrolling.current = false; }, 800);
+    scrollLockTimeoutRef.current = setTimeout(() => {
+      scrollLockTimeoutRef.current = null;
+      isScrolling.current = false;
+      programmaticTargetRef.current = null;
+    }, SCROLL_LOCK_MS);
   }, []);
 
   // Scroll-driven: linear progress, rAF for smooth updates
@@ -118,17 +132,26 @@ export function InvestingMadeSimpleSection() {
       if (rafId !== null) return;
       rafId = requestAnimationFrame(() => {
         rafId = null;
-        if (isScrolling.current) return; // Don’t override during dot/wheel/touch step change
         const rect = section.getBoundingClientRect();
         const sectionHeight = rect.height;
         const viewHeight = typeof window !== "undefined" ? window.innerHeight : 0;
         const scrollable = Math.max(0, sectionHeight - viewHeight);
+
+        if (programmaticTargetRef.current !== null) {
+          setActive(programmaticTargetRef.current);
+          return;
+        }
+        if (isScrolling.current) return;
+
         if (scrollable <= 0) return;
         const scrolled = -rect.top;
         const progress = Math.max(0, Math.min(1, scrolled / scrollable));
+        const rawStep = progress * screens.length;
         const stepIndex = Math.min(
           screens.length - 1,
-          Math.floor(progress * screens.length)
+          rawStep >= screens.length - 0.5
+            ? screens.length - 1
+            : Math.floor(rawStep + 0.5)
         );
         setActive(stepIndex);
       });
@@ -138,6 +161,7 @@ export function InvestingMadeSimpleSection() {
     return () => {
       window.removeEventListener("scroll", onScroll);
       if (rafId !== null) cancelAnimationFrame(rafId);
+      if (scrollLockTimeoutRef.current) clearTimeout(scrollLockTimeoutRef.current);
     };
   }, []);
 

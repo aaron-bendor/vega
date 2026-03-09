@@ -18,7 +18,7 @@ export function VegaDeveloperBuildSection() {
           <AnimateOnScroll direction="left" className="flex-shrink-0 w-full lg:w-[55%] flex justify-center order-1">
             <div className="relative w-full max-w-[800px] flex justify-center">
               <Image
-                src="/buildalgorithms.png"
+                src="/buildalgorithms.png?v=2"
                 alt="Desktop monitor showing Vega Developer IDE"
                 width={1200}
                 height={900}

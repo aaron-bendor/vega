@@ -54,7 +54,7 @@ export function VegaDeveloperIDESection() {
           <AnimateOnScroll delay={0.1} direction="right" className="flex-shrink-0 w-full lg:w-[55%] order-1 lg:order-2 flex justify-center">
             <div className="relative w-full max-w-[800px] flex justify-center">
               <Image
-                src="/fullPython.png"
+                src="/fullPython.png?v=2"
                 alt="Laptop showing Vega Developer publish dialog"
                 width={1200}
                 height={900}

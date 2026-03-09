@@ -33,7 +33,7 @@ export function VegaDeveloperHero() {
           <AnimateOnScroll delay={0.15} direction="right" className="flex-shrink-0 w-full lg:w-[60%] order-1 lg:order-2 flex justify-center">
             <div className="relative w-full max-w-[900px] flex justify-center items-start">
               <Image
-                src="/macbookvegadeveloper.png"
+                src="/macbookvegadeveloper.png?v=2"
                 alt="MacBook displaying Vega Developer IDE"
                 width={1200}
                 height={900}

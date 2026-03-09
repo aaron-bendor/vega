@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 const ADMIN_SESSION_KEY = "vega-admin-auth";
 const ADMIN_PASSWORD = "VegaFinancialTheBest";
 
-const PDF_URL = "/Financial%20Report.pdf";
+const PDF_URL = "/api/financial-report";
 
 export default function AdminPage() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -27,7 +27,7 @@ export default function AdminPage() {
   useEffect(() => {
     if (!authenticated) return;
     setPdfAvailable(null);
-    fetch(PDF_URL, { method: "HEAD" })
+    fetch(PDF_URL, { method: "GET", cache: "no-store" })
       .then((r) => setPdfAvailable(r.ok))
       .catch(() => setPdfAvailable(false));
   }, [authenticated]);
@@ -106,8 +106,8 @@ export default function AdminPage() {
       </p>
       {pdfAvailable === false && (
         <p className="text-destructive mb-4 rounded-md border border-destructive/50 bg-destructive/10 px-4 py-3">
-          Financial Report.pdf not found. Add the file to the <code className="text-sm">public/</code> folder
-          (as <code className="text-sm">public/Financial Report.pdf</code>).
+          FinancialReport.pdf not found. Add the file to the <code className="text-sm">public/</code> folder
+          (as <code className="text-sm">public/FinancialReport.pdf</code>).
         </p>
       )}
       <div className="rounded-lg border bg-muted/30 overflow-hidden" style={{ minHeight: "70vh" }}>
@@ -116,7 +116,7 @@ export default function AdminPage() {
           type="application/pdf"
           width="100%"
           height="100%"
-          style={{ minHeight: "70vh", display: pdfAvailable === false ? "none" : "block" }}
+          style={{ minHeight: "70vh" }}
           aria-label="Financial Report PDF"
         >
           <iframe

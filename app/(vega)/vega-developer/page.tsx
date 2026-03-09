@@ -7,7 +7,7 @@ export default function VegaDeveloperPage() {
   return (
     <div
       className="relative flex flex-col min-h-[100dvh] md:min-h-screen w-full min-w-0 overflow-x-clip bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: "url(/backgroundDeveloper.png)" }}
+      style={{ backgroundImage: "url(/backgroundDeveloper.png?v=2)" }}
     >
       <div className="absolute inset-0 bg-black/30 pointer-events-none" aria-hidden />
       <div className="relative flex flex-col flex-1 z-[1]">
