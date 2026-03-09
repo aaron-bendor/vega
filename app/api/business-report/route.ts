@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 
+/** Prevent static/ISR generation so the PDF is never embedded in the build (avoids Vercel FALLBACK_BODY_TOO_LARGE). */
+export const dynamic = "force-dynamic";
+
 const PDF_FILENAME = "BusinessReport.pdf";
 
 /** Try public/ first, then project root (Vega folder), so the PDF works in either place. */
