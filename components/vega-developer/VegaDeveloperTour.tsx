@@ -262,6 +262,7 @@ function Card({
   onNext,
   onPrev,
   onJump,
+  onClose,
   visible,
 }: {
   step: Step;
@@ -270,6 +271,7 @@ function Card({
   onNext: () => void;
   onPrev: () => void;
   onJump: (i: number) => void;
+  onClose: () => void;
   visible: boolean;
 }) {
   return (
@@ -289,7 +291,25 @@ function Card({
         fontFamily: "'DM Sans', sans-serif",
       }}
     >
-      <StepPill step={step} idx={idx} total={total} color={step.color} />
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}>
+        <StepPill step={step} idx={idx} total={total} color={step.color} />
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close tour"
+          style={{
+            background: "transparent",
+            border: "none",
+            color: COLORS.textMuted,
+            padding: 4,
+            fontSize: 14,
+            cursor: "pointer",
+            fontFamily: "'DM Sans', sans-serif",
+          }}
+        >
+          Close
+        </button>
+      </div>
 
       <div
         style={{
@@ -432,6 +452,78 @@ function Card({
   );
 }
 
+function Landing({ onPlayTutorial }: { onPlayTutorial: () => void }) {
+  return (
+    <div
+      style={{
+        height: "100vh",
+        width: "100vw",
+        background: COLORS.black,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 20,
+        fontFamily: "'DM Sans', sans-serif",
+      }}
+    >
+      <img
+        src={LOGO_SRC}
+        alt="Vega Developer"
+        style={{
+          width: 260,
+          maxWidth: "70vw",
+          height: "auto",
+          marginBottom: 4,
+        }}
+      />
+      <div
+        style={{
+          fontSize: 22,
+          fontWeight: 500,
+          color: COLORS.white,
+          textAlign: "center",
+          lineHeight: 1.35,
+        }}
+      >
+        Interactive tour
+      </div>
+      <p
+        style={{
+          fontSize: 14,
+          fontWeight: 300,
+          color: COLORS.textSoft,
+          textAlign: "center",
+          maxWidth: 380,
+          lineHeight: 1.7,
+        }}
+      >
+        Take a quick walkthrough of the IDE — file explorer, notebooks, backtesting, and one-click publish.
+      </p>
+      <div style={{ display: "flex", gap: 10, marginTop: 8 }}>
+        <button
+          type="button"
+          onClick={onPlayTutorial}
+          style={{
+            background: COLORS.lightPurple,
+            border: "none",
+            color: COLORS.white,
+            padding: "12px 24px",
+            borderRadius: 8,
+            fontSize: 13,
+            fontWeight: 600,
+            cursor: "pointer",
+            fontFamily: "'DM Mono', monospace",
+            boxShadow: `0 4px 20px ${COLORS.lightPurple}55`,
+          }}
+        >
+          Play Tutorial
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function Done({ onRestart }: { onRestart: () => void }) {
   return (
     <div
@@ -525,6 +617,8 @@ function Done({ onRestart }: { onRestart: () => void }) {
 }
 
 export default function VegaDeveloperTour() {
+  /** Tutorial only runs after explicit "Play Tutorial" or "Replay Tutorial". Never auto-starts on load, refresh, or route change. */
+  const [isTutorialActive, setIsTutorialActive] = useState(false);
   const [idx, setIdx] = useState(0);
   const [vis, setVis] = useState(true);
   const [done, setDone] = useState(false);
@@ -570,6 +664,10 @@ export default function VegaDeveloperTour() {
   const next = () =>
     idx < STEPS.length - 1 ? goTo(idx + 1) : setDone(true);
   const prev = () => goTo(idx - 1);
+
+  if (!isTutorialActive) {
+    return <Landing onPlayTutorial={() => setIsTutorialActive(true)} />;
+  }
 
   if (done)
     return (
@@ -639,6 +737,7 @@ export default function VegaDeveloperTour() {
             onNext={next}
             onPrev={prev}
             onJump={goTo}
+            onClose={() => setIsTutorialActive(false)}
             visible={vis}
           />
         </div>

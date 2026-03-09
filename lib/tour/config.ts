@@ -39,6 +39,11 @@ export const TOUR_STEPS: TourStepConfig[] = [
     body: "Open a strategy to see its metrics and try an allocation in your paper portfolio.",
   },
   {
+    route: "/vega-financial/compare",
+    selector: "[data-tour=\"vf-compare\"]",
+    body: "Use Compare to view two or more strategies side by side. Select the strategies you want to compare on the Strategies page, then review performance, risk, and charts before deciding which fits your portfolio.",
+  },
+  {
     route: "/vega-financial",
     selector: "[data-tour=\"vf-holdings\"]",
     body: "Holdings show value, weight, and return for each algorithm.",

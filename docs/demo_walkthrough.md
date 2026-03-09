@@ -45,7 +45,18 @@ Click any card → `/algo/<id>`.
 
 ---
 
-## 4. Invest
+## 4. Compare runs
+
+- Open the Compare view from the backtest/results area (or select 2–3 strategies on Strategies, then **Compare strategies**)
+- Select two runs/strategies to review side by side
+- Compare performance, risk metrics, and charts
+- Exit Compare to return to the main workflow
+
+**Say:** "Compare lets us review two runs side by side, so we can see which changes improved performance and which increased risk."
+
+---
+
+## 5. Invest
 
 - Enter amount (e.g. 5,000)
 - Click **Add to paper portfolio**
@@ -53,7 +64,7 @@ Click any card → `/algo/<id>`.
 
 ---
 
-## 5. Portfolio
+## 6. Portfolio
 
 Open `/portfolio`.
 
@@ -65,7 +76,7 @@ Open `/portfolio`.
 
 ---
 
-## 6. Developer publish
+## 7. Developer publish
 
 Open `/developer`.
 

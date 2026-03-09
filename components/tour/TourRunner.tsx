@@ -32,9 +32,9 @@ export function TourRunner() {
   const [step, setStep] = useState(-1);
   const driverRef = useRef<Driver | null>(null);
 
-  // Sync step from storage. Only run when user explicitly started (or replayed) this session — never auto-start or resume on invest page load.
+  // Tutorial only runs after explicit "Start tutorial" / "Replay tutorial" / "Play Tutorial" click.
+  // Never auto-start from: page load, refresh, route change, remount, or persisted localStorage state.
   useEffect(() => {
-    // Explicit start: user clicked "Start tutorial" or "Replay tour" or "Reset tutorial"
     if (getTourStartRequested()) {
       clearTourStartRequested();
       setTourStep(0);

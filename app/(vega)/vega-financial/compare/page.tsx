@@ -47,9 +47,11 @@ export default async function VegaFinancialComparePage({
         title="Compare strategies"
         description="Select 2 to 3 strategies on the Strategies page to compare them side by side."
       >
-        <EmptyState
-          message="Select at least 2 strategies to compare. Use the Strategies page to choose strategies, then click &quot;Compare strategies&quot;."
-        />
+        <div data-tour="vf-compare">
+          <EmptyState
+            message="Select at least 2 strategies to compare. Use the Strategies page to choose strategies, then click &quot;Compare strategies&quot;."
+          />
+        </div>
       </VegaFinancialPageScaffold>
     );
   }
@@ -69,7 +71,9 @@ export default async function VegaFinancialComparePage({
         title="Compare strategies"
         description="Select 2 to 3 strategies on the Strategies page to compare them side by side."
       >
-        <EmptyState message={message} showClearAll />
+        <div data-tour="vf-compare">
+          <EmptyState message={message} showClearAll />
+        </div>
       </VegaFinancialPageScaffold>
     );
   }
@@ -79,11 +83,13 @@ export default async function VegaFinancialComparePage({
       title="Compare strategies"
       description="Side-by-side comparison of selected strategies. Simulated data for demo only."
     >
-      <ComparePanel
-        strategies={strategies}
-        compareIds={ids}
-        invalidIds={invalidIds}
-      />
+      <div data-tour="vf-compare">
+        <ComparePanel
+          strategies={strategies}
+          compareIds={ids}
+          invalidIds={invalidIds}
+        />
+      </div>
     </VegaFinancialPageScaffold>
   );
 }
