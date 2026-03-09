@@ -86,7 +86,7 @@ export function AboutUsSection() {
           <p className="font-dm-mono font-normal text-[#531cb3] text-base md:text-xl tracking-[2px] leading-tight">
             {"// OUR MISSION"}
           </p>
-          <p className="font-maven-pro font-semibold text-[#111] text-2xl sm:text-3xl md:text-[50px] tracking-[-2px] leading-[1.2] mt-4 max-w-[900px]">
+          <p className="font-maven-pro font-semibold text-[#111] text-2xl sm:text-3xl md:text-[50px] tracking-[-2px] leading-[1.5] mt-6 max-w-[900px]">
             To make sophisticated investing{" "}
             <span className="text-[#793de1]">accessible to everyone</span> — not
             just the 0.7%.
@@ -119,19 +119,19 @@ export function AboutUsSection() {
             Built on three core principles.
           </h2>
 
-          <div className="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 lg:gap-12">
+          <div className="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 lg:gap-14 max-w-[1100px]">
             {principles.map((principle) => (
               <article
                 key={principle.id}
-                className="rounded-[20px] border border-[#793de1] bg-[#f0edff80] p-6 md:p-8 flex flex-col"
+                className="rounded-[24px] border-2 border-[#793de1] bg-[#f0edff80] p-8 md:p-10 lg:p-12 flex flex-col min-h-[320px] md:min-h-[360px]"
               >
-                <span className="font-dm-mono font-light text-[#531cb3] text-lg md:text-xl tracking-[2.21px] leading-tight">
+                <span className="font-dm-mono font-light text-[#531cb3] text-xl md:text-2xl tracking-[2.21px] leading-tight">
                   {principle.id}
                 </span>
-                <h3 className="font-maven-pro font-bold text-[#333] text-xl md:text-[22px] tracking-[-0.55px] leading-tight mt-4">
+                <h3 className="font-maven-pro font-bold text-[#333] text-2xl md:text-3xl tracking-[-0.55px] leading-tight mt-5">
                   {principle.title}
                 </h3>
-                <p className="font-dm-sans font-light text-[#333] text-sm md:text-[15px] leading-6 mt-4 flex-1">
+                <p className="font-dm-sans font-light text-[#333] text-base md:text-lg leading-[1.65] mt-5 flex-1">
                   {principle.description}
                 </p>
               </article>

@@ -429,14 +429,16 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const desktopNavVariant = usePurpleNavText ? "brand" : "light";
-  const desktopIndicatorClass = usePurpleNavText ? "bg-primary/10" : "bg-white/15";
-  const mobileTriggerClass = usePurpleNavText
+  // On standalone (e.g. FAQ) the pill is dark (bg-black/50); use light text for contrast. Only use purple when pill is light (hero over light content).
+  const useBrandNavText = usePurpleNavText && !isStandalone;
+  const desktopNavVariant = useBrandNavText ? "brand" : "light";
+  const desktopIndicatorClass = useBrandNavText ? "bg-primary/10" : "bg-white/15";
+  const mobileTriggerClass = useBrandNavText
     ? "text-primary hover:bg-primary/10"
     : isStandalone
-      ? "text-foreground hover:bg-muted"
+      ? "text-white hover:bg-white/20"
       : "text-white hover:bg-white/20";
-  const headerCtaScrolled = isScrolled || usePurpleNavText;
+  const headerCtaScrolled = isScrolled || useBrandNavText;
 
   const pill = (
     <>
