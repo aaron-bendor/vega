@@ -226,7 +226,7 @@ export function DashboardPortfolioContent({
         <h2 id="performance-heading" className="sr-only">
           Portfolio performance
         </h2>
-        <div className="lg:col-span-8 min-w-0">
+        <div className="hidden md:block lg:col-span-8 min-w-0">
           <PortfolioPerformanceCard
             currentValue={account.equity}
             dataPoints={[

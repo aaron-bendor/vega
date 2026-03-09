@@ -10,7 +10,8 @@ const COOKIE_NAME = "vega-admin-session";
 const PAYLOAD = "authenticated";
 
 function getSecret(): string {
-  const secret = process.env.ADMIN_PASSWORD;
+  const raw = process.env.ADMIN_PASSWORD;
+  const secret = typeof raw === "string" ? raw.trim() : "";
   if (!secret || secret.length < 8) {
     throw new Error("ADMIN_PASSWORD must be set and at least 8 characters");
   }
