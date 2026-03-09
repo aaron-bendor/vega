@@ -1,52 +1,58 @@
-# Admin & Business Report PDF — Deploy Checklist
+# Admin & Business Report PDF
 
-The `/admin` page shows an embedded **Business Report** PDF. For it to work on production (e.g. vegafinancial.uk), the PDF must be included in the deployed artefact.
+The `/admin` page embeds the **Business Report** PDF. It works locally (file in `public/` or project root). **On production it only works if you use an external PDF URL.**
 
-## Why production returns 404 for the PDF
+---
 
-- The app serves the PDF as a **static asset** at **`/BusinessReport.pdf`** (from `public/BusinessReport.pdf`).
-- If the live site returns **404** for `https://vegafinancial.uk/BusinessReport.pdf`, the file is not in the deployment. Common causes:
-  1. **Deployed commit is old** — the commit that is deployed does not include `public/BusinessReport.pdf`, or the host is serving a cached/older build.
-  2. **PDF not pushed** — the PDF is only in your local repo; the commit with `public/BusinessReport.pdf` was never pushed to the remote that the host builds from.
+## Production (deployed site): use an external PDF URL
 
-## What to do
+Deployed apps (e.g. Vercel) often don’t have the PDF file in the build, so the embed will 404 unless you point it at a URL.
 
-### 1. Confirm the PDF is in the repo and in the right commit
+### 1. Host the PDF somewhere public
 
-```bash
-# File should be tracked (no output = not ignored)
-git check-ignore -v public/BusinessReport.pdf
-# Should show "not ignored" or similar; if it says .gitignore:*.pdf then the exception !public/BusinessReport.pdf is missing.
+Choose one:
 
-# See which commit last added/updated the PDF
-git log -1 --oneline -- public/BusinessReport.pdf
-```
+- **Google Drive**  
+  Upload the PDF → Share → “Anyone with the link” → get a link.  
+  For embedding, use a direct-download form, e.g.  
+  `https://drive.google.com/uc?export=download&id=YOUR_FILE_ID`
 
-Ensure `public/BusinessReport.pdf` is present and committed, and that you have pushed that commit to the branch your host builds from (e.g. `main`).
+- **Vercel Blob / AWS S3 / Cloudflare R2 / any file host**  
+  Upload the file and copy the **public** URL to the PDF.
 
-### 2. Confirm the host is building the correct commit
+- **Another server or CDN**  
+  Any URL that returns the PDF with `Content-Type: application/pdf` when opened in a browser.
 
-- In your hosting dashboard (Vercel, Netlify, etc.), open the latest deployment.
-- Check the **commit SHA** or **branch** that was built.
-- That commit must be the one (or a descendant of the one) that contains `public/BusinessReport.pdf`. If the dashboard shows an older commit, trigger a new deploy from the correct branch/commit.
+### 2. Set the URL in your host’s environment
 
-### 3. Redeploy the correct commit
+In your hosting dashboard (e.g. Vercel → Project → **Settings** → **Environment Variables**):
 
-- Push the latest commit that includes `public/BusinessReport.pdf`, then trigger a new deployment (e.g. “Redeploy” in the dashboard, or push again).
-- Or in the dashboard, start a deployment from the branch that has the PDF.
+- **Name:** `NEXT_PUBLIC_BUSINESS_REPORT_PDF_URL`
+- **Value:** the full URL to the PDF (e.g. `https://…/BusinessReport.pdf`)
 
-### 4. Verify after deploy
+Save and **redeploy** (or push a new commit so the host rebuilds).
 
-- **PDF (static):**  
-  `https://vegafinancial.uk/BusinessReport.pdf`  
-  → Should return **200** and the PDF (not 404).
+### 3. Check
 
-- **Admin page:**  
-  `https://vegafinancial.uk/admin`  
-  → Log in with the admin password; the embedded Business Report should load.
+- Open `https://vegafinancial.uk/admin` (or your production URL).
+- Log in; the Business Report should load in the embed and “Open in new tab” should work.
+
+---
+
+## Local development
+
+No env var needed. Put `BusinessReport.pdf` in either:
+
+- `public/BusinessReport.pdf`, or  
+- the project root (Vega folder),
+
+and the app will serve it via `/api/business-report` and the embed will work.
+
+---
 
 ## Summary
 
-- **Local/repo:** The PDF is included if `public/BusinessReport.pdf` is tracked and committed.
-- **Live site:** The PDF is included only if the **deployed** commit contains that file and the host has built that commit.  
-  If the PDF is missing on production, fix the deployed commit and redeploy; the app is already configured to serve it at `/BusinessReport.pdf`.
+| Environment   | What to do |
+|---------------|------------|
+| **Production** | Set `NEXT_PUBLIC_BUSINESS_REPORT_PDF_URL` to a public PDF URL and redeploy. |
+| **Local**      | Keep the PDF in `public/` or project root; no env var required. |

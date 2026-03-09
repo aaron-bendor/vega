@@ -3,17 +3,32 @@
 import { useEffect, useState } from "react";
 
 /**
- * Served by API (checks public/ then project root) so the PDF works whether it's in public/ or the Vega folder.
- * Falls back to static /BusinessReport.pdf if you prefer.
+ * PDF URL for the Business Report embed.
+ * - Production: uses Google Drive preview so the embed works when deployed.
+ * - Local: uses /api/business-report (file in public/ or project root) when on localhost.
+ * Override with NEXT_PUBLIC_BUSINESS_REPORT_PDF_URL in env if needed.
  */
-const PDF_URL = "/api/business-report";
+const GOOGLE_DRIVE_PDF_PREVIEW =
+  "https://drive.google.com/file/d/1aaNfKrkIzetBuxZ3uTjOds9IKGmc-4e-/preview";
+const LOCAL_PDF_API = "/api/business-report";
+
+function getPdfUrl(): string {
+  const env = typeof process !== "undefined" && process.env.NEXT_PUBLIC_BUSINESS_REPORT_PDF_URL?.trim();
+  if (env) return env;
+  if (typeof window !== "undefined" && (window.location?.hostname === "localhost" || window.location?.hostname === "127.0.0.1")) {
+    return LOCAL_PDF_API;
+  }
+  return GOOGLE_DRIVE_PDF_PREVIEW;
+}
+
+const PDF_URL = typeof window !== "undefined" ? getPdfUrl() : GOOGLE_DRIVE_PDF_PREVIEW;
 
 export function AdminContent() {
   const [pdfAvailable, setPdfAvailable] = useState<boolean | null>(null);
 
   useEffect(() => {
     setPdfAvailable(null);
-    fetch(PDF_URL, { method: "GET", cache: "no-store" })
+    fetch(PDF_URL, { method: "GET", cache: "no-store", mode: "cors" })
       .then((r) => setPdfAvailable(r.ok))
       .catch(() => setPdfAvailable(false));
   }, []);
@@ -34,9 +49,9 @@ export function AdminContent() {
       </p>
       {pdfAvailable === false && (
         <p className="text-destructive mb-4 rounded-md border border-destructive/50 bg-destructive/10 px-4 py-3">
-          BusinessReport.pdf not found. Add the file to the{" "}
-          <code className="text-sm">public/</code> folder (as{" "}
-          <code className="text-sm">public/BusinessReport.pdf</code>).
+          PDF could not be loaded. For production: set{" "}
+          <code className="text-sm">NEXT_PUBLIC_BUSINESS_REPORT_PDF_URL</code> in your host to a
+          public PDF URL (e.g. Google Drive, S3, or a direct link). See docs/DEPLOY-ADMIN.md.
         </p>
       )}
       <div
