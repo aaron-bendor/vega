@@ -30,15 +30,15 @@ export function VegaDeveloperHero() {
             </AnimateOnScroll>
           </div>
           {/* Laptop — full device, no crop: natural size with object-contain */}
-          <AnimateOnScroll delay={0.15} direction="right" className="flex-shrink-0 w-full lg:w-[60%] order-1 lg:order-2 flex justify-center">
-            <div className="relative w-full max-w-[900px] flex justify-center items-start">
+          <AnimateOnScroll delay={0.15} direction="right" className="flex-shrink-0 w-full lg:w-[70%] order-1 lg:order-2 flex justify-center">
+            <div className="relative w-full max-w-[1100px] flex justify-center items-start">
               <Image
-                src="/macbookvegadeveloper.png?v=2"
+                src="/vegadeveloper.png?v=3"
                 alt="MacBook displaying Vega Developer IDE"
                 width={1200}
                 height={900}
                 className="w-full h-auto object-contain object-top"
-                sizes="(max-width: 768px) 100vw, 900px"
+                sizes="(max-width: 768px) 100vw, 1100px"
               />
             </div>
           </AnimateOnScroll>

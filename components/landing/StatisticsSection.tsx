@@ -6,17 +6,17 @@ import { CountUp } from "./CountUp";
 
 const stats = [
   {
-    value: <CountUp to={70} suffix="%" initialValue={70} />,
+    value: <CountUp to={70} suffix="%" />,
     description:
       "of all stock market trades are executed by algorithms. Every time you buy a stock, it\u2019s likely an algo on the other side.",
   },
   {
-    value: <CountUp to={5} prefix="$" suffix="T" initialValue={5} />,
+    value: <CountUp to={5} prefix="$" suffix="T" />,
     description:
       "managed by hedge funds using algorithmic strategies, exclusively accessible to accredited investors with \u00a3200K+ income.",
   },
   {
-    value: <CountUp to={99.3} suffix="%" decimals={1} initialValue={99.3} />,
+    value: <CountUp to={99.3} suffix="%" decimals={1} />,
     description:
       "of the population has zero access to algorithmic investing tools.",
   },

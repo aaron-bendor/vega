@@ -26,15 +26,15 @@ export function AlgorithmsHeroSection(): JSX.Element {
       <div className="relative z-10 flex flex-col flex-1 min-h-0 min-w-0 overflow-visible">
         {/* Layout matches reference: image left (975px equiv, ~64–68% width), text right (label, 80px headline, 3xl subtitle) */}
         <div className="flex-1 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-0 px-4 md:px-4 lg:px-5 max-w-[1520px] mx-auto w-full py-6 md:py-8 min-h-0 min-w-0">
-          {/* Left: iMac — reference 975×830, aspect 1.33; make it bigger (~65% width), flush left on desktop */}
-          <div className="flex-shrink-0 w-full lg:w-[65%] xl:w-[67%] order-2 lg:order-1 lg:min-h-[830px] relative">
-            <div className="relative w-full h-full min-h-[55vh] lg:min-h-[82vh] max-h-[90vh]">
+          {/* Left: iMac — reference 975×830, aspect 1.33; larger on desktop (~70% width), flush left */}
+          <div className="flex-shrink-0 w-full lg:w-[70%] xl:w-[72%] order-2 lg:order-1 lg:min-h-[830px] relative">
+            <div className="relative w-full h-full min-h-[55vh] lg:min-h-[85vh] max-h-[92vh]">
               <Image
-                src="/page1algo.png"
+                src="/page1algo.png?v=3"
                 alt="iMac displaying algorithmic trading interface"
                 fill
                 className="object-contain object-left-top"
-                sizes="(max-width: 1024px) 100vw, 67vw"
+                sizes="(max-width: 1024px) 100vw, 72vw"
                 priority
               />
             </div>

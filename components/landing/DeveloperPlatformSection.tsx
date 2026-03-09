@@ -38,7 +38,7 @@ export function DeveloperPlatformSection() {
           <AnimateOnScroll delay={0.15} direction="right" className="flex-shrink-0 w-full lg:w-[70%] order-1 lg:order-2">
             <div className="relative w-full">
               <Image
-                src="/macbookvegadeveloper.png"
+                src="/vegadeveloper.png?v=3"
                 alt="MacBook Pro displaying Vega Developer algorithm interface"
                 width={1200}
                 height={900}
