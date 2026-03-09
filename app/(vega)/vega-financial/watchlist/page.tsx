@@ -4,86 +4,64 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { loadPortfolioState } from "@/lib/vega-financial/portfolio-store";
 import { VegaFinancialPageScaffold } from "@/components/vega-financial/VegaFinancialPageScaffold";
-import { WatchlistPageSkeleton } from "@/components/vega-financial/WatchlistPageSkeleton";
 import { EmptyStateCard } from "@/components/vega-financial/EmptyStateCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Star, ArrowRight } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Star } from "lucide-react";
 
 type WatchlistItem = { id: string; name: string; shortDesc: string; riskLevel: string; role?: string };
 
-const SUGGESTED_LINKS = [
-  { label: "Low risk starters", href: "/vega-financial/marketplace?risk=Low", desc: "Strategies with lower volatility." },
-  { label: "Diversifiers", href: "/vega-financial/marketplace?tag=Mean%20Reversion", desc: "May help balance your portfolio." },
-];
-
 export default function WatchlistPage() {
-  const [items, setItems] = useState<WatchlistItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [items, setItems] = useState<WatchlistItem[] | null>(null);
 
   useEffect(() => {
     const state = loadPortfolioState();
     const ids = state.watchlist ?? [];
     if (ids.length === 0) {
       setItems([]);
-      setLoading(false);
       return;
     }
     fetch(`/api/vega-financial/watchlist-versions?ids=${encodeURIComponent(ids.join(","))}`)
       .then((res) => res.json())
       .then((data: WatchlistItem[]) => setItems(Array.isArray(data) ? data : []))
-      .catch(() => setItems([]))
-      .finally(() => setLoading(false));
+      .catch(() => setItems([]));
   }, []);
-
-  if (loading) {
-    return <WatchlistPageSkeleton />;
-  }
 
   return (
     <VegaFinancialPageScaffold
       title="Watchlist"
       description="Save strategies here to compare them later or review before allocating."
     >
-      {items.length === 0 ? (
+      {items === null ? (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {[1, 2, 3].map((i) => (
+            <Card key={i} className="rounded-xl border border-border overflow-hidden">
+              <CardContent className="p-4 sm:p-5 lg:p-6 flex flex-col gap-3">
+                <Skeleton className="h-5 w-3/4" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-2/3" />
+                <div className="flex gap-2">
+                  <Skeleton className="h-5 w-16 rounded-full" />
+                  <Skeleton className="h-5 w-20 rounded-full" />
+                </div>
+                <Skeleton className="h-9 w-24 mt-2 rounded-lg" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : items.length === 0 ? (
         <EmptyStateCard
           icon={<Star className="size-7" aria-hidden />}
-          headline="No strategies on your watchlist"
+          headline="No strategies saved yet"
           description="Save strategies here to compare them later or review before allocating."
           primaryAction={
             <Link
               href="/vega-financial/marketplace"
               className="inline-flex items-center justify-center rounded-lg bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium hover:bg-primary-hover focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring min-h-[44px]"
             >
-              Explore strategies
+              Browse strategies
             </Link>
-          }
-          secondaryAction={
-            <Link
-              href="/vega-financial/marketplace?risk=Low"
-              className="inline-flex items-center justify-center rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-medium text-foreground hover:bg-accent focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring min-h-[44px]"
-            >
-              View low risk starters
-            </Link>
-          }
-          preview={
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {SUGGESTED_LINKS.map(({ label, href, desc }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className="flex items-center justify-between gap-2 rounded-lg border border-border bg-muted/30 px-4 py-3 text-left hover:border-primary/30 hover:bg-accent/50 transition-colors focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring group"
-                >
-                  <div className="min-w-0">
-                    <span className="font-medium text-foreground group-hover:text-primary transition-colors">
-                      {label}
-                    </span>
-                    <p className="text-xs text-muted-foreground mt-0.5 truncate">{desc}</p>
-                  </div>
-                  <ArrowRight className="size-4 shrink-0 text-muted-foreground group-hover:text-primary transition-colors" aria-hidden />
-                </Link>
-              ))}
-            </div>
           }
         />
       ) : (

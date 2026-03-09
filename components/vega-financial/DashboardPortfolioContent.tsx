@@ -79,11 +79,13 @@ export function DashboardPortfolioContent({
   suggestedAlgorithms,
 }: DashboardPortfolioContentProps) {
   const [account, setAccount] = useState<MockAccount | null>(null);
+  const [startingCash, setStartingCash] = useState(0);
 
   const refresh = useCallback(() => {
     if (typeof window === "undefined") return;
     seedFromMockAccountIfEmpty();
     const state = loadPortfolioState();
+    setStartingCash(state.startingCash);
     const next = portfolioStateToMockAccount(
       state.availableCash,
       state.startingCash,
@@ -182,7 +184,14 @@ export function DashboardPortfolioContent({
           Portfolio performance
         </h2>
         <div className="lg:col-span-8 min-w-0">
-          <PortfolioPerformanceCard currentValue={account.equity} />
+          <PortfolioPerformanceCard
+            currentValue={account.equity}
+            dataPoints={[
+              { label: "Start", value: startingCash },
+              { label: "Now", value: account.equity },
+            ]}
+            holdings={account.holdings.map((h) => ({ name: h.name, currentValue: h.currentValue }))}
+          />
         </div>
         <div className="lg:col-span-4 min-w-0">
           <AccountBreakdownCard
@@ -234,15 +243,9 @@ export function DashboardPortfolioContent({
             href="/vega-financial/marketplace"
             className="vf-card-hover rounded-xl border border-border bg-card p-4 flex flex-col gap-2 hover:border-muted-foreground/25 hover:bg-muted/10 transition-colors duration-200 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <span className="font-medium text-foreground">Add a diversifier</span>
-            <span className="text-sm text-muted-foreground">Explore strategies that can improve portfolio diversification.</span>
-          </Link>
-          <Link
-            href="/vega-financial/portfolio"
-            className="vf-card-hover rounded-xl border border-border bg-card p-4 flex flex-col gap-2 hover:border-muted-foreground/25 hover:bg-muted/10 transition-colors duration-200 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <span className="font-medium text-foreground">Reduce concentration</span>
-            <span className="text-sm text-muted-foreground">Review allocation weights and rebalancing ideas.</span>
+            <span className="font-medium text-foreground">Explore strategies</span>
+            <span className="text-sm text-muted-foreground">Browse and compare strategies by risk, biggest drop, and role.</span>
+            <span className="text-sm font-medium text-primary mt-1">Browse strategies →</span>
           </Link>
           <Link
             href="/vega-financial/watchlist"
@@ -250,6 +253,15 @@ export function DashboardPortfolioContent({
           >
             <span className="font-medium text-foreground">Review watchlist</span>
             <span className="text-sm text-muted-foreground">Compare saved strategies before allocating.</span>
+            <span className="text-sm font-medium text-primary mt-1">Open watchlist →</span>
+          </Link>
+          <Link
+            href="/vega-financial/learn"
+            className="vf-card-hover rounded-xl border border-border bg-card p-4 flex flex-col gap-2 hover:border-muted-foreground/25 hover:bg-muted/10 transition-colors duration-200 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <span className="font-medium text-foreground">Learn the basics</span>
+            <span className="text-sm text-muted-foreground">Understand metrics and how to compare strategies.</span>
+            <span className="text-sm font-medium text-primary mt-1">Go to Learn →</span>
           </Link>
         </div>
       </section>

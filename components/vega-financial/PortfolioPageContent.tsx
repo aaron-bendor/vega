@@ -60,11 +60,23 @@ export function PortfolioPageContent() {
     return (
       <div className="w-full max-w-6xl min-w-0 mx-auto px-4 py-6 sm:p-6 lg:p-8 space-y-8">
         <PageHeader title="Portfolio" subtitle={PAGE_SUBTITLES.portfolio} />
-        <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <section className="grid grid-cols-2 lg:grid-cols-4 gap-4" aria-label="Portfolio summary">
           <SummaryMetricCard label="Portfolio value" value={formatCurrency(availableCash)} />
           <SummaryMetricCard label="Total invested" value={formatCurrency(0)} />
           <SummaryMetricCard label="Total return" value={UNAVAILABLE_IN_DEMO} />
           <SummaryMetricCard label="Cash available" value={formatCurrency(availableCash)} />
+        </section>
+        <section aria-labelledby="allocation-empty-heading">
+          <h2 id="allocation-empty-heading" className="sr-only">
+            Allocation
+          </h2>
+          <Card className="rounded-xl border border-border bg-card overflow-hidden">
+            <CardContent className="py-6 px-4">
+              <p className="text-sm text-muted-foreground text-center">
+                Allocation breakdown will appear here once you add strategies.
+              </p>
+            </CardContent>
+          </Card>
         </section>
         <Card className="rounded-xl border border-border bg-card overflow-hidden">
           <CardContent className="py-14 px-6 text-center">
@@ -81,7 +93,7 @@ export function PortfolioPageContent() {
               href="/vega-financial/marketplace"
               className="inline-flex items-center justify-center rounded-lg bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium hover:bg-primary/90 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
             >
-              {EMPTY_STATES.noHoldings.cta}
+              Browse strategies
             </Link>
           </CardContent>
         </Card>

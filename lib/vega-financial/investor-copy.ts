@@ -32,12 +32,12 @@ export const EMPTY_STATES = {
   noHoldings: {
     headline: "No holdings yet",
     body: "Explore strategies and add them to your portfolio to see performance here.",
-    cta: "Explore",
+    cta: "Browse strategies",
   },
   noActivity: {
     headline: "No recent activity",
     body: "Activity appears as you interact with the demo. Allocations, watchlist changes, and portfolio updates will appear here.",
-    cta: "Explore",
+    cta: "Browse strategies",
   },
 } as const;
 

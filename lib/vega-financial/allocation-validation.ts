@@ -18,7 +18,7 @@ export function validateAllocationAmount(
     return { valid: false, message: "Allocation exceeds available demo cash." };
   }
   if (!versionId || typeof versionId !== "string" || versionId.trim() === "") {
-    return { valid: false, message: "This strategy could not be loaded. Please return to Explore and try again." };
+    return { valid: false, message: "This strategy could not be loaded. Please return to Strategies and try again." };
   }
   return { valid: true };
 }
@@ -45,7 +45,7 @@ export function validateSellAmount(
     return { valid: false, message: "Sell amount cannot exceed your current holding." };
   }
   if (!versionId || typeof versionId !== "string" || versionId.trim() === "") {
-    return { valid: false, message: "This strategy could not be loaded. Please return to Explore and try again." };
+    return { valid: false, message: "This strategy could not be loaded. Please return to Strategies and try again." };
   }
   return { valid: true };
 }

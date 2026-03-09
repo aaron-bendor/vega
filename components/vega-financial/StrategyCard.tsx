@@ -26,7 +26,10 @@ function isDbVersion(a: Algorithm): a is DbVersion {
 }
 
 function getTags(a: Algorithm): string[] {
-  return isDbVersion(a) ? a.tags.map((t) => t.tag.name) : a.tags;
+  const raw = isDbVersion(a) ? a.tags.map((t) => t.tag.name) : a.tags;
+  const riskLevel = a.riskLevel;
+  if (!riskLevel) return raw;
+  return raw.filter((t) => t !== riskLevel && t !== "Low Risk");
 }
 
 interface StrategyCardProps {

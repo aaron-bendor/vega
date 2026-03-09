@@ -46,7 +46,7 @@ export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalT
   const stickyTop = useCustomHeader ? "top-[6.5rem]" : hideTopBar ? "top-0" : minimalTopBar ? "top-12" : "top-[5.25rem]";
 
   return (
-    <div className={naturalScroll ? "bg-white" : "min-h-screen flex flex-col bg-white"}>
+    <div className={naturalScroll ? "min-h-screen bg-background" : "min-h-screen flex flex-col bg-background"}>
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
@@ -68,7 +68,7 @@ export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalT
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="size-11 rounded-xl bg-shell-sidebar border border-shell-border shadow-sm hover:bg-primary/10"
+                  className="size-11 rounded-xl bg-background border border-border shadow-sm hover:bg-muted/50"
                   aria-label="Open navigation menu"
                 >
                   <Menu className="size-5" />
@@ -163,7 +163,7 @@ export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalT
               id="main-content"
               tabIndex={-1}
               className={cn(
-                "min-w-0 vf-enter-up visible",
+                "min-w-0 vf-enter-up visible bg-background",
                 hideTopBar ? "pt-16 pl-16 lg:pt-4 lg:pl-0" : "pt-4 sm:pt-6",
                 bottomNav && "pb-20 lg:pb-0"
               )}

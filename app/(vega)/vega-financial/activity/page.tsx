@@ -96,14 +96,14 @@ export default function ActivityPage() {
                       Activity timeline
                     </h2>
                     <p className="text-sm text-muted-foreground mt-1">
-                      What will appear here: when you allocate to a strategy, add or remove from your watchlist, or change your portfolio, those events will show up in order.
+                      When you allocate to a strategy, add or remove from your watchlist, or change your portfolio, those events will show up here in order. Browse strategies to get started.
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2 shrink-0">
                     <Button asChild variant="default" size="sm" className="min-h-[44px]">
                       <Link href="/vega-financial/marketplace" className="inline-flex items-center gap-2">
                         <Plus className="size-4" aria-hidden />
-                        Add first strategy
+                        Browse strategies
                       </Link>
                     </Button>
                     <Button asChild variant="outline" size="sm" className="min-h-[44px]">

@@ -21,7 +21,7 @@ export const TOUR_STEPS: TourStepConfig[] = [
   {
     route: "/vega-financial",
     selector: "[data-tour=\"vf-tabs\"]",
-    body: "Use Marketplace to browse algorithms, Portfolio to track holdings.",
+    body: "Use Strategies to browse algorithms, Portfolio to track holdings.",
   },
   {
     route: "/vega-financial/marketplace",

@@ -37,8 +37,8 @@ export function AlgorithmAllocationForm({
   showAllocationHelper = true,
   className,
 }: AlgorithmAllocationFormProps) {
-  const [, setAmount] = useState<number>(10000);
-  const [amountInput, setAmountInput] = useState("10000");
+  const [, setAmount] = useState<number | null>(null);
+  const [amountInput, setAmountInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [action, setAction] = useState<"buy" | "sell" | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -185,8 +185,8 @@ export function AlgorithmAllocationForm({
           <Input
             id="algo-amount"
             type="number"
-            min={100}
-            step={1000}
+            min={1}
+            step={100}
             value={amountInput}
             onChange={(e) => {
               const v = e.target.value;
@@ -195,7 +195,9 @@ export function AlgorithmAllocationForm({
               const n = Number(v);
               if (!Number.isNaN(n) && n >= 0) setAmount(n);
             }}
+            placeholder="e.g. 1000"
             className="w-28 h-9 tabular-nums"
+            aria-describedby={showAllocationHelper ? "algo-amount-helper" : undefined}
           />
           <div className="flex flex-wrap gap-1.5">
             {QUICK_AMOUNTS.map((a) => (
@@ -240,8 +242,13 @@ export function AlgorithmAllocationForm({
       </div>
 
       {showAllocationHelper && (
-        <div className="text-[11px] text-muted-foreground space-y-0.5">
-          <p>Available cash: {formatCurrency(availableCash)}</p>
+        <div id="algo-amount-helper" className="text-[11px] text-muted-foreground space-y-0.5">
+          <p>Minimum £1. Available cash: {formatCurrency(availableCash)}</p>
+          {availableCash <= 0 && (
+            <p className="text-amber-600 dark:text-amber-500">
+              You have no available cash to buy. Reset the demo in Settings to restore starting cash.
+            </p>
+          )}
           <p>Current holding: {formatCurrency(currentHoldingValue)}</p>
         </div>
       )}
@@ -290,10 +297,10 @@ export function AlgorithmAllocationForm({
           </Link>
         )}
         <Link
-          href="/vega-financial/marketplace"
-          className="text-center text-sm font-medium text-muted-foreground hover:text-foreground focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded py-2 min-h-[44px] flex items-center justify-center border border-border"
+          href={`/vega-financial/compare?compare=${versionId}`}
+          className="text-center text-sm font-medium text-muted-foreground hover:text-foreground focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded py-2 px-3 min-h-[44px] flex items-center justify-center border border-border"
         >
-          Compare
+          Compare strategies
         </Link>
         <Button
           type="button"

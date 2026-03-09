@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { AnimateOnScroll } from "@/components/landing/AnimateOnScroll";
 
 const teamMembers = [
   { id: 1, name: "Acar", role: "Company Vision & Marketing", image: "/Group%208296.png" },
@@ -43,27 +46,35 @@ export function AboutUsSection() {
           </h2>
 
           <div className="mt-8 md:mt-10 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-8 md:gap-10 xl:gap-8">
-            {teamMembers.map((member) => (
-              <article
+            {teamMembers.map((member, index) => (
+              <AnimateOnScroll
                 key={member.id}
-                className="flex flex-col items-center text-center min-w-0"
+                delay={index * 80}
+                duration={400}
+                distance={12}
+                direction="up"
+                once
               >
-                <div className="relative w-[120px] h-[120px] sm:w-[140px] sm:h-[140px] xl:w-[140px] xl:h-[140px] rounded-full overflow-hidden bg-[#f0edff] shrink-0 flex-shrink-0">
-                  <Image
-                    src={member.image}
-                    alt={`${member.name} profile`}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 640px) 120px, (max-width: 1280px) 140px, 140px"
-                  />
-                </div>
-                <h3 className="font-maven-pro font-bold text-[#531cb3] text-lg md:text-xl xl:text-xl tracking-tight mt-3 min-w-0">
-                  {member.name}
-                </h3>
-                <p className="font-maven-pro font-medium text-[#333] text-xs sm:text-sm md:text-base leading-snug mt-0.5 min-w-0 break-words">
-                  {member.role}
-                </p>
-              </article>
+                <article
+                  className="group/card flex flex-col items-center text-center min-w-0 transition-[transform,box-shadow,opacity] duration-[280ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[transform] hover:-translate-y-2 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+                >
+                  <div className="relative w-[120px] h-[120px] sm:w-[140px] sm:h-[140px] xl:w-[140px] xl:h-[140px] rounded-full overflow-hidden bg-[#f0edff] shrink-0 flex-shrink-0 transition-[transform,box-shadow] duration-[280ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:shadow-[0_18px_35px_rgba(0,0,0,0.1)] motion-reduce:transition-none">
+                    <Image
+                      src={member.image}
+                      alt={`${member.name} profile`}
+                      fill
+                      className="object-cover transition-transform duration-[280ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:scale-105 motion-reduce:transition-none motion-reduce:group-hover/card:scale-100"
+                      sizes="(max-width: 640px) 120px, (max-width: 1280px) 140px, 140px"
+                    />
+                  </div>
+                  <h3 className="font-maven-pro font-bold text-[#531cb3] text-lg md:text-xl xl:text-xl tracking-tight mt-3 min-w-0 transition-[transform,color] duration-[280ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:-translate-y-0.5 group-hover/card:text-[#4f21c2] motion-reduce:transition-none motion-reduce:group-hover/card:translate-y-0">
+                    {member.name}
+                  </h3>
+                  <p className="font-maven-pro font-medium text-[#333]/90 text-xs sm:text-sm md:text-base leading-snug mt-0.5 min-w-0 break-words transition-[transform,opacity,color] duration-[280ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:-translate-y-0.5 group-hover/card:opacity-100 group-hover/card:text-[#222] motion-reduce:transition-none motion-reduce:group-hover/card:translate-y-0">
+                    {member.role}
+                  </p>
+                </article>
+              </AnimateOnScroll>
             ))}
           </div>
         </div>

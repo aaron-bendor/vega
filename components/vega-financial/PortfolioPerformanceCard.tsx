@@ -12,11 +12,25 @@ import {
 } from "recharts";
 import { cn } from "@/lib/utils";
 
+function formatCurrency(value: number): string {
+  return new Intl.NumberFormat("en-GB", {
+    style: "currency",
+    currency: "GBP",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(value);
+}
+
 const RANGES = ["1W", "1M", "3M", "1Y", "All"] as const;
 
 interface DataPoint {
   label: string;
   value: number;
+}
+
+export interface HoldingContribution {
+  name: string;
+  currentValue: number;
 }
 
 interface PortfolioPerformanceCardProps {
@@ -26,6 +40,8 @@ interface PortfolioPerformanceCardProps {
   startValue?: number;
   /** Optional full time series. If not provided and only start→current, show empty state. */
   dataPoints?: DataPoint[];
+  /** Optional holdings for strategy-level contribution (value and % of total). */
+  holdings?: HoldingContribution[];
   className?: string;
 }
 
@@ -37,10 +53,18 @@ export function PortfolioPerformanceCard({
   currentValue,
   startValue: _startValue,
   dataPoints,
+  holdings,
   className,
 }: PortfolioPerformanceCardProps) {
   void _startValue; // optional prop for future use
   const [range, setRange] = useState<(typeof RANGES)[number]>("All");
+  const totalEquity = currentValue;
+  const hasHoldings = holdings && holdings.length > 0;
+  const showContributionBlock = true; // Always show section so empty state is visible when no holdings
+  const showContributionList = hasHoldings && totalEquity > 0;
+  const sortedHoldings = showContributionList
+    ? [...holdings!].sort((a, b) => b.currentValue - a.currentValue)
+    : [];
 
   const hasRealHistory = dataPoints && dataPoints.length >= 2;
   const chartData: { label: string; value: number }[] = hasRealHistory
@@ -144,16 +168,84 @@ export function PortfolioPerformanceCard({
             <span>Includes invested strategies and available cash</span>
             <span>Simulated data</span>
           </div>
+          {showContributionBlock && (
+            <div className="border-t border-border px-4 pb-4 pt-3">
+              <h4 className="text-xs font-semibold text-foreground mb-1">
+                Strategy contribution to portfolio value
+              </h4>
+              <p className="text-[11px] text-muted-foreground mb-2">
+                Based on your <strong>current demo portfolio value</strong>. This is a snapshot of
+                how much each strategy contributes now—simulated for the demo, not historical attribution.
+              </p>
+              {showContributionList ? (
+                <ul className="space-y-1.5 text-sm" role="list">
+                  {sortedHoldings.map((h) => {
+                    const pct = totalEquity > 0 ? (h.currentValue / totalEquity) * 100 : 0;
+                    return (
+                      <li
+                        key={h.name}
+                        className="flex flex-wrap items-center justify-between gap-2 py-1.5 border-b border-border/60 last:border-0"
+                      >
+                        <span className="font-medium text-foreground truncate min-w-0">{h.name}</span>
+                        <span className="tabular-nums text-muted-foreground shrink-0 text-right">
+                          {formatCurrency(h.currentValue)} ({pct.toFixed(0)}%)
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
+                <p className="text-xs text-muted-foreground py-2">
+                  No strategies in your portfolio yet. Allocate to strategies to see their share of
+                  portfolio value here.
+                </p>
+              )}
+            </div>
+          )}
         </>
       ) : (
-        <div className="flex flex-col items-center justify-center flex-1 min-h-[240px] sm:min-h-[280px] px-4 pb-6 text-center">
-          <p className="text-sm text-muted-foreground">
-            Portfolio history will appear here once performance data is available for your current holdings.
-          </p>
-          <p className="text-[11px] text-muted-foreground/80 mt-2">
-            Includes invested strategies and available cash · Simulated data
-          </p>
-        </div>
+        <>
+          <div className="flex flex-col items-center justify-center flex-1 min-h-[200px] sm:min-h-[220px] px-4 pb-4 text-center">
+            <p className="text-sm text-muted-foreground">
+              Portfolio history will appear here once performance data is available for your current holdings.
+            </p>
+            <p className="text-[11px] text-muted-foreground/80 mt-2">
+              Includes invested strategies and available cash · Simulated data
+            </p>
+          </div>
+          {showContributionBlock && (
+            <div className="border-t border-border px-4 pb-4 pt-3">
+              <h4 className="text-xs font-semibold text-foreground mb-1">
+                Strategy contribution to portfolio value
+              </h4>
+              <p className="text-[11px] text-muted-foreground mb-2">
+                Based on your <strong>current demo portfolio value</strong>. Simulated for the demo.
+              </p>
+              {showContributionList ? (
+                <ul className="space-y-1.5 text-sm" role="list">
+                  {sortedHoldings.map((h) => {
+                    const pct = totalEquity > 0 ? (h.currentValue / totalEquity) * 100 : 0;
+                    return (
+                      <li
+                        key={h.name}
+                        className="flex flex-wrap items-center justify-between gap-2 py-1.5 border-b border-border/60 last:border-0"
+                      >
+                        <span className="font-medium text-foreground truncate min-w-0">{h.name}</span>
+                        <span className="tabular-nums text-muted-foreground shrink-0 text-right">
+                          {formatCurrency(h.currentValue)} ({pct.toFixed(0)}%)
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
+                <p className="text-xs text-muted-foreground py-2">
+                  No strategies in your portfolio yet. Allocate to strategies to see their share here.
+                </p>
+              )}
+            </div>
+          )}
+        </>
       )}
     </div>
   );

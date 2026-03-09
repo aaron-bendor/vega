@@ -186,13 +186,16 @@ export default async function AlgorithmDetailPage({
   return (
     <AlgorithmDetailLayout
       breadcrumb={[
-        { label: "Explore", href: "/vega-financial/marketplace" },
+        { label: "Strategies", href: "/vega-financial/marketplace" },
         { label: displayName },
       ]}
       heroLeft={heroLeft}
       heroRight={heroRight ?? <div />}
       metricStrip={
         <>
+          <p className="text-[11px] text-muted-foreground mb-2 leading-tight">
+            Simulated metrics for comparison. Not a forecast of future results.
+          </p>
           {metricStrip}
           {overviewCopy?.actionInsight && (
             <p className="text-xs text-muted-foreground mt-3 max-w-2xl">{overviewCopy.actionInsight}</p>
@@ -207,7 +210,7 @@ export default async function AlgorithmDetailPage({
             {overviewCopy?.whatItDoes && (
               <section id={METRICS_HELP_ID}>
                 <h3 className="font-maven-pro text-sm font-semibold text-foreground mb-2">What this strategy does</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed max-w-3xl">
+                <p className="text-sm text-muted-foreground leading-snug max-w-3xl">
                   {overviewCopy.whatItDoes}
                 </p>
               </section>
@@ -248,17 +251,17 @@ export default async function AlgorithmDetailPage({
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="rounded-xl border border-border bg-card p-4">
                     <p className="text-xs font-medium text-muted-foreground mb-2">Tends to work in</p>
-                    <ul className="text-sm text-muted-foreground space-y-1">
+                    <ul className="text-sm text-muted-foreground space-y-1 list-disc pl-5">
                       {(overviewCopy?.whenWorksList ?? []).map((item, i) => (
-                        <li key={i}>• {item}</li>
+                        <li key={i}>{item}</li>
                       ))}
                     </ul>
                   </div>
                   <div className="rounded-xl border border-border bg-card p-4">
                     <p className="text-xs font-medium text-muted-foreground mb-2">Tends to struggle in</p>
-                    <ul className="text-sm text-muted-foreground space-y-1">
+                    <ul className="text-sm text-muted-foreground space-y-1 list-disc pl-5">
                       {(overviewCopy?.whenStrugglesList ?? []).map((item, i) => (
-                        <li key={i}>• {item}</li>
+                        <li key={i}>{item}</li>
                       ))}
                     </ul>
                   </div>
@@ -270,17 +273,17 @@ export default async function AlgorithmDetailPage({
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="rounded-xl border border-border bg-card p-4">
                     <p className="text-xs font-medium text-muted-foreground mb-2">Tends to work in</p>
-                    <ul className="text-sm text-muted-foreground space-y-1">
+                    <ul className="text-sm text-muted-foreground space-y-1 list-disc pl-5">
                       {overviewCopy.whereWorks.map((item, i) => (
-                        <li key={i}>• {item}</li>
+                        <li key={i}>{item}</li>
                       ))}
                     </ul>
                   </div>
                   <div className="rounded-xl border border-border bg-card p-4">
                     <p className="text-xs font-medium text-muted-foreground mb-2">Tends to struggle in</p>
-                    <ul className="text-sm text-muted-foreground space-y-1">
+                    <ul className="text-sm text-muted-foreground space-y-1 list-disc pl-5">
                       {overviewCopy.whereStruggles.map((item, i) => (
-                        <li key={i}>• {item}</li>
+                        <li key={i}>{item}</li>
                       ))}
                     </ul>
                   </div>
@@ -302,8 +305,11 @@ export default async function AlgorithmDetailPage({
         ),
         performance: (
           <div className="space-y-6">
-            <p className="text-sm text-muted-foreground">
-              Historical simulated results. Useful for comparison, not forecasts.
+            <p className="text-sm text-muted-foreground leading-snug">
+              <strong className="text-foreground">All performance figures on this page are simulated</strong> for the demo. Use them for comparison only; they do not predict future results.
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Minimum investment and fees are set by the strategy; returns and biggest drop are from the demo backtest.
             </p>
             <MetricsCards
               cumulativeReturn={(metricMap.cumulativeReturn ?? version?.cachedReturn) ?? undefined}
@@ -407,8 +413,8 @@ export default async function AlgorithmDetailPage({
               </Card>
               <Card className="rounded-xl border border-border bg-card">
                 <CardContent className="pt-4">
-                  <p className="text-xs font-medium text-muted-foreground mb-1">Expected diversification benefit</p>
-                  <p className="text-sm text-foreground">May help reduce concentration when combined with strategies that behave differently.</p>
+                  <p className="text-xs font-medium text-muted-foreground mb-1">Diversification</p>
+                  <p className="text-sm text-foreground">Can help <strong>reduce concentration</strong> when combined with strategies that behave differently (e.g. trend vs mean reversion).</p>
                 </CardContent>
               </Card>
               <Card className="rounded-xl border border-border bg-card">
@@ -420,7 +426,7 @@ export default async function AlgorithmDetailPage({
               <Card className="rounded-xl border border-border bg-card">
                 <CardContent className="pt-4">
                   <p className="text-xs font-medium text-muted-foreground mb-1">Suggested allocation range</p>
-                  <p className="text-sm text-foreground">{overviewCopy?.suggestedSize ?? overviewCopy?.suggestedAllocationRange ?? "5–20% of portfolio, depending on risk tolerance."}</p>
+                  <p className="text-sm text-foreground">{overviewCopy?.suggestedSize ?? overviewCopy?.suggestedAllocationRange ?? "5–20% of portfolio, depending on your risk tolerance."}</p>
                 </CardContent>
               </Card>
             </div>

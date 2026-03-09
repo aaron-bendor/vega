@@ -33,8 +33,11 @@ export function PortfolioReconciliationBlock({
       aria-labelledby="reconciliation-heading"
     >
       <h2 id="reconciliation-heading" className="font-maven-pro font-medium text-foreground mb-3">
-        Ledger reconciliation
+        Cash and holdings check
       </h2>
+      <p className="text-xs text-muted-foreground mb-3">
+        Checks that your cash balance, holdings, and transactions all match.
+      </p>
       <dl className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-x-4 gap-y-2">
         <div>
           <dt className="text-muted-foreground">Available cash</dt>

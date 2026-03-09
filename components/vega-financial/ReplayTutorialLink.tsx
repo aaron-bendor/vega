@@ -19,9 +19,9 @@ export function ReplayTutorialLink() {
     <button
       type="button"
       onClick={handleClick}
-      className="text-xs font-medium text-muted-foreground hover:text-foreground focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded"
+      className="text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded border border-border py-2 px-3 min-h-[44px] inline-flex items-center justify-center"
     >
-      Replay tutorial
+      Start tutorial
     </button>
   );
 }

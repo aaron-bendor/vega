@@ -13,7 +13,7 @@ interface BreadcrumbProps {
 }
 
 /**
- * Slim breadcrumb for Vega Financial detail pages (e.g. Explore / Strategy name).
+ * Slim breadcrumb for Vega Financial detail pages (e.g. Strategies / Strategy name).
  */
 export function Breadcrumb({ items }: BreadcrumbProps) {
   return (

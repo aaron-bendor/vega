@@ -2,6 +2,7 @@
 
 import { formatPercent } from "@/lib/utils/format";
 import { InfoTooltip } from "@/components/vega-financial/InfoTooltip";
+import { METRIC_LABELS } from "@/lib/vega-financial/investor-copy";
 import { cn } from "@/lib/utils";
 
 export type DataConfidenceLevel = "High" | "Medium" | "Low";
@@ -17,11 +18,11 @@ interface StrategyMetricStripProps {
 }
 
 const CARD_EXPLANATIONS: Record<string, string> = {
-  return: "Total change in value over the tested period.",
+  return: "Total change in value over the tested period (simulated).",
   biggestDrop: "Largest peak-to-trough fall before recovering.",
-  riskAdjustedReturn: "How much return the strategy delivered for the level of risk taken.",
+  riskAdjustedReturn: "Return per unit of risk over the tested period.",
   trackRecordLength: "Length of history used to produce these results.",
-  dataConfidence: "Based on the amount of history available for this strategy.",
+  dataConfidence: "Based on how much history is available for this strategy.",
 };
 
 function MetricCard({
@@ -59,21 +60,21 @@ export function StrategyMetricStrip({
   const cards = [
     returnPct != null && {
       key: "return",
-      label: "Return",
+      label: METRIC_LABELS.return,
       value: formatPercent(returnPct),
       explanation: CARD_EXPLANATIONS.return,
       valueClassName: returnPct >= 0 ? "vf-text-positive" : "vf-text-negative",
     },
     maxDrawdown != null && {
       key: "maxDrawdown",
-      label: "Max drawdown",
+      label: METRIC_LABELS.biggestDrop,
       value: formatPercent(maxDrawdown),
       explanation: CARD_EXPLANATIONS.biggestDrop,
       valueClassName: "vf-text-negative",
     },
     riskAdjustedReturn != null && {
       key: "sharpe",
-      label: "Sharpe",
+      label: METRIC_LABELS.riskAdjustedReturn,
       value: riskAdjustedReturn.toFixed(2),
       explanation: CARD_EXPLANATIONS.riskAdjustedReturn,
       valueClassName: undefined,

@@ -22,7 +22,7 @@ const ICON_SIZE = 18;
 
 const primaryNav = [
   { href: "/vega-financial", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { href: "/vega-financial/marketplace", label: "Explore", icon: Store },
+  { href: "/vega-financial/marketplace", label: "Strategies", icon: Store },
   { href: "/vega-financial/portfolio", label: "Portfolio", icon: Wallet },
   { href: "/vega-financial/watchlist", label: "Watchlist", icon: Star },
   { href: "/vega-financial/activity", label: "Activity", icon: Activity },

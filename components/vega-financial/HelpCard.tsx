@@ -22,7 +22,7 @@ export function HelpCard({ className }: HelpCardProps) {
   }, []);
   const explorePrompt =
     skippedCount >= 2
-      ? "Prefer to explore alone? Start in Explore to browse strategies."
+      ? "Prefer to explore alone? Start in Strategies to browse."
       : "Replay the tutorial or learn how to compare risk, return, and diversification. You can also restart the tutorial from Settings.";
 
   const handleReplayTutorial = () => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Search, ArrowRight } from "lucide-react";
@@ -46,20 +46,33 @@ function isDbVersion(a: Algorithm): a is DbVersion {
 
 interface MarketplaceContentProps {
   algorithms: Algorithm[];
-  tagOptions: string[];
+  tagOptions?: string[];
   useDemo: boolean;
 }
 
-export function MarketplaceContent({ algorithms, tagOptions, useDemo }: MarketplaceContentProps) {
+export function MarketplaceContent({ algorithms, useDemo }: MarketplaceContentProps) {
   void useDemo;
   const searchParams = useSearchParams();
   const sort = searchParams.get("sort") ?? "newest";
   const tag = searchParams.get("tag") ?? "";
+  const asset = searchParams.get("asset") ?? "";
   const risk = searchParams.get("risk") ?? "";
   const [search, setSearch] = useState("");
   const [compareIds, setCompareIds] = useState<Set<string>>(new Set());
+  const [maxCompareMessage, setMaxCompareMessage] = useState(false);
   const [filtersSheetOpen, setFiltersSheetOpen] = useState(false);
   const router = useRouter();
+
+  const compareFromUrlDone = useRef(false);
+  useEffect(() => {
+    if (compareFromUrlDone.current || algorithms.length === 0) return;
+    const compareParam = searchParams.get("compare");
+    if (!compareParam) return;
+    compareFromUrlDone.current = true;
+    const ids = compareParam.split(",").map((s) => s.trim()).filter(Boolean).slice(0, 3);
+    const validIds = new Set(algorithms.map((a) => a.id).filter((id) => ids.includes(id)));
+    if (validIds.size > 0) setCompareIds(validIds);
+  }, [searchParams, algorithms]);
   const setSort = useCallback(
     (value: string) => {
       const params = new URLSearchParams(searchParams.toString());
@@ -118,23 +131,34 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
 
   const toggleCompare = (id: string) => {
     setCompareIds((prev) => {
+      if (prev.has(id)) {
+        setMaxCompareMessage(false);
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      }
+      if (prev.size >= 3) {
+        setMaxCompareMessage(true);
+        return prev;
+      }
+      setMaxCompareMessage(false);
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else if (next.size < 3) next.add(id);
+      next.add(id);
       return next;
     });
   };
   const compareArray = Array.from(compareIds);
   const compareHref = compareArray.length >= 2
-    ? `/vega-financial/marketplace?compare=${compareArray.join(",")}`
+    ? `/vega-financial/compare?compare=${compareArray.join(",")}`
     : null;
 
   const activeFiltersList = useMemo(() => {
     const a: { key: string; label: string }[] = [];
     if (tag) a.push({ key: "tag", label: tag });
+    if (asset) a.push({ key: "asset", label: asset });
     if (risk) a.push({ key: "risk", label: `Risk: ${risk}` });
     return a;
-  }, [tag, risk]);
+  }, [tag, asset, risk]);
 
   const COLLECTIONS = [
     { label: "Low risk starters", href: "/vega-financial/marketplace?risk=Low", desc: "Strategies with lower volatility." },
@@ -147,7 +171,7 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
     <div className="vega-demo flex flex-col lg:flex-row gap-6 min-w-0">
       {/* Desktop: left sticky filter rail 280px */}
       <div className="hidden lg:block shrink-0">
-        <MarketplaceFilterRail tagOptions={tagOptions} />
+        <MarketplaceFilterRail />
       </div>
 
       {/* Right: content column */}
@@ -188,19 +212,25 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
             href="/vega-financial/marketplace"
             className={cn(
               "vf-chip-motion inline-flex items-center justify-center rounded-lg border px-3 py-2 text-sm min-h-[44px]",
-              !tag && !risk
+              !tag && !asset && !risk
                 ? "border-primary bg-primary text-primary-foreground"
                 : "border-border bg-card text-foreground hover:border-primary/25 hover:bg-accent/50"
             )}
           >
             All
           </Link>
-          {(tagOptions.length > 0 ? tagOptions : ["Momentum", "Mean Reversion", "Quant"]).slice(0, 3).map((t) => {
+          {["Momentum", "Trend Following", "Mean Reversion"].map((t) => {
             const isActive = tag === t;
+            const chipParams: Record<string, string> = {};
+            if (!isActive) chipParams.tag = t;
+            if (asset) chipParams.asset = asset;
+            if (risk) chipParams.risk = risk;
+            const chipQs = Object.keys(chipParams).length ? new URLSearchParams(chipParams).toString() : "";
+            const chipHref = chipQs ? `/vega-financial/marketplace?${chipQs}` : "/vega-financial/marketplace";
             return (
               <Link
                 key={t}
-                href={`/vega-financial/marketplace?tag=${encodeURIComponent(t)}`}
+                href={chipHref}
                 className={cn(
                   "vf-chip-motion inline-flex items-center justify-center rounded-lg border px-3 py-2 text-sm min-h-[44px]",
                   isActive
@@ -212,7 +242,7 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
               </Link>
             );
           })}
-          <MarketplaceFiltersSheet tagOptions={tagOptions} open={filtersSheetOpen} onOpenChange={setFiltersSheetOpen} />
+          <MarketplaceFiltersSheet open={filtersSheetOpen} onOpenChange={setFiltersSheetOpen} />
         </div>
 
         {/* 3. Active filters row */}
@@ -228,7 +258,7 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
               </span>
             ))}
             <Link
-              href="/vega-financial/marketplace"
+              href={sort && sort !== "newest" ? `/vega-financial/marketplace?sort=${sort}` : "/vega-financial/marketplace"}
               className="text-xs font-medium text-muted-foreground hover:text-foreground focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded"
             >
               Clear all
@@ -236,14 +266,14 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
           </div>
         )}
 
-        {/* 4. Collections row */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 vf-enter-stagger vf-stagger-visible">
+        {/* 4. Collections / quick-pick — stacked on mobile, 2 cols on desktop; full-card click target */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 vf-enter-stagger vf-stagger-visible">
           {COLLECTIONS.map((c) => (
             <Link
               key={c.label}
               href={c.href}
               className={cn(
-                "vf-chip-motion rounded-xl border vf-border-soft vf-surface-2 px-4 py-3 text-sm flex flex-col justify-center min-h-[44px]",
+                "vf-chip-motion rounded-xl border vf-border-soft vf-surface-2 px-4 py-4 text-left flex flex-col gap-1 min-h-[44px]",
                 "hover:border-primary/40 hover:shadow-md hover:vf-surface-2 transition-all duration-[var(--motion-duration-normal)]",
                 "focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
               )}
@@ -252,14 +282,14 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
                 {c.label}
                 <ArrowRight className="size-4 shrink-0 text-muted-foreground" aria-hidden />
               </span>
-              <span className="vf-text-muted text-xs block mt-0.5">{c.desc}</span>
+              <span className="vf-text-muted text-sm">{c.desc}</span>
             </Link>
           ))}
         </div>
 
-        {/* 5. Results header row */}
+        {/* 5. Results header row — count + word stay together to avoid mid-word wrap */}
         <p className="text-sm text-muted-foreground tabular-nums" aria-live="polite">
-          Showing <span className="vf-results-count">{filtered.length} {filtered.length === 1 ? "strategy" : "strategies"}</span>
+          Showing <span className="vf-results-count whitespace-nowrap">{filtered.length} {filtered.length === 1 ? "strategy" : "strategies"}</span>
         </p>
 
         {/* 6. Strategy grid */}
@@ -307,6 +337,9 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
                 aria-live="polite"
                 aria-label="Compare selection"
               >
+                <p className="text-xs vf-text-muted">
+                  Select 2 to 3 strategies to compare.
+                </p>
                 <div className="flex items-center justify-between gap-4 flex-wrap">
                   <span className="text-sm font-medium text-foreground" aria-live="polite">
                     {compareArray.length} {compareArray.length === 1 ? "strategy" : "strategies"} selected
@@ -314,7 +347,7 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
-                      onClick={() => setCompareIds(new Set())}
+                      onClick={() => { setCompareIds(new Set()); setMaxCompareMessage(false); }}
                       className="text-sm font-medium vf-text-muted hover:text-foreground focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded min-h-[44px] px-3 inline-flex items-center"
                     >
                       Clear all
@@ -336,13 +369,11 @@ export function MarketplaceContent({ algorithms, tagOptions, useDemo }: Marketpl
                     )}
                   </div>
                 </div>
-                <p className="text-xs vf-text-muted">
-                  {compareArray.length >= 3
-                    ? "You can compare up to 3 strategies."
-                    : compareArray.length >= 2
-                      ? "Ready to compare."
-                      : "Select at least 2 strategies to compare."}
-                </p>
+                {maxCompareMessage && (
+                  <p className="text-sm text-foreground" role="alert">
+                    You can compare up to 3 strategies.
+                  </p>
+                )}
               </div>
             )}
           </>

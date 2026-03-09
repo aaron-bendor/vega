@@ -47,6 +47,7 @@ export interface CreateDriverOverrides {
 
 export function createDriverForStep(
   stepIndex: number,
+  totalSteps: number,
   callbacks: {
     onNext: () => void;
     onPrev: () => void;
@@ -83,7 +84,7 @@ export function createDriverForStep(
 
   const driverObj = driver({
     showProgress: true,
-    progressText: "{{current}} of {{total}}",
+    progressText: `${stepIndex + 1} of ${totalSteps}`,
     steps: [step],
     nextBtnText: "Next",
     prevBtnText: "Back",

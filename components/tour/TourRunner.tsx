@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import type { Driver } from "driver.js";
 import {
   TOUR_STEPS,
   getStepCount,
@@ -29,6 +30,7 @@ export function TourRunner() {
   const pathname = usePathname();
   const router = useRouter();
   const [step, setStep] = useState(-1);
+  const driverRef = useRef<Driver | null>(null);
 
   // Sync step from storage. Only run when user explicitly started (or replayed) this session — never auto-start or resume on invest page load.
   useEffect(() => {
@@ -66,13 +68,14 @@ export function TourRunner() {
             }
           : undefined;
 
-      const driverObj = createDriverForStep(step, {
+      const driverObj = createDriverForStep(step, getStepCount(), {
         onNext: () => {
           const nextStep = step + 1;
           const total = getStepCount();
           if (nextStep >= total) {
             setTourCompleted();
             setStep(-1);
+            driverRef.current = null;
             return;
           }
           setTourStep(nextStep);
@@ -94,10 +97,12 @@ export function TourRunner() {
         onClose: () => {
           setTourDismissed();
           setStep(-1);
+          driverRef.current = null;
         },
       }, overrides);
 
       if (driverObj && !cancelled) {
+        driverRef.current = driverObj;
         driverObj.drive(0);
       }
     };
@@ -105,6 +110,14 @@ export function TourRunner() {
     run();
     return () => {
       cancelled = true;
+      if (driverRef.current) {
+        try {
+          driverRef.current.destroy();
+        } catch {
+          // ignore
+        }
+        driverRef.current = null;
+      }
     };
   }, [pathname, step, router]);
 

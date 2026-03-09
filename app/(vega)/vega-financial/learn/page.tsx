@@ -98,7 +98,7 @@ export default function LearnPage() {
           </CardHeader>
           <CardContent className="space-y-2 text-sm text-muted-foreground">
             <p>
-              Compare strategies by return, biggest drop (drawdown), and risk level first. Then check how each strategy might fit with your existing holdings—lower correlation can improve diversification. Use the Compare feature on Explore or your watchlist to see several strategies side by side.
+              Compare strategies by return, biggest drop (drawdown), and risk level first. Then check how each strategy might fit with your existing holdings—lower correlation can improve diversification. Use the Compare feature on Strategies or your watchlist to see several strategies side by side.
             </p>
           </CardContent>
         </Card>

@@ -25,7 +25,7 @@ export function useAlgorithmDetailHowToRead(setTab: (v: string) => void) {
 }
 
 export interface AlgorithmDetailLayoutProps {
-  /** Optional breadcrumb e.g. [{ label: "Explore", href: "/vega-financial/marketplace" }, { label: "Strategy name" }] */
+  /** Optional breadcrumb e.g. [{ label: "Strategies", href: "/vega-financial/marketplace" }, { label: "Strategy name" }] */
   breadcrumb?: BreadcrumbItem[];
   /** Left hero block: strategy summary, trust, why consider */
   heroLeft: ReactNode;
@@ -90,7 +90,7 @@ export function AlgorithmDetailLayout({
 
       {/* Row 3: Tabs — sticky, blurred bar, sliding underline */}
       <Tabs value={tab} onValueChange={setTab} className="min-w-0">
-        <div className="sticky top-0 z-10 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-3 bg-white/80 backdrop-blur-md border-b border-border mb-5 rounded-b-lg transition-shadow duration-[var(--motion-duration-normal)]">
+        <div className="sticky top-0 z-10 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-3 bg-background/90 backdrop-blur-md border-b border-border mb-5 rounded-b-lg transition-shadow duration-[var(--motion-duration-normal)]">
           <div className="max-w-[1100px] mx-auto">
             <TabsListWithIndicator className="flex h-auto gap-1 w-full sm:w-auto bg-transparent border-0 p-0 rounded-none shadow-none min-w-0">
               <TabsTrigger value="overview" className={tabTriggerClass} id="tab-overview">
