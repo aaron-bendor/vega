@@ -159,7 +159,7 @@ export default async function AlgorithmDetailPage({
           )}
           {maxDrawdown != null && (
             <span className="inline-flex items-center rounded-full bg-amber-500/15 px-2.5 py-1 text-sm font-semibold tabular-nums text-amber-700 dark:text-amber-400">
-              {(maxDrawdown * 100).toFixed(2)}% max drawdown
+              {(maxDrawdown * 100).toFixed(2)}% biggest drop
             </span>
           )}
           {trackRecord !== "—" && (

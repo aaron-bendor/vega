@@ -86,7 +86,7 @@ export function MarketplaceFilterContent({
         getHref={(v) => getHref({ tag: v || undefined, asset: asset || undefined, risk: risk || undefined })}
       />
       <FilterGroup
-        label="Asset"
+        label="Asset class"
         options={assetOptions}
         currentValue={asset}
         getHref={(v) => getHref({ tag: tag || undefined, asset: v || undefined, risk: risk || undefined })}

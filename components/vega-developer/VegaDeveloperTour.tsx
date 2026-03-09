@@ -449,7 +449,7 @@ function Done({ onRestart }: { onRestart: () => void }) {
     >
       <img
         src={LOGO_SRC}
-        alt="VegaDeveloper"
+        alt="Vega Developer"
         style={{
           width: 260,
           maxWidth: "70vw",
@@ -663,7 +663,7 @@ export default function VegaDeveloperTour() {
         >
           <img
             src={LOGO_SRC}
-            alt="VegaDeveloper"
+            alt="Vega Developer"
             style={{
               height: Math.max(14, 18 * scale),
               width: "auto",

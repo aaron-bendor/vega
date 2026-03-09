@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimateOnScroll } from "./AnimateOnScroll";
@@ -13,7 +14,12 @@ const features = [
   "All algorithms reviewed by our team before going live",
 ];
 
+const TYPING_FIRST_PHRASE = "the everyday investor";
+
 export function ProductFeaturesSection() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   return (
     <section id="built-for" className="relative z-0 w-full min-w-0 overflow-hidden py-16 md:py-24">
       <div className="pointer-events-none absolute inset-0 z-0 bg-white" aria-hidden />
@@ -21,10 +27,16 @@ export function ProductFeaturesSection() {
         <AnimateOnScroll>
           <h2 className="font-maven-pro font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-[-2px] leading-[1.25] min-h-[2.6em]">
             <span className="text-black font-extrabold">Built for </span>
-            <TypingEffect
-              className="font-maven-pro text-[#531cb3] font-black md:tracking-[-2px] tracking-[2px]"
-              caretClassName="text-[#531cb3]"
-            />
+            {mounted ? (
+              <TypingEffect
+                className="font-maven-pro text-[#531cb3] font-black md:tracking-[-2px] tracking-[2px]"
+                caretClassName="text-[#531cb3]"
+              />
+            ) : (
+              <span className="font-maven-pro text-[#531cb3] font-black md:tracking-[-2px] tracking-[2px]">
+                {TYPING_FIRST_PHRASE}
+              </span>
+            )}
           </h2>
         </AnimateOnScroll>
 

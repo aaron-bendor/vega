@@ -2,6 +2,9 @@
 
 /**
  * Investing made simple — scroll-driven phone carousel.
+ * Source of truth: scroll progress within the section. Progress is mapped to slide index with
+ * hysteresis so the active slide does not flicker near boundaries. No wheel/touch hijacking;
+ * native scroll drives state. Dot clicks scroll to stable per-slide targets.
  * Phone slot uses aspect-[440/901] and object-contain to avoid layout clipping.
  * If slides 2–4 look truncated: the source PNGs (investingmadesimple2–4) are truncated in the
  * design export. Re-export from the design file with the same full canvas and device frame as
@@ -11,6 +14,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
 const IMG_V = "?v=2";
+const N = 5;
+const HYST = 0.025; // Dead zone at slide boundaries so index does not flicker
+
 const screens = [
   {
     step: null as string | null,
@@ -80,50 +86,59 @@ function RichText({ text }: { text: string }) {
   );
 }
 
-const SCROLL_LOCK_MS = 1200;
+/**
+ * Single place: section geometry → scroll progress [0,1]. Used by scroll listener, ResizeObserver,
+ * and dot navigation so progress and target positions share one model. Returns null when section
+ * is not scrollable (scrollable <= 0).
+ */
+function getSectionProgress(
+  section: HTMLElement
+): { progress: number; scrollable: number; sectionTop: number } | null {
+  const rect = section.getBoundingClientRect();
+  const sectionTop = rect.top + (typeof window !== "undefined" ? window.scrollY : 0);
+  const viewHeight = typeof window !== "undefined" ? window.innerHeight : 0;
+  const scrollable = Math.max(0, rect.height - viewHeight);
+  if (scrollable <= 0) return null;
+  const scrolled = -rect.top;
+  const progress = Math.max(0, Math.min(1, scrolled / scrollable));
+  return { progress, scrollable, sectionTop };
+}
+
+/**
+ * Single place: progress [0,1] → active slide index. Hysteresis (HYST) adds a dead zone at each
+ * boundary so the index does not flicker when the user hovers near a threshold.
+ */
+function progressToIndex(progress: number, lastIndex: number): number {
+  const raw = progress >= 1 ? N - 1 : Math.min(N - 1, Math.floor(progress * N));
+  if (raw === lastIndex) return lastIndex;
+  if (raw > lastIndex) {
+    return progress >= (lastIndex + 1) / N + HYST ? raw : lastIndex;
+  }
+  return progress <= lastIndex / N - HYST ? raw : lastIndex;
+}
 
 export function InvestingMadeSimpleSection() {
   const [active, setActive] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const isScrolling = useRef(false);
-  const programmaticTargetRef = useRef<number | null>(null);
-  const scrollLockTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastIndexRef = useRef(0);
+  const activeRef = useRef(0);
+  activeRef.current = active;
+  lastIndexRef.current = active;
 
+  // Dot click: scroll to the same progress target the scroll listener uses. No lock; scroll drives active.
   const scrollToSlide = useCallback((index: number) => {
-    const clamped = Math.max(0, Math.min(index, screens.length - 1));
-    if (isScrolling.current) return;
-    isScrolling.current = true;
-    programmaticTargetRef.current = clamped;
-    setActive(clamped);
-
-    if (scrollLockTimeoutRef.current) {
-      clearTimeout(scrollLockTimeoutRef.current);
-      scrollLockTimeoutRef.current = null;
-    }
-
-    // Sync scroll position so scroll-driven state and dot/wheel navigation stay in sync
+    const clamped = Math.max(0, Math.min(index, N - 1));
     const section = containerRef.current;
-    if (section && typeof window !== "undefined") {
-      const rect = section.getBoundingClientRect();
-      const sectionTop = rect.top + window.scrollY;
-      const sectionHeight = rect.height;
-      const viewHeight = window.innerHeight;
-      const scrollable = Math.max(0, sectionHeight - viewHeight);
-      if (scrollable > 0) {
-        const targetProgress = clamped / screens.length;
-        const targetScrollY = sectionTop + targetProgress * scrollable;
-        window.scrollTo({ top: targetScrollY, behavior: "smooth" });
-      }
-    }
-
-    scrollLockTimeoutRef.current = setTimeout(() => {
-      scrollLockTimeoutRef.current = null;
-      isScrolling.current = false;
-      programmaticTargetRef.current = null;
-    }, SCROLL_LOCK_MS);
+    if (!section) return;
+    const data = getSectionProgress(section);
+    if (!data) return; // guard: section not scrollable (e.g. very tall viewport)
+    const targetProgress = clamped / (N - 1);
+    const targetScrollY = data.sectionTop + targetProgress * data.scrollable;
+    const reducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: targetScrollY, behavior: reducedMotion ? "auto" : "smooth" });
   }, []);
 
-  // Scroll-driven: linear progress, rAF for smooth updates
+  // Source of truth: scroll position → getSectionProgress → progressToIndex. setActive only when index changes.
   useEffect(() => {
     const section = containerRef.current;
     if (!section) return;
@@ -132,28 +147,12 @@ export function InvestingMadeSimpleSection() {
       if (rafId !== null) return;
       rafId = requestAnimationFrame(() => {
         rafId = null;
-        const rect = section.getBoundingClientRect();
-        const sectionHeight = rect.height;
-        const viewHeight = typeof window !== "undefined" ? window.innerHeight : 0;
-        const scrollable = Math.max(0, sectionHeight - viewHeight);
-
-        if (programmaticTargetRef.current !== null) {
-          setActive(programmaticTargetRef.current);
-          return;
-        }
-        if (isScrolling.current) return;
-
-        if (scrollable <= 0) return;
-        const scrolled = -rect.top;
-        const progress = Math.max(0, Math.min(1, scrolled / scrollable));
-        const rawStep = progress * screens.length;
-        const stepIndex = Math.min(
-          screens.length - 1,
-          rawStep >= screens.length - 0.5
-            ? screens.length - 1
-            : Math.floor(rawStep + 0.5)
-        );
-        setActive(stepIndex);
+        const data = getSectionProgress(section);
+        if (!data) return;
+        const last = lastIndexRef.current;
+        const nextIndex = progressToIndex(data.progress, last);
+        lastIndexRef.current = nextIndex;
+        if (nextIndex !== activeRef.current) setActive(nextIndex);
       });
     };
     onScroll();
@@ -161,48 +160,38 @@ export function InvestingMadeSimpleSection() {
     return () => {
       window.removeEventListener("scroll", onScroll);
       if (rafId !== null) cancelAnimationFrame(rafId);
-      if (scrollLockTimeoutRef.current) clearTimeout(scrollLockTimeoutRef.current);
     };
   }, []);
 
+  // Resize: same geometry → progress → index. rAF-throttled so resize does not cause jank.
   useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const onWheel = (e: WheelEvent) => {
-      if (isScrolling.current) { e.preventDefault(); return; }
-      if (Math.abs(e.deltaY) < 30) return;
-      e.preventDefault();
-      if (e.deltaY > 0) scrollToSlide(active + 1);
-      else scrollToSlide(active - 1);
-    };
-    el.addEventListener("wheel", onWheel, { passive: false });
-    return () => el.removeEventListener("wheel", onWheel);
-  }, [active, scrollToSlide]);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    let startY = 0;
-    const onTouchStart = (e: TouchEvent) => { startY = e.touches[0].clientY; };
-    const onTouchEnd = (e: TouchEvent) => {
-      const dy = startY - e.changedTouches[0].clientY;
-      if (Math.abs(dy) < 40) return;
-      if (dy > 0) scrollToSlide(active + 1);
-      else scrollToSlide(active - 1);
-    };
-    el.addEventListener("touchstart", onTouchStart, { passive: true });
-    el.addEventListener("touchend", onTouchEnd, { passive: true });
+    const section = containerRef.current;
+    if (!section) return;
+    let rafId: number | null = null;
+    const ro = new ResizeObserver(() => {
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        const data = getSectionProgress(section);
+        if (!data) return;
+        const last = lastIndexRef.current;
+        const nextIndex = progressToIndex(data.progress, last);
+        lastIndexRef.current = nextIndex;
+        if (nextIndex !== activeRef.current) setActive(nextIndex);
+      });
+    });
+    ro.observe(section);
     return () => {
-      el.removeEventListener("touchstart", onTouchStart);
-      el.removeEventListener("touchend", onTouchEnd);
+      ro.disconnect();
+      if (rafId !== null) cancelAnimationFrame(rafId);
     };
-  }, [active, scrollToSlide]);
+  }, []);
 
   return (
     <section
       id="investing-made-simple"
       ref={containerRef}
-      className="relative w-full min-w-0 overflow-x-clip overflow-y-visible"
+      className="ims-reduce-motion relative w-full min-w-0 overflow-x-clip overflow-y-visible"
       style={{
         // Taller section: more scroll per step for a smoother, less twitchy feel
         height: `calc(100vh + ${(screens.length - 1) * 70}vh)`,
@@ -236,6 +225,13 @@ export function InvestingMadeSimpleSection() {
             -webkit-backface-visibility: hidden;
           }
         }
+        .ims-crossfade { will-change: opacity; }
+        /* Reduced motion: no smooth scroll (handled in scrollToSlide), no crossfade or fade-up animation */
+        @media (prefers-reduced-motion: reduce) {
+          .anim-fade-up { animation: none; }
+          .ims-reduce-motion * { transition-duration: 0.01ms !important; }
+          .ims-reduce-motion .ims-crossfade { will-change: auto; }
+        }
       `}</style>
 
       {/* Background */}
@@ -262,7 +258,7 @@ export function InvestingMadeSimpleSection() {
                 key={s.phone}
                 src={s.phone}
                 alt=""
-                className="absolute inset-0 w-full h-full object-contain transition-opacity duration-700"
+                className="ims-crossfade absolute inset-0 w-full h-full object-contain transition-opacity duration-700"
                 style={{ opacity: active === i ? 1 : 0 }}
               />
             ))}
@@ -363,7 +359,7 @@ export function InvestingMadeSimpleSection() {
                 key={s.phone}
                 src={s.phone}
                 alt=""
-                className="phone-slide-img absolute inset-0 w-full h-full object-contain transition-opacity duration-500"
+                className="ims-crossfade phone-slide-img absolute inset-0 w-full h-full object-contain transition-opacity duration-500"
                 style={{ opacity: active === i ? 1 : 0 }}
                 loading="eager"
                 decoding="async"

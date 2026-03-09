@@ -31,7 +31,9 @@ export function waitForSelector(
       }
       if (Date.now() >= deadline) {
         clearInterval(t);
-        console.warn("[Vega tour] Element not found:", selector);
+        if (process.env.NODE_ENV === "development") {
+          console.warn("[Vega tour] Element not found:", selector);
+        }
         resolve(null);
       }
     }, POLL_MS);

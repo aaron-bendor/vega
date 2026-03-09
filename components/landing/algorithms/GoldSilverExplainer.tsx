@@ -11,19 +11,11 @@ const TRIGGER = 90;
 const REVEAL_SPEED = 50; // ms per point
 
 // Step ranges:
-//   Step 0 (Watching): 0–50   — line below trigger
-//   Step 1 (Signal):   51–51  — line hits trigger, pause, show signal + trade annos
-//   Step 2 (Trade):    52–87  — line above trigger then returns to avg
-//   Step 3 (Profit):   88–N-1 — line back at avg
-const STEP_RANGES = [
-  { start: 0, end: 50 },
-  { start: 51, end: 51 },
-  { start: 52, end: 87 },
-  { start: 88, end: N - 1 },
-];
+// Step ranges defined in goldSilverStepLogic.ts (0–50, 51, 52–87, 88–N-1).
 
-// Pause at idx=51 (trigger crossing). 4000ms total: signal anno at 51, trade anno 2000ms later, then resume.
-const PAUSES: Record<number, number> = { 51: 4000 };
+// Pause at idx=51: 4000ms total. Signal anno at 51, trade anno at 2000ms, then resume at 4000ms.
+const SIGNAL_PAUSE_MS = 4000;
+const TRADE_ANNO_AT_MS = 2000;
 
 const STEP_TITLES = [
   "Watching the ratio, 24/7",
@@ -31,6 +23,45 @@ const STEP_TITLES = [
   "Trade placed — automatically",
   "Ratio normalises — profit taken",
 ];
+
+// Step/progress helpers (testable in goldSilverStepLogic.test.ts)
+import { getStepForIndex, getStepSnapshot } from "./goldSilverStepLogic";
+export { getStepForIndex, getStepSnapshot };
+
+// ─────────────────────────────────────────
+// PLAYBACK STATE MACHINE
+// ─────────────────────────────────────────
+// mode:    idle → (play) → playing → (pause) → paused → (play) → playing
+//         playing → (reach end) → completed → (replay) → playing
+//         playing | paused → (reset | step click) → idle (or snapped to step)
+// phase:   "reveal" = advancing point-by-point; "signal-pause" = waiting 4s at index 51
+// We never run more than one active loop (one RAF chain). All timers/RAF cancelled on pause, reset, step jump, unmount.
+
+type PlaybackMode = "idle" | "playing" | "paused" | "completed";
+type Phase = "reveal" | "signal-pause";
+
+export interface AnimationState {
+  mode: PlaybackMode;
+  revealedTo: number;
+  currentStep: number;
+  showTradeAnno: boolean;
+  phase: Phase;
+  phaseStartTime: number;
+  /** When pausing during signal-pause, ms already spent so resume can continue from correct point. */
+  signalPauseElapsedMs: number;
+}
+
+function getInitialAnimationState(): AnimationState {
+  return {
+    mode: "idle",
+    revealedTo: 0,
+    currentStep: 0,
+    showTradeAnno: false,
+    phase: "reveal",
+    phaseStartTime: 0,
+    signalPauseElapsedMs: 0,
+  };
+}
 
 // ─────────────────────────────────────────
 // BUILD DATA ONCE (module-level, never recreated)
@@ -61,7 +92,7 @@ const LABELS = ALL_DATA.map((_, i) => {
 });
 
 // ─────────────────────────────────────────
-// CANVAS CHART
+// CANVAS CHART (pure: render only from arguments)
 // ─────────────────────────────────────────
 function drawChart(
   canvas: HTMLCanvasElement | null,
@@ -301,13 +332,11 @@ const STEP_DESCS = [
 const VP = "#7c3aed";
 
 export function GoldSilverExplainer(): JSX.Element {
-  const revRef = useRef(0);
-  const playRef = useRef(false);
-  const stepRef = useRef(0);
-  const animRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const showTradeAnnoRef = useRef(false);
-  const tradeAnnoTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Single source of truth for animation. Ref is authoritative for the playback loop; we sync to state for render.
+  const animRef = useRef<AnimationState>(getInitialAnimationState());
+  const rafIdRef = useRef<number | null>(null);
 
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -315,128 +344,204 @@ export function GoldSilverExplainer(): JSX.Element {
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
   const [showTradeAnno, setShowTradeAnno] = useState(false);
 
+  /** Push ref state to React state so canvas and UI re-render from same values. */
+  const syncToReact = useCallback(() => {
+    const a = animRef.current;
+    setRevealedTo(a.revealedTo);
+    setCurrentStep(a.currentStep);
+    setShowTradeAnno(a.showTradeAnno);
+    setIsPlaying(a.mode === "playing");
+  }, []);
+
+  /** Cancel any in-flight RAF. Ensures only one playback loop can run. */
+  const cancelPlayback = useCallback(() => {
+    if (rafIdRef.current !== null) {
+      cancelAnimationFrame(rafIdRef.current);
+      rafIdRef.current = null;
+    }
+    animRef.current.mode = animRef.current.mode === "playing" ? "paused" : animRef.current.mode;
+  }, []);
+
+  /** Full reset: clear animation state and UI hover. No pending timers or replay. */
+  const resetAnimationState = useCallback(() => {
+    cancelPlayback();
+    animRef.current = getInitialAnimationState();
+    setHoverIdx(null);
+    syncToReact();
+  }, [cancelPlayback, syncToReact]);
+
+  /** Pause playback. If we're in signal-pause, store elapsed ms so resume continues correctly. */
+  const pauseAnimation = useCallback(() => {
+    const a = animRef.current;
+    if (a.mode !== "playing") return;
+    cancelPlayback();
+    if (a.phase === "signal-pause") {
+      a.signalPauseElapsedMs = Math.min(
+        SIGNAL_PAUSE_MS,
+        performance.now() - a.phaseStartTime
+      );
+    }
+    a.mode = "paused";
+    syncToReact();
+  }, [cancelPlayback, syncToReact]);
+
+  /** Start or resume playback from current state. One RAF loop only. */
+  const startAnimationFromCurrentState = useCallback(() => {
+    const a = animRef.current;
+    cancelPlayback();
+
+    a.mode = "playing";
+    if (a.revealedTo >= N - 1) {
+      // Replay from start
+      a.revealedTo = 0;
+      a.currentStep = 0;
+      a.showTradeAnno = false;
+      a.phase = "reveal";
+      a.phaseStartTime = performance.now();
+      a.signalPauseElapsedMs = 0;
+    } else if (a.phase === "signal-pause" && a.revealedTo === 51 && a.signalPauseElapsedMs > 0) {
+      // Resuming in the middle of the 4s pause: phaseStartTime is set so elapsed = signalPauseElapsedMs
+      a.phaseStartTime = performance.now() - a.signalPauseElapsedMs;
+    } else if (a.revealedTo === 51) {
+      // At index 51 (e.g. user clicked step 1 then Play): run full signal-pause from start
+      a.phase = "signal-pause";
+      a.phaseStartTime = performance.now();
+      a.showTradeAnno = false;
+      a.signalPauseElapsedMs = 0;
+    } else {
+      // Normal reveal: we're at revealedTo, next tick will advance after REVEAL_SPEED
+      a.phase = "reveal";
+      a.phaseStartTime = performance.now();
+    }
+    syncToReact();
+
+    const loop = () => {
+      const now = performance.now();
+      const a = animRef.current;
+      if (a.mode !== "playing") {
+        rafIdRef.current = null;
+        return;
+      }
+
+      if (a.phase === "signal-pause") {
+        const elapsed = now - a.phaseStartTime;
+        if (elapsed >= TRADE_ANNO_AT_MS && !a.showTradeAnno) {
+          a.showTradeAnno = true;
+          a.currentStep = 2;
+          syncToReact();
+        }
+        if (elapsed >= SIGNAL_PAUSE_MS) {
+          a.revealedTo = 52;
+          a.currentStep = 2;
+          a.phase = "reveal";
+          a.phaseStartTime = now;
+          a.signalPauseElapsedMs = 0;
+          syncToReact();
+        }
+        rafIdRef.current = requestAnimationFrame(loop);
+        return;
+      }
+
+      // phase === "reveal"
+      const elapsed = now - a.phaseStartTime;
+      const delay = a.revealedTo === 51 ? SIGNAL_PAUSE_MS : REVEAL_SPEED;
+      if (elapsed < delay) {
+        rafIdRef.current = requestAnimationFrame(loop);
+        return;
+      }
+
+      const nextIdx = a.revealedTo + 1;
+      if (nextIdx > N - 1) {
+        a.mode = "completed";
+        rafIdRef.current = null;
+        syncToReact();
+        return;
+      }
+
+      a.revealedTo = nextIdx;
+      a.currentStep = getStepForIndex(nextIdx);
+      a.phaseStartTime = now;
+
+      if (nextIdx === 51) {
+        a.phase = "signal-pause";
+        a.showTradeAnno = false;
+        a.signalPauseElapsedMs = 0;
+      }
+
+      syncToReact();
+      rafIdRef.current = requestAnimationFrame(loop);
+    };
+    rafIdRef.current = requestAnimationFrame(loop);
+  }, [cancelPlayback, syncToReact]);
+
+  const jumpToStep = useCallback(
+    (step: number) => {
+      if (step < 0 || step > 3) return;
+      cancelPlayback();
+      setHoverIdx(null);
+      const snap = getStepSnapshot(step);
+      animRef.current = {
+        ...animRef.current,
+        mode: "idle",
+        revealedTo: snap.revealedTo,
+        currentStep: snap.currentStep,
+        showTradeAnno: snap.showTradeAnno,
+        phase: "reveal",
+        phaseStartTime: 0,
+        signalPauseElapsedMs: 0,
+      };
+      setRevealedTo(snap.revealedTo);
+      setCurrentStep(snap.currentStep);
+      setShowTradeAnno(snap.showTradeAnno);
+      setIsPlaying(false);
+    },
+    [cancelPlayback]
+  );
+
+  const togglePlay = useCallback(() => {
+    const a = animRef.current;
+    if (a.mode === "playing") {
+      pauseAnimation();
+      return;
+    }
+    if (a.mode === "completed" || a.revealedTo >= N - 1) {
+      // Replay: full reset then play
+      startAnimationFromCurrentState();
+      return;
+    }
+    startAnimationFromCurrentState();
+  }, [pauseAnimation, startAnimationFromCurrentState]);
+
+  const reset = useCallback(() => {
+    resetAnimationState();
+  }, [resetAnimationState]);
+
+  const onMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+    const idx = xToIdx(canvasRef.current, e.clientX);
+    const revealed = animRef.current.revealedTo;
+    if (idx !== null && idx <= revealed) setHoverIdx(idx);
+    else setHoverIdx(null);
+  }, []);
+
+  const onMouseLeave = useCallback(() => setHoverIdx(null), []);
+
+  // Render canvas from current React state (single source of truth for draw)
   useEffect(() => {
     drawChart(canvasRef.current, revealedTo, hoverIdx, currentStep, showTradeAnno);
   }, [revealedTo, hoverIdx, currentStep, showTradeAnno]);
 
+  // Resize: redraw from current state only (no mixed ref/state)
   useEffect(() => {
-    const ro = new ResizeObserver(() =>
-      drawChart(canvasRef.current, revRef.current, null, stepRef.current, showTradeAnnoRef.current)
-    );
+    const ro = new ResizeObserver(() => {
+      const a = animRef.current;
+      drawChart(canvasRef.current, a.revealedTo, null, a.currentStep, a.showTradeAnno);
+    });
     if (canvasRef.current) ro.observe(canvasRef.current);
     return () => ro.disconnect();
   }, []);
 
-  const activateStep = useCallback((s: number) => {
-    stepRef.current = s;
-    setCurrentStep(s);
-  }, []);
-
-  const stopAnim = useCallback(() => {
-    playRef.current = false;
-    setIsPlaying(false);
-    if (animRef.current) {
-      clearTimeout(animRef.current);
-      animRef.current = null;
-    }
-    if (tradeAnnoTimerRef.current) {
-      clearTimeout(tradeAnnoTimerRef.current);
-      tradeAnnoTimerRef.current = null;
-    }
-  }, []);
-
-  const tick = useCallback(
-    (from: number) => {
-      if (!playRef.current) return;
-      if (from >= N - 1) {
-        stopAnim();
-        return;
-      }
-
-      const next = from + 1;
-      revRef.current = next;
-      setRevealedTo(next);
-
-      for (let s = 0; s < STEP_RANGES.length; s++) {
-        if (next >= STEP_RANGES[s].start && next <= STEP_RANGES[s].end) {
-          if (s !== stepRef.current) activateStep(s);
-          break;
-        }
-      }
-
-      // At idx=51: pause 4000ms. After 2000ms show trade anno and advance to step 2.
-      if (next === 51) {
-        showTradeAnnoRef.current = false;
-        setShowTradeAnno(false);
-        tradeAnnoTimerRef.current = setTimeout(() => {
-          showTradeAnnoRef.current = true;
-          setShowTradeAnno(true);
-          activateStep(2);
-        }, 2000);
-      }
-
-      const delay = PAUSES[next] ?? REVEAL_SPEED;
-      animRef.current = setTimeout(() => tick(next), delay);
-    },
-    [activateStep, stopAnim]
-  );
-
-  const jumpToStep = useCallback(
-    (s: number) => {
-      if (s < 0 || s > 3) return;
-      stopAnim();
-      showTradeAnnoRef.current = s >= 2;
-      setShowTradeAnno(s >= 2);
-      const end = STEP_RANGES[s].end;
-      revRef.current = end;
-      setRevealedTo(end);
-      activateStep(s);
-    },
-    [stopAnim, activateStep]
-  );
-
-  const togglePlay = useCallback(() => {
-    if (isPlaying) {
-      stopAnim();
-      return;
-    }
-    if (revRef.current >= N - 1) {
-      stopAnim();
-      showTradeAnnoRef.current = false;
-      setShowTradeAnno(false);
-      revRef.current = 0;
-      stepRef.current = 0;
-      setRevealedTo(0);
-      setCurrentStep(0);
-      setTimeout(() => {
-        playRef.current = true;
-        setIsPlaying(true);
-        tick(0);
-      }, 60);
-      return;
-    }
-    playRef.current = true;
-    setIsPlaying(true);
-    tick(revRef.current);
-  }, [isPlaying, stopAnim, tick]);
-
-  const reset = useCallback(() => {
-    stopAnim();
-    showTradeAnnoRef.current = false;
-    setShowTradeAnno(false);
-    revRef.current = 0;
-    stepRef.current = 0;
-    setRevealedTo(0);
-    setCurrentStep(0);
-  }, [stopAnim]);
-
-  const onMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
-    const idx = xToIdx(canvasRef.current, e.clientX);
-    if (idx !== null && idx <= revRef.current) setHoverIdx(idx);
-  }, []);
-  const onMouseLeave = useCallback(() => setHoverIdx(null), []);
-
-  useEffect(() => () => stopAnim(), [stopAnim]);
+  // Unmount: cancel any playback
+  useEffect(() => () => cancelPlayback(), [cancelPlayback]);
 
   const hoveredPoint = hoverIdx !== null ? ALL_DATA[hoverIdx] : null;
   const tooltipLabel = hoverIdx !== null ? LABELS[hoverIdx] : null;
@@ -446,6 +551,9 @@ export function GoldSilverExplainer(): JSX.Element {
     tooltipNote = { text: "⚠ Ratio rising above average", color: "#fbbf24" };
   else if (hoverIdx !== null && hoverIdx > 60 && hoverIdx < 90)
     tooltipNote = { text: "✓ Ratio returning to normal", color: "#34d399" };
+
+  const atEnd = revealedTo >= N - 1;
+  const buttonLabel = isPlaying ? "⏸ Pause" : atEnd ? "↺ Replay" : "▶ Play";
 
   return (
     <>
@@ -560,7 +668,7 @@ export function GoldSilverExplainer(): JSX.Element {
                   background: isPlaying ? "rgba(109,40,217,0.7)" : VP,
                 }}
               >
-                {isPlaying ? "⏸ Pause" : revealedTo >= N - 1 ? "↺ Replay" : "▶ Play"}
+                {buttonLabel}
               </button>
             </div>
           </div>

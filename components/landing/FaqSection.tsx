@@ -5,7 +5,7 @@ import { AnimateOnScroll } from "./AnimateOnScroll";
 
 const faqFinancial: { question: string; answer: string }[] = [
   {
-    question: "What is VegaFinancial?",
+    question: "What is Vega Financial?",
     answer:
       "Vega is a platform that lets you invest in algorithmic trading strategies built by verified developers. Think of it like buying a share in a trading algorithm: as the strategy performs, so does your investment.",
   },
@@ -197,7 +197,7 @@ export function FaqSection() {
         <div className="mt-12 md:mt-16 space-y-14">
           <AnimateOnScroll delay={0.05}>
             <FaqBlock
-              title="For VegaFinancial"
+              title="For Vega Financial"
               items={faqFinancial}
               openIndex={financialOpen}
               onOpenIndex={setFinancialOpen}
@@ -206,7 +206,7 @@ export function FaqSection() {
           </AnimateOnScroll>
           <AnimateOnScroll delay={0.1}>
             <FaqBlock
-              title="For VegaDeveloper"
+              title="For Vega Developer"
               items={faqDeveloper}
               openIndex={developerOpen}
               onOpenIndex={setDeveloperOpen}

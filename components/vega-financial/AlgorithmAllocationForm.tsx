@@ -265,7 +265,7 @@ export function AlgorithmAllocationForm({
       )}
       {success && (
         <p className="text-sm vf-text-positive font-medium" role="status">
-          {success === "buy" ? "Bought in demo portfolio." : "Sold from demo portfolio."}
+          {success === "buy" ? "Added to demo portfolio." : "Removed from demo portfolio."}
         </p>
       )}
 

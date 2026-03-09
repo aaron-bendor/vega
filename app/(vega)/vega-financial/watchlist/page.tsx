@@ -53,14 +53,14 @@ export default function WatchlistPage() {
       ) : items.length === 0 ? (
         <EmptyStateCard
           icon={<Star className="size-7" aria-hidden />}
-          headline="No strategies saved yet"
-          description="Save strategies here to compare them later or review before allocating."
+          headline="No saved strategies yet"
+          description="Save strategies from Explore to compare them later."
           primaryAction={
             <Link
               href="/vega-financial/marketplace"
               className="inline-flex items-center justify-center rounded-lg bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium hover:bg-primary-hover focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring min-h-[44px]"
             >
-              Browse strategies
+              Explore strategies
             </Link>
           }
         />

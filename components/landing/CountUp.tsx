@@ -8,6 +8,8 @@ interface CountUpProps {
   decimals?: number;
   prefix?: string;
   suffix?: string;
+  /** Initial value for first paint (avoids zero flash). When set to `to`, no visible animation. */
+  initialValue?: number;
 }
 
 export function CountUp({
@@ -16,9 +18,11 @@ export function CountUp({
   decimals = 0,
   prefix = "",
   suffix = "",
+  initialValue,
 }: CountUpProps) {
   const ref = useRef<HTMLSpanElement | null>(null);
-  const [value, setValue] = useState(0);
+  const startVal = initialValue ?? 0;
+  const [value, setValue] = useState(initialValue ?? 0);
   const [started, setStarted] = useState(false);
 
   useEffect(() => {
@@ -50,7 +54,7 @@ export function CountUp({
 
     let frame = 0;
     const totalFrames = Math.round(duration / 16);
-    const start = 0;
+    const start = startVal;
 
     const tick = () => {
       frame += 1;
@@ -63,7 +67,7 @@ export function CountUp({
     };
 
     requestAnimationFrame(tick);
-  }, [started, to, duration]);
+  }, [started, to, duration, startVal]);
 
   return (
     <span ref={ref}>

@@ -29,7 +29,7 @@ interface FiltersDrawerProps {
 
 const RISK_OPTIONS = ["Low", "Medium", "High"];
 const HORIZON_OPTIONS = ["1m", "3m", "1y"];
-const CATEGORIES = ["Momentum", "Trend Following", "Mean Reversion", "Low Risk", "Diversifiers", "Risk Managed"];
+const CATEGORIES = ["Momentum", "Trend Following", "Mean Reversion", "Diversifiers", "Risk Managed"];
 
 export function FiltersDrawer({
   open,

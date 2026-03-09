@@ -22,13 +22,11 @@ const SORT_OPTIONS = [
   { value: "newest", label: "Newest" },
 ] as const;
 
-const CATEGORY_OPTIONS = [
+const STRATEGY_STYLE_OPTIONS = [
   "Momentum",
   "Trend Following",
   "Mean Reversion",
   "Quant",
-  "Multi-Asset",
-  "Commodities",
 ];
 
 const ASSET_OPTIONS = ["Equity", "Multi-Asset", "Commodities"];
@@ -78,7 +76,7 @@ export function MarketplaceFilterBar({
     router.push("/vega-financial/marketplace");
   }, [router]);
 
-  const categories = tagOptions.length > 0 ? tagOptions : CATEGORY_OPTIONS;
+  const categories = tagOptions.length > 0 ? tagOptions : STRATEGY_STYLE_OPTIONS;
 
   const [filtersOpen, setFiltersOpen] = useState(true);
   const filtersContentRef = useRef<HTMLDivElement>(null);
@@ -170,7 +168,7 @@ export function MarketplaceFilterBar({
             />
           </div>
           <div className="min-w-0 space-y-2">
-            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Asset</p>
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Asset class</p>
             <SlidingChipRow
               chips={ASSET_OPTIONS.map((name) => ({
                 href: `/vega-financial/marketplace?tag=${encodeURIComponent(name)}`,

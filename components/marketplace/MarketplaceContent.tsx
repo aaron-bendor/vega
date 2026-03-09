@@ -266,6 +266,11 @@ export function MarketplaceContent({ algorithms, useDemo }: MarketplaceContentPr
           </div>
         )}
 
+        {/* Helper: compare instructions */}
+        <p className="text-xs vf-text-muted">
+          Select 2 to 3 strategies to compare.
+        </p>
+
         {/* 4. Collections / quick-pick — stacked on mobile, 2 cols on desktop; full-card click target */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 vf-enter-stagger vf-stagger-visible">
           {COLLECTIONS.map((c) => (

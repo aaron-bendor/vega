@@ -29,6 +29,7 @@ import type { PaperHolding } from "@/lib/vega-financial/portfolio-store";
 import { PortfolioReconciliationBlock } from "@/components/vega-financial/PortfolioReconciliationBlock";
 import { FirstRunWelcomeBanner } from "@/components/vega-financial/FirstRunWelcomeBanner";
 import { DemoQuickStartStrip } from "@/components/vega-financial/DemoQuickStartStrip";
+import { ReplayTutorialLink } from "@/components/vega-financial/ReplayTutorialLink";
 import { DEMO_ONBOARDING } from "@/lib/vega-financial/investor-copy";
 import { formatCurrency, formatPercent } from "@/lib/utils/format";
 
@@ -137,6 +138,15 @@ export function DashboardPortfolioContent({
       <div className="vf-reveal vf-reveal-delay-0 space-y-4">
         <FirstRunWelcomeBanner />
         <DemoQuickStartStrip />
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            href="/vega-financial/marketplace"
+            className="inline-flex items-center justify-center rounded-lg bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium hover:bg-primary-hover focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring min-h-[44px]"
+          >
+            Explore strategies
+          </Link>
+          <ReplayTutorialLink label="Replay tutorial" />
+        </div>
       </div>
 
       <p
@@ -145,6 +155,23 @@ export function DashboardPortfolioContent({
       >
         {DEMO_ONBOARDING.simulatedDisclosure}
       </p>
+
+      {account.holdings.length === 0 && (
+        <div className="vf-reveal vf-reveal-delay-1 rounded-xl border border-border bg-card p-4 sm:p-5">
+          <h2 className="font-maven-pro text-base font-semibold text-foreground mb-1">
+            You have not allocated to any strategies yet
+          </h2>
+          <p className="text-sm text-muted-foreground mb-3">
+            Start by exploring a few simulated strategies and add one to your paper portfolio.
+          </p>
+          <Link
+            href="/vega-financial/marketplace"
+            className="inline-flex items-center justify-center rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:bg-primary-hover focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring min-h-[44px]"
+          >
+            Explore strategies
+          </Link>
+        </div>
+      )}
 
       <section
         className="vf-reveal vf-reveal-delay-1 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 gap-y-3 sm:gap-y-4"

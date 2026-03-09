@@ -6,7 +6,7 @@ import { AnimateOnScroll } from "@/components/landing/AnimateOnScroll";
 const bullets = [
   "Web-hosted IDE built for quant developers.",
   "Fetch live market data, backtest strategies, and publish directly to the platform.",
-  "Earns performance fees as investors put capital in.",
+  "Earn performance fees as investors allocate capital.",
 ];
 
 export function VegaDeveloperBuildSection() {
