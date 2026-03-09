@@ -60,7 +60,7 @@ export function AlgorithmDetailLayout({
     "font-maven-pro text-sm font-medium rounded-lg min-h-[44px] sm:min-h-[44px] px-4 shrink-0 transition-[background-color,border-color,color] duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-primary hover:bg-accent/50";
 
   return (
-    <div className="vega-demo max-w-[1280px] mx-auto px-4 py-6 sm:px-6 lg:px-8 pb-24 lg:pb-10">
+    <div className="vega-demo max-w-[1280px] mx-auto px-4 py-6 sm:px-6 lg:px-8 min-w-0 max-lg:pb-[calc(8rem+env(safe-area-inset-bottom,0px))] lg:pb-10">
       <Link
         href="/vega-financial/marketplace"
         className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded min-h-[44px] min-w-[44px] sm:min-w-0 sm:min-h-0 sm:inline-flex"
@@ -90,9 +90,9 @@ export function AlgorithmDetailLayout({
 
       {/* Row 3: Tabs — sticky, blurred bar, sliding underline */}
       <Tabs value={tab} onValueChange={setTab} className="min-w-0">
-        <div className="sticky top-0 z-10 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-3 bg-background/90 backdrop-blur-md border-b border-border mb-5 rounded-b-lg transition-shadow duration-[var(--motion-duration-normal)]">
-          <div className="max-w-[1100px] mx-auto">
-            <TabsListWithIndicator className="flex h-auto gap-1 w-full sm:w-auto bg-transparent border-0 p-0 rounded-none shadow-none min-w-0">
+        <div className="sticky top-0 z-10 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-3 bg-background/90 backdrop-blur-md border-b border-border mb-5 rounded-b-lg transition-shadow duration-[var(--motion-duration-normal)] min-w-0 max-md:overflow-x-auto max-md:overflow-y-hidden">
+          <div className="max-w-[1100px] mx-auto min-w-0">
+            <TabsListWithIndicator className="flex h-auto gap-1 w-full sm:w-auto bg-transparent border-0 p-0 rounded-none shadow-none min-w-0 max-md:overflow-x-auto max-md:overflow-y-hidden max-md:flex-nowrap max-md:pb-1">
               <TabsTrigger value="overview" className={tabTriggerClass} id="tab-overview">
                 Overview
               </TabsTrigger>

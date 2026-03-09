@@ -30,7 +30,8 @@ export function MobileStickyAllocationBar({
   return (
     <div
       className={cn(
-        "fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-card/95 backdrop-blur-sm p-3 safe-area-pb lg:hidden",
+        "fixed left-0 right-0 z-40 border-t border-border bg-card/95 backdrop-blur-sm p-3 safe-area-pb lg:hidden",
+        "bottom-[calc(3.5rem+env(safe-area-inset-bottom,0px))] lg:bottom-0",
         className
       )}
       role="presentation"

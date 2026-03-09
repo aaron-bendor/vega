@@ -144,8 +144,8 @@ export function PortfolioPageContent() {
         <h2 id="holdings-heading" className="font-maven-pro text-lg font-semibold text-foreground mb-4">
           Holdings
         </h2>
-        <div className="rounded-xl border border-border bg-card overflow-hidden">
-          <div className="overflow-x-auto">
+        <div className="rounded-xl border border-border bg-card overflow-hidden min-w-0 w-full max-w-full">
+          <div className="overflow-x-auto overflow-y-hidden -mx-0">
             <table className="w-full min-w-[400px] text-sm">
               <thead>
                 <tr className="border-b border-border bg-muted/30">

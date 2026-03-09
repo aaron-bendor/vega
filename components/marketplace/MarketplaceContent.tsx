@@ -197,23 +197,23 @@ export function MarketplaceContent({ algorithms, useDemo }: MarketplaceContentPr
 
       {/* Right: content column */}
       <div className="min-w-0 flex-1 space-y-6 lg:space-y-8">
-        {/* 1. Search / sort toolbar */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between" data-tour="mp-filters">
-          <div className="relative min-w-0 max-w-md flex-1">
+        {/* 1. Search / sort toolbar — stack on mobile, full-width sort */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between min-w-0" data-tour="mp-filters">
+          <div className="relative min-w-0 w-full max-w-md flex-1">
             <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground pointer-events-none" aria-hidden />
             <Input
               type="search"
               placeholder="Search strategies…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="h-9 pl-9"
+              className="h-9 pl-9 w-full max-w-full"
               aria-label="Search strategies"
             />
           </div>
-          <div className="flex items-center gap-2 shrink-0">
-            <span className="text-sm text-muted-foreground whitespace-nowrap">Sort by</span>
+          <div className="flex items-center gap-2 shrink-0 max-sm:w-full max-sm:min-w-0">
+            <span className="text-sm text-muted-foreground whitespace-nowrap shrink-0">Sort by</span>
             <Select value={sort} onValueChange={setSort}>
-              <SelectTrigger className="h-9 w-[180px] shrink-0">
+              <SelectTrigger className="h-9 w-[180px] max-sm:flex-1 max-sm:min-w-0 shrink-0">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -325,13 +325,13 @@ export function MarketplaceContent({ algorithms, useDemo }: MarketplaceContentPr
         )}
 
         {/* 4. Category shortcuts — cards/pills with equal spacing */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 vf-enter-stagger vf-stagger-visible">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 vf-enter-stagger vf-stagger-visible min-w-0">
           {COLLECTIONS.map((c) => (
             <Link
               key={c.label}
               href={c.href}
               className={cn(
-                "vf-chip-motion rounded-xl border vf-border-soft vf-surface-2 px-4 py-4 text-left flex flex-col gap-1 min-h-[44px]",
+                "vf-chip-motion rounded-xl border vf-border-soft vf-surface-2 px-4 py-4 text-left flex flex-col gap-1 min-h-[44px] min-w-0",
                 "hover:border-primary/40 hover:shadow-md hover:vf-surface-2 transition-all duration-[var(--motion-duration-normal)]",
                 "focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
               )}
@@ -362,8 +362,8 @@ export function MarketplaceContent({ algorithms, useDemo }: MarketplaceContentPr
         ) : (
           <>
             <div className={cn(
-              "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6",
-              compareArray.length >= 1 && "pb-24 lg:pb-0"
+              "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6 min-w-0",
+              compareArray.length >= 1 && "max-lg:pb-36 lg:pb-0"
             )}>
               {filtered.map((v, i) => (
                 <div key={v.id} className="vf-reveal" style={{ animationDelay: `${Math.min(i * 50, 300)}ms` }}>
@@ -378,13 +378,14 @@ export function MarketplaceContent({ algorithms, useDemo }: MarketplaceContentPr
               ))}
             </div>
 
-            {/* 7. Compare bar: sticky bottom mobile, sticky inline desktop */}
+            {/* 7. Compare bar: sticky bottom mobile (above bottom nav), sticky inline desktop */}
             {compareArray.length >= 1 && (
               <div
                 className={cn(
                   "flex flex-col gap-2 rounded-xl border vf-border-soft vf-surface-1 p-4 shadow-lg z-20",
                   "lg:sticky lg:top-24",
-                  "fixed left-4 right-4 bottom-20 lg:static lg:left-auto lg:right-auto lg:bottom-auto"
+                  "fixed left-4 right-4 lg:static lg:left-auto lg:right-auto lg:bottom-auto",
+                  "max-lg:bottom-[calc(3.5rem+env(safe-area-inset-bottom,0px))] max-lg:safe-area-pb"
                 )}
                 role="region"
                 aria-live="polite"

@@ -49,7 +49,7 @@ function HoldingsTableDesktop({
   onOpenRiskExplainer: (score: number) => void;
 }) {
   return (
-    <div className="overflow-x-auto rounded-xl border border-border bg-card">
+    <div className="overflow-x-auto overflow-y-hidden rounded-xl border border-border bg-card min-w-0 max-w-full">
         <table className="w-full min-w-[640px] text-sm">
           <thead>
             <tr className="border-b border-border bg-muted/30">

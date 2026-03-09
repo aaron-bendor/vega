@@ -69,7 +69,7 @@ export function EquityCurve({ data, startDate, dates, className }: EquityCurvePr
   });
 
   return (
-    <div className={cn(heightClass, "w-full")}>
+    <div className={cn(heightClass, "w-full min-w-0 max-w-full")}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(51,51,51,0.10)" />

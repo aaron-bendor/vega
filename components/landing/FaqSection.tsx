@@ -113,7 +113,7 @@ function FaqItem({
         className="flex w-full items-start justify-between gap-4 py-5 text-left focus-visible:outline focus-visible:ring-2 focus-visible:ring-[#531cb3] focus-visible:ring-offset-2 rounded"
         aria-expanded={isOpen}
       >
-        <span className="font-maven-pro font-semibold text-[#333] text-base md:text-lg leading-snug pr-4">
+        <span className="font-maven-pro font-semibold text-[#333] text-base md:text-lg leading-snug pr-4 min-w-0">
           {question}
         </span>
         <span
@@ -182,9 +182,9 @@ export function FaqSection() {
   return (
     <section
       id="faq"
-      className="relative z-0 w-full overflow-hidden py-16 md:py-24 bg-[#fafafa]"
+      className="relative z-0 w-full min-w-0 overflow-hidden py-16 md:py-24 bg-[#fafafa]"
     >
-      <div className="relative z-10 max-w-[900px] mx-auto px-4 md:px-8">
+      <div className="relative z-10 max-w-[900px] mx-auto px-4 md:px-8 min-w-0">
         <AnimateOnScroll>
           <h2 className="font-maven-pro font-extrabold text-2xl sm:text-3xl md:text-4xl tracking-[-2px] text-[#333] text-center">
             Frequently asked questions

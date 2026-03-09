@@ -42,7 +42,7 @@ function MetricCard({
   learnMoreHref?: string;
 }) {
   return (
-    <div className="vf-surface-1 rounded-xl border vf-border-soft p-4 min-h-[88px] flex flex-col gap-2 min-w-[140px] sm:min-w-0">
+    <div className="vf-surface-1 rounded-xl border vf-border-soft p-4 min-h-[88px] flex flex-col gap-2 min-w-0">
       <div className="flex items-center gap-1.5">
         <p className="text-[11px] font-medium vf-text-muted">{label}</p>
         <InfoTooltip content={explanation} learnMoreHref={learnMoreHref} />

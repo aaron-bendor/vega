@@ -14,7 +14,7 @@ export const metadata = {
 
 export default function AlgorithmsPage() {
   return (
-    <div className="flex flex-col w-full relative bg-white">
+    <div className="flex flex-col w-full min-w-0 overflow-x-clip relative bg-white">
       <AlgorithmsHeroSection />
       <TradingAlgorithmDefinitionSection />
       <TradingAlgorithmExampleSection />

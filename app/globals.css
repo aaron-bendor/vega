@@ -765,6 +765,16 @@ html {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
+/* Main content padding when bottom nav is present: clear nav + safe area (mobile only) */
+.main-with-bottom-nav {
+  padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+}
+@media (min-width: 1024px) {
+  .main-with-bottom-nav {
+    padding-bottom: 0;
+  }
+}
+
 /* Text link: underline thickens into block highlight on hover (multi-line safe, no layout shift) */
 .text-link-block-highlight {
   background:

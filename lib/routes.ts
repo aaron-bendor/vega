@@ -41,7 +41,6 @@ export const INVESTOR_NAV_HREFS = [
   ROUTES.vegaFinancial.root,
   ROUTES.vegaFinancial.marketplace,
   ROUTES.vegaFinancial.portfolio,
-  ROUTES.vegaFinancial.watchlist,
   ROUTES.vegaFinancial.activity,
   ROUTES.vegaFinancial.learn,
   ROUTES.vegaFinancial.profile,

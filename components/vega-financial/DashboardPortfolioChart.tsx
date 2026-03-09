@@ -67,7 +67,7 @@ export function DashboardPortfolioChart({
   }
 
   return (
-    <div className={cn("rounded-xl border border-border bg-card overflow-hidden", className)}>
+    <div className={cn("rounded-xl border border-border bg-card overflow-hidden min-w-0 w-full max-w-full", className)}>
       <div className="flex items-center justify-between gap-2 px-4 pt-4 pb-2">
         <h3 className="font-maven-pro text-sm font-semibold text-foreground">Portfolio value</h3>
         {hasHistory && (
@@ -90,7 +90,7 @@ export function DashboardPortfolioChart({
           </div>
         )}
       </div>
-      <div className="h-[260px] w-full px-2 pb-2">
+      <div className="h-[260px] min-h-[200px] w-full max-w-full min-w-0 px-2 pb-2">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(51,51,51,0.08)" vertical={false} />

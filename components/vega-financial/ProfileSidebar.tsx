@@ -10,7 +10,6 @@ import {
   LayoutDashboard,
   Wallet,
   Store,
-  Star,
   ChevronLeft,
   ChevronRight,
   Activity,
@@ -25,7 +24,6 @@ const primaryNav = [
   { href: ROUTES.vegaFinancial.root, label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: ROUTES.vegaFinancial.marketplace, label: "Strategies", icon: Store },
   { href: ROUTES.vegaFinancial.portfolio, label: "Portfolio", icon: Wallet },
-  { href: ROUTES.vegaFinancial.watchlist, label: "Watchlist", icon: Star },
   { href: ROUTES.vegaFinancial.activity, label: "Activity", icon: Activity },
 ];
 

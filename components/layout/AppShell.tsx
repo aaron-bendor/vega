@@ -163,9 +163,9 @@ export function AppShell({ children, toolbar, naturalScroll, bottomNav, minimalT
               id="main-content"
               tabIndex={-1}
               className={cn(
-                "min-w-0 vf-enter-up visible bg-background",
+                "min-w-0 max-w-full vf-enter-up visible bg-background",
                 hideTopBar ? "pt-16 pl-16 lg:pt-4 lg:pl-0" : "pt-4 sm:pt-6",
-                bottomNav && "pb-20 lg:pb-0"
+                bottomNav && "main-with-bottom-nav"
               )}
             >
               {children}

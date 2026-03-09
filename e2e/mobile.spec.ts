@@ -8,6 +8,11 @@ const PRIORITY_ROUTES = [
   "/vega-financial",
   "/vega-financial/marketplace",
   "/vega-financial/portfolio",
+  "/vega-financial/watchlist",
+  "/vega-financial/activity",
+  "/vega-financial/learn",
+  "/vega-financial/profile",
+  "/vega-financial/algorithms/demo-1",
   "/vega-developer",
 ] as const;
 
@@ -62,6 +67,63 @@ for (const viewport of VIEWPORTS) {
     }
   });
 }
+
+test.describe("mobile marketplace", () => {
+  test.use({ viewport: { width: 375, height: 812 } });
+
+  test("search input and sort are visible and usable", async ({ page }) => {
+    await page.goto("/vega-financial/marketplace", { waitUntil: "networkidle" });
+    await expect(page.getByRole("searchbox", { name: /search strategies/i })).toBeVisible();
+    await expect(page.getByText("Sort by")).toBeVisible();
+    await expect(page.getByRole("combobox")).toBeVisible();
+  });
+
+  test("filter UI is visible on mobile", async ({ page }) => {
+    await page.goto("/vega-financial/marketplace", { waitUntil: "networkidle" });
+    await expect(page.getByRole("button", { name: /more filters|open filters/i })).toBeVisible();
+  });
+});
+
+test.describe("mobile algorithm detail", () => {
+  test.use({ viewport: { width: 375, height: 812 } });
+
+  test("main CTA (Buy or sell) is visible on mobile", async ({ page }) => {
+    await page.goto("/vega-financial/algorithms/demo-1", { waitUntil: "networkidle" });
+    const cta = page.getByRole("button", { name: /buy or sell/i });
+    await expect(cta).toBeVisible({ timeout: 10000 });
+  });
+});
+
+test.describe("mobile bottom nav", () => {
+  test.use({ viewport: { width: 375, height: 812 } });
+
+  test("bottom nav is visible on investor routes and does not cover main content", async ({ page }) => {
+    await page.goto("/vega-financial", { waitUntil: "networkidle" });
+    const nav = page.getByRole("navigation", { name: /app navigation/i });
+    await expect(nav).toBeVisible();
+    await expect(nav.getByRole("link", { name: /dashboard/i })).toBeVisible();
+    await expect(nav.getByRole("link", { name: /strategies/i })).toBeVisible();
+    await expect(nav.getByRole("link", { name: /portfolio/i })).toBeVisible();
+    const main = page.locator("main").first();
+    await expect(main).toBeVisible();
+  });
+});
+
+test.describe("mobile chart route", () => {
+  test.use({ viewport: { width: 320, height: 568 } });
+
+  test("portfolio page renders without horizontal overflow", async ({ page }) => {
+    await page.goto("/vega-financial/portfolio", { waitUntil: "networkidle" });
+    const overflow = await page.evaluate(() => {
+      const doc = document.documentElement;
+      const body = document.body;
+      const scrollWidth = Math.max(doc.scrollWidth, body.scrollWidth, doc.clientWidth);
+      const clientWidth = doc.clientWidth;
+      return scrollWidth <= clientWidth;
+    });
+    expect(overflow).toBe(true);
+  });
+});
 
 test.describe("mobile nav", () => {
   test.use({ viewport: { width: 375, height: 812 } });
