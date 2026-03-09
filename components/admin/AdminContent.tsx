@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const PDF_URL = "/BusinessReport.pdf";
+const PDF_URL = "/api/business-report";
 
 export function AdminContent() {
   const [pdfAvailable, setPdfAvailable] = useState<boolean | null>(null);

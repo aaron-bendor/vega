@@ -22,6 +22,7 @@ test-results/
 *.pem
 *.pdf
 !public/FinancialReport.pdf
+!public/BusinessReport.pdf
 
 # debug
 npm-debug.log*
