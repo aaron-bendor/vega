@@ -14,6 +14,7 @@ import {
   setTourDismissed,
   getTourStartRequested,
   clearTourStartRequested,
+  TOUR_REPLAY_EVENT,
 } from "@/lib/tour/storage";
 import {
   waitForSelector,
@@ -45,6 +46,17 @@ export function TourRunner() {
     // Do not run tour unless user requested it this session (no resume from localStorage on page load)
     setStep(-1);
   }, [pathname]);
+
+  // When "Replay tutorial" is clicked on the same page, start the tour without navigation.
+  useEffect(() => {
+    const onReplay = () => {
+      setTourStep(0);
+      setTourStartedAt(new Date().toISOString());
+      setStep(0);
+    };
+    window.addEventListener(TOUR_REPLAY_EVENT, onReplay);
+    return () => window.removeEventListener(TOUR_REPLAY_EVENT, onReplay);
+  }, []);
 
   // When pathname or step matches a step's route, wait for element and show driver
   useEffect(() => {

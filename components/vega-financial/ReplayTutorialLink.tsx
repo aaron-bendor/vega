@@ -1,8 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { ROUTES } from "@/lib/routes";
-import { clearTourForReplay, TOUR_START_SESSION_KEY, setTourStep } from "@/lib/tour/storage";
+import { clearTourForReplay, TOUR_START_SESSION_KEY, setTourStep, TOUR_REPLAY_EVENT } from "@/lib/tour/storage";
 
 interface ReplayTutorialLinkProps {
   /** Button label. Default: "Start tutorial". */
@@ -11,6 +11,7 @@ interface ReplayTutorialLinkProps {
 
 export function ReplayTutorialLink({ label = "Start tutorial" }: ReplayTutorialLinkProps) {
   const router = useRouter();
+  const pathname = usePathname();
 
   function handleClick() {
     clearTourForReplay();
@@ -18,7 +19,11 @@ export function ReplayTutorialLink({ label = "Start tutorial" }: ReplayTutorialL
     if (typeof sessionStorage !== "undefined") {
       sessionStorage.setItem(TOUR_START_SESSION_KEY, "1");
     }
-    router.push(ROUTES.vegaFinancial.root);
+    if (pathname === ROUTES.vegaFinancial.root) {
+      window.dispatchEvent(new CustomEvent(TOUR_REPLAY_EVENT));
+    } else {
+      router.push(ROUTES.vegaFinancial.root);
+    }
   }
 
   return (

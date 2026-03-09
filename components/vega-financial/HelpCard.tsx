@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { clearTourForReplay, TOUR_START_SESSION_KEY, setTourStep } from "@/lib/tour/storage";
+import { useRouter, usePathname } from "next/navigation";
+import { clearTourForReplay, TOUR_START_SESSION_KEY, setTourStep, TOUR_REPLAY_EVENT } from "@/lib/tour/storage";
 import { getDemoEventCount } from "@/lib/vega-financial/demo-onboarding";
 import { cn } from "@/lib/utils";
 
@@ -16,6 +16,7 @@ interface HelpCardProps {
  */
 export function HelpCard({ className }: HelpCardProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const [skippedCount, setSkippedCount] = useState(0);
   useEffect(() => {
     setSkippedCount(getDemoEventCount("tutorial_skipped"));
@@ -27,11 +28,15 @@ export function HelpCard({ className }: HelpCardProps) {
 
   const handleReplayTutorial = () => {
     clearTourForReplay();
+    setTourStep(0);
     if (typeof sessionStorage !== "undefined") {
       sessionStorage.setItem(TOUR_START_SESSION_KEY, "1");
     }
-    setTourStep(0);
-    router.push("/vega-financial");
+    if (pathname === "/vega-financial") {
+      window.dispatchEvent(new CustomEvent(TOUR_REPLAY_EVENT));
+    } else {
+      router.push("/vega-financial");
+    }
   };
 
   return (

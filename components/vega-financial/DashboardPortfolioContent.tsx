@@ -213,12 +213,6 @@ export function DashboardPortfolioContent({
         />
       </section>
 
-      {account.holdings.length > 0 && (maxWeight != null && maxWeight > 0.5) && (
-        <p className="vf-reveal vf-reveal-delay-1 text-sm text-muted-foreground rounded-lg border border-border/80 bg-muted/30 px-3 py-2" role="status">
-          Concentration: one holding is {Math.round(maxWeight * 100)}% of your portfolio. Consider diversifying across strategies.
-        </p>
-      )}
-
       <section
         className="vf-reveal vf-reveal-delay-2 grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6"
         aria-labelledby="performance-heading"

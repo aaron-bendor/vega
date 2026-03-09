@@ -254,64 +254,17 @@ export function PortfolioPageContent() {
         </div>
       </section>
 
-      <section aria-labelledby="diversification-heading">
-        <h2 id="diversification-heading" className="font-maven-pro text-lg font-semibold text-foreground mb-4">
-          Diversification insights
-        </h2>
-        <Card className="rounded-xl border border-border bg-card">
-          <CardContent className="pt-4">
-            {holdings.length > 0 && (() => {
-              const largest = holdings.reduce((a, b) => (a.currentValue > b.currentValue ? a : b));
-              const largestPct = getHoldingWeightPct(largest.currentValue, equity);
-              const isConcentrated = largestPct > 40;
-              return (
-                <>
-                  <p className="text-sm font-medium text-foreground mb-1">Largest concentration</p>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    {largest.name} at {largestPct.toFixed(0)}% of total portfolio.
-                  </p>
-                  <p className="text-sm text-foreground">
-                    {isConcentrated
-                      ? "Your portfolio is concentrated in one strategy. Consider adding a lower-correlation strategy or rebalancing to improve diversification."
-                      : "Your portfolio is moderately balanced across strategies. You could add a diversifier to further reduce concentration risk."}
-                  </p>
-                </>
-              );
-            })()}
-          </CardContent>
-        </Card>
-      </section>
-
       <section aria-labelledby="rebalancing-heading">
         <h2 id="rebalancing-heading" className="font-maven-pro text-lg font-semibold text-foreground mb-4">
           Rebalancing ideas
         </h2>
         <ul className="space-y-2">
-          {holdings.length > 1 && (() => {
-            const largest = holdings.reduce((a, b) => (a.currentValue > b.currentValue ? a : b));
-            const pct = getHoldingWeightPct(largest.currentValue, equity);
-            if (pct > 35) {
-              return (
-                <>
-                  <li className="text-sm text-muted-foreground">
-                    Reduce concentration in {largest.name}
-                  </li>
-                  <li className="text-sm text-muted-foreground">
-                    Add a lower-risk diversifier
-                  </li>
-                  <li className="text-sm text-muted-foreground">
-                    Review overlap across growth strategies
-                  </li>
-                </>
-              );
-            }
-            return (
-              <>
-                <li className="text-sm text-muted-foreground">Add a lower-risk diversifier</li>
-                <li className="text-sm text-muted-foreground">Review overlap across growth strategies</li>
-              </>
-            );
-          })()}
+          {holdings.length > 1 && (
+            <>
+              <li className="text-sm text-muted-foreground">Add a lower-risk diversifier</li>
+              <li className="text-sm text-muted-foreground">Review overlap across growth strategies</li>
+            </>
+          )}
           {holdings.length <= 1 && (
             <li className="text-sm text-muted-foreground">
               Add a second strategy to see rebalancing ideas.

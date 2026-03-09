@@ -12,6 +12,9 @@ const KEY_DISMISSED = `vega_tour_${TOUR_VERSION}_dismissed`;
 /** Session-only: set by "Get Started" to start tour on next VF load. */
 export const TOUR_START_SESSION_KEY = "vega_tour_start";
 
+/** Custom event dispatched when "Replay tutorial" is clicked on the same page so the tour starts without navigation. */
+export const TOUR_REPLAY_EVENT = "vega_tour_replay";
+
 export function getTourCompleted(): boolean {
   if (typeof window === "undefined") return false;
   return localStorage.getItem(KEY_COMPLETED) === "1";
