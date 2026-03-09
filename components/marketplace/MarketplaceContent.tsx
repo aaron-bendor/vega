@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { ROUTES } from "@/lib/routes";
 
 const SORT_OPTIONS = [
   { value: "best-fit", label: "Best fit for portfolio" },
@@ -77,7 +78,7 @@ export function MarketplaceContent({ algorithms, useDemo }: MarketplaceContentPr
     (value: string) => {
       const params = new URLSearchParams(searchParams.toString());
       params.set("sort", value);
-      router.push(`/vega-financial/marketplace?${params.toString()}`);
+      router.push(`${ROUTES.vegaFinancial.marketplace}?${params.toString()}`);
     },
     [router, searchParams]
   );
@@ -91,6 +92,22 @@ export function MarketplaceContent({ algorithms, useDemo }: MarketplaceContentPr
           return name.includes(q) || desc.includes(q);
         })
       : [...algorithms];
+
+    if (tag) {
+      list = list.filter((a) => {
+        const tags = isDbVersion(a) ? (a as DbVersion).tags.map((t) => t.tag.name) : (a as DemoAlgo).tags;
+        return tags.some((t) => t === tag);
+      });
+    }
+    if (asset) {
+      list = list.filter((a) => {
+        const tags = isDbVersion(a) ? (a as DbVersion).tags.map((t) => t.tag.name) : (a as DemoAlgo).tags;
+        return tags.some((t) => t === asset);
+      });
+    }
+    if (risk) {
+      list = list.filter((a) => (a.riskLevel ?? "") === risk);
+    }
 
     if (sort === "newest") {
       list = [...list].reverse();
@@ -127,7 +144,7 @@ export function MarketplaceContent({ algorithms, useDemo }: MarketplaceContentPr
       list = [...list];
     }
     return list;
-  }, [algorithms, search, sort]);
+  }, [algorithms, search, sort, tag, asset, risk]);
 
   const toggleCompare = (id: string) => {
     setCompareIds((prev) => {
@@ -149,22 +166,26 @@ export function MarketplaceContent({ algorithms, useDemo }: MarketplaceContentPr
   };
   const compareArray = Array.from(compareIds);
   const compareHref = compareArray.length >= 2
-    ? `/vega-financial/compare?compare=${compareArray.join(",")}`
+    ? `${ROUTES.vegaFinancial.compare}?compare=${compareArray.join(",")}`
     : null;
 
   const activeFiltersList = useMemo(() => {
     const a: { key: string; label: string }[] = [];
-    if (tag) a.push({ key: "tag", label: tag });
-    if (asset) a.push({ key: "asset", label: asset });
+    if (tag) a.push({ key: "tag", label: `Style: ${tag}` });
+    if (asset) a.push({ key: "asset", label: `Asset: ${asset}` });
     if (risk) a.push({ key: "risk", label: `Risk: ${risk}` });
     return a;
   }, [tag, asset, risk]);
 
+  const filtersApplied = activeFiltersList.length;
+  const sortLabel = sort === "newest" ? "newest" : SORT_OPTIONS.find((o) => o.value === sort)?.label ?? sort;
+
   const COLLECTIONS = [
-    { label: "Low risk starters", href: "/vega-financial/marketplace?risk=Low", desc: "Strategies with lower volatility." },
-    { label: "Diversifiers", href: "/vega-financial/marketplace?tag=Mean%20Reversion", desc: "May help balance your portfolio." },
-    { label: "Longer track records", href: "/vega-financial/marketplace?sort=newest", desc: "Strategies with more history." },
-    { label: "Verified strategies", href: "/vega-financial/marketplace", desc: "Reviewed by the platform." },
+    { label: "Low risk", href: `${ROUTES.vegaFinancial.marketplace}?risk=Low`, desc: "Strategies with lower volatility." },
+    { label: "Momentum", href: `${ROUTES.vegaFinancial.marketplace}?tag=Momentum`, desc: "Trend-following style." },
+    { label: "Mean Reversion", href: `${ROUTES.vegaFinancial.marketplace}?tag=Mean%20Reversion`, desc: "May help balance your portfolio." },
+    { label: "Equity", href: `${ROUTES.vegaFinancial.marketplace}?asset=Equity`, desc: "Equity-focused strategies." },
+    { label: "All strategies", href: ROUTES.vegaFinancial.marketplace, desc: "Browse everything." },
   ];
 
   return (
@@ -209,7 +230,7 @@ export function MarketplaceContent({ algorithms, useDemo }: MarketplaceContentPr
         {/* 2. Mobile: one chip row + More filters */}
         <div className="flex flex-wrap items-center gap-2 lg:hidden">
           <Link
-            href="/vega-financial/marketplace"
+            href={ROUTES.vegaFinancial.marketplace}
             className={cn(
               "vf-chip-motion inline-flex items-center justify-center rounded-lg border px-3 py-2 text-sm min-h-[44px]",
               !tag && !asset && !risk
@@ -226,7 +247,7 @@ export function MarketplaceContent({ algorithms, useDemo }: MarketplaceContentPr
             if (asset) chipParams.asset = asset;
             if (risk) chipParams.risk = risk;
             const chipQs = Object.keys(chipParams).length ? new URLSearchParams(chipParams).toString() : "";
-            const chipHref = chipQs ? `/vega-financial/marketplace?${chipQs}` : "/vega-financial/marketplace";
+            const chipHref = chipQs ? `${ROUTES.vegaFinancial.marketplace}?${chipQs}` : ROUTES.vegaFinancial.marketplace;
             return (
               <Link
                 key={t}
@@ -258,7 +279,7 @@ export function MarketplaceContent({ algorithms, useDemo }: MarketplaceContentPr
               </span>
             ))}
             <Link
-              href={sort && sort !== "newest" ? `/vega-financial/marketplace?sort=${sort}` : "/vega-financial/marketplace"}
+              href={sort && sort !== "newest" ? `${ROUTES.vegaFinancial.marketplace}?sort=${sort}` : ROUTES.vegaFinancial.marketplace}
               className="text-xs font-medium text-muted-foreground hover:text-foreground focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded"
             >
               Clear all
@@ -266,13 +287,32 @@ export function MarketplaceContent({ algorithms, useDemo }: MarketplaceContentPr
           </div>
         )}
 
-        {/* Helper: compare instructions */}
-        <p className="text-xs vf-text-muted">
-          Select 2 to 3 strategies to compare.
+        {/* Summary: count, sort, filters applied — no mid-word break on "strategies" */}
+        <p className="text-sm text-muted-foreground" aria-live="polite">
+          <span className="tabular-nums whitespace-nowrap">{filtered.length} strategies</span>
+          {sortLabel && (
+            <>
+              {" · "}
+              <span className="whitespace-nowrap">sorted by {sortLabel}</span>
+            </>
+          )}
+          {filtersApplied > 0 && (
+            <>
+              {" · "}
+              <span className="whitespace-nowrap">{filtersApplied} filter{filtersApplied !== 1 ? "s" : ""} applied</span>
+            </>
+          )}
         </p>
 
-        {/* 4. Collections / quick-pick — stacked on mobile, 2 cols on desktop; full-card click target */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 vf-enter-stagger vf-stagger-visible">
+        {/* Helper when comparison is enabled */}
+        {compareArray.length >= 1 && (
+          <p className="text-xs vf-text-muted">
+            Select 2 to 3 strategies to compare.
+          </p>
+        )}
+
+        {/* 4. Category shortcuts — cards/pills with equal spacing */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 vf-enter-stagger vf-stagger-visible">
           {COLLECTIONS.map((c) => (
             <Link
               key={c.label}
@@ -292,12 +332,7 @@ export function MarketplaceContent({ algorithms, useDemo }: MarketplaceContentPr
           ))}
         </div>
 
-        {/* 5. Results header row — count + word stay together to avoid mid-word wrap */}
-        <p className="text-sm text-muted-foreground tabular-nums" aria-live="polite">
-          Showing <span className="vf-results-count whitespace-nowrap">{filtered.length} {filtered.length === 1 ? "strategy" : "strategies"}</span>
-        </p>
-
-        {/* 6. Strategy grid */}
+        {/* 5. Strategy grid */}
         {filtered.length === 0 ? (
           <div className="rounded-xl border vf-border-soft vf-surface-1 py-16 px-8 text-center max-w-2xl mx-auto">
             <p className="vf-text-muted mb-4">

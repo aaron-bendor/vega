@@ -46,8 +46,8 @@ PORT=3001 npm run dev
 ```
 
 Then open:
-- [http://localhost:3001/marketplace](http://localhost:3001/marketplace)
-- [http://localhost:3001/algo/demo-1](http://localhost:3001/algo/demo-1)
+- [http://localhost:3001/vega-financial/marketplace](http://localhost:3001/vega-financial/marketplace)
+- [http://localhost:3001/vega-financial/algorithms/demo-1](http://localhost:3001/vega-financial/algorithms/demo-1)
 - Click **Run backtest** to see equity curve, drawdown, and metrics based on real Stooq bars.
 
 **Cache location:** `data/stooq/cache/`. If charts are blank, ensure cache exists or use the **Download data** button on the algo page.
@@ -92,12 +92,11 @@ npm run dev
 
 | URL | What you should see |
 |-----|---------------------|
-| [http://localhost:3000/marketplace](http://localhost:3000/marketplace) | Prototype banner, filter chips (All, Momentum, Mean Reversion, etc.), grid of algorithm cards with name, tags, risk, cached return/Sharpe/max drawdown |
-| [http://localhost:3000/algo/\<id\>](http://localhost:3000/algo/clxyz) | Replace `\<id\>` with a version ID from any marketplace card link. Prototype banner, algorithm name, metrics tiles, equity curve chart, drawdown chart, Run backtest panel (horizon, strategy, capital), Add to paper portfolio |
-| [http://localhost:3000/portfolio](http://localhost:3000/portfolio) | Prototype banner, total value / total invested (or empty state if no holdings), list of holdings with algorithm name, tags, current value |
-| [http://localhost:3000/developer](http://localhost:3000/developer) | List of your algorithms (draft + published), Create algorithm button, version counts |
-| [http://localhost:3000/developer/algorithms/new](http://localhost:3000/developer/algorithms/new) | Form: name, description, universe, risk level, tags. Create draft button |
-| [http://localhost:3000/developer/algorithms/\<id\>](http://localhost:3000/developer/algorithms/clxyz) | Replace `\<id\>` with an algorithm ID (from a card on /developer). Edit draft form, Preview backtest panel, Published versions list, Publish new version button |
+| [http://localhost:3000/vega-financial/marketplace](http://localhost:3000/vega-financial/marketplace) | Prototype banner, filter chips (All, Momentum, Mean Reversion, etc.), grid of algorithm cards with name, tags, risk, cached return/Sharpe/max drawdown |
+| [http://localhost:3000/vega-financial/algorithms/\<id\>](http://localhost:3000/vega-financial/algorithms/clxyz) | Replace `\<id\>` with a version ID from any marketplace card link. Prototype banner, algorithm name, metrics tiles, equity curve chart, drawdown chart, Run backtest panel (horizon, strategy, capital), Add to paper portfolio |
+| [http://localhost:3000/vega-financial/portfolio](http://localhost:3000/vega-financial/portfolio) | Prototype banner, total value / total invested (or empty state if no holdings), list of holdings with algorithm name, tags, current value |
+| [http://localhost:3000/vega-developer](http://localhost:3000/vega-developer) | Developer platform landing (explore, register interest). For draft/publish flows use the API or a separate developer app. |
+| [http://localhost:3000/vega-financial](http://localhost:3000/vega-financial) | Investor dashboard (paper trading prototype). |
 
 **Tip:** To get IDs: click any marketplace card (the URL contains the version id), or run `curl -s http://localhost:3000/api/algorithms | head -c 500` to see the first version. Or run `npm run screenshots` (see below) to capture screenshots automatically.
 
@@ -145,7 +144,7 @@ npm run dev
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000). Investor demo: [http://localhost:3000/vega-financial](http://localhost:3000/vega-financial).
 
 ## Screenshots (optional)
 
@@ -190,13 +189,17 @@ Screenshots are saved to `docs/screenshots/`:
 
 | Route | Description |
 |-------|-------------|
-| `/` | Home |
-| `/marketplace` | Browse published algorithms (primary Framer link) |
-| `/algo/[id]` | Algorithm detail, backtest, invest |
-| `/portfolio` | Paper portfolio holdings |
-| `/developer` | Developer portal |
-| `/developer/algorithms/new` | Create draft algorithm |
-| `/developer/algorithms/[id]` | Edit draft, preview backtest, publish |
+| `/` | Home (landing) |
+| `/vega-financial` | Investor dashboard (paper trading) |
+| `/vega-financial/marketplace` | Browse strategies (primary Framer link) |
+| `/vega-financial/algorithms/[id]` | Strategy detail, backtest, invest |
+| `/vega-financial/portfolio` | Paper portfolio holdings |
+| `/vega-financial/watchlist` | Saved strategies |
+| `/vega-financial/activity` | Activity log |
+| `/vega-financial/learn` | Learn (glossary, comparison, risk) |
+| `/vega-financial/profile` | Profile (demo preferences, reset) |
+| `/vega-developer` | Developer platform |
+| Legacy redirects: `/marketplace` → `/vega-financial/marketplace`, `/portfolio` → `/vega-financial/portfolio`, `/algo/:id` → `/vega-financial/algorithms/:id`, `/developer` → `/vega-developer` |
 
 ## API
 

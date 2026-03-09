@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatPercent } from "@/lib/utils/format";
 import { ArrowRight, ShieldCheck, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ROUTES } from "@/lib/routes";
 
 type DemoAlgo = { id: string; name: string; shortDesc?: string; tags: string[]; riskLevel?: string };
 type DbVersion = {
@@ -59,7 +60,7 @@ export function StrategyCard({
   const returnPct = isDbVersion(algorithm) ? algorithm.cachedReturn : undefined;
   const maxDrop = isDbVersion(algorithm) ? algorithm.cachedMaxDrawdown : undefined;
   const desc = algorithm.shortDesc ?? (isDbVersion(algorithm) ? algorithm.description : "") ?? "";
-  const algoHref = `/vega-financial/algorithms/${algorithm.id}`;
+  const algoHref = ROUTES.vegaFinancial.algorithm(algorithm.id);
 
   return (
     <Card

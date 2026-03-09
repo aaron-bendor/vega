@@ -30,7 +30,9 @@ import { PortfolioReconciliationBlock } from "@/components/vega-financial/Portfo
 import { FirstRunWelcomeBanner } from "@/components/vega-financial/FirstRunWelcomeBanner";
 import { DemoQuickStartStrip } from "@/components/vega-financial/DemoQuickStartStrip";
 import { DEMO_ONBOARDING } from "@/lib/vega-financial/investor-copy";
+import { ROUTES } from "@/lib/routes";
 import { formatCurrency, formatPercent } from "@/lib/utils/format";
+import { ReplayTutorialLink } from "@/components/vega-financial/ReplayTutorialLink";
 
 function portfolioStateToMockAccount(
   availableCash: number,
@@ -137,12 +139,15 @@ export function DashboardPortfolioContent({
       <div className="vf-reveal vf-reveal-delay-0 space-y-4">
         <FirstRunWelcomeBanner />
         <DemoQuickStartStrip />
-        <Link
-          href="/vega-financial/marketplace"
-          className="inline-flex items-center justify-center rounded-lg bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium hover:bg-primary-hover focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring min-h-[44px]"
-        >
-          Explore strategies
-        </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            href={ROUTES.vegaFinancial.marketplace}
+            className="inline-flex items-center justify-center rounded-lg bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium hover:bg-primary-hover focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring min-h-[44px]"
+          >
+            Explore strategies
+          </Link>
+          <ReplayTutorialLink label="Replay tutorial" />
+        </div>
       </div>
 
       <p
@@ -161,7 +166,7 @@ export function DashboardPortfolioContent({
             Start by exploring a few simulated strategies and add one to your paper portfolio.
           </p>
           <Link
-            href="/vega-financial/marketplace"
+            href={ROUTES.vegaFinancial.marketplace}
             className="inline-flex items-center justify-center rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:bg-primary-hover focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring min-h-[44px]"
           >
             Explore strategies
@@ -263,7 +268,7 @@ export function DashboardPortfolioContent({
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Link
-            href="/vega-financial/marketplace"
+            href={ROUTES.vegaFinancial.marketplace}
             className="vf-card-hover rounded-xl border border-border bg-card p-4 flex flex-col gap-2 hover:border-muted-foreground/25 hover:bg-muted/10 transition-colors duration-200 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
           >
             <span className="font-medium text-foreground">Explore strategies</span>
@@ -271,7 +276,7 @@ export function DashboardPortfolioContent({
             <span className="text-sm font-medium text-primary mt-1">Browse strategies →</span>
           </Link>
           <Link
-            href="/vega-financial/watchlist"
+            href={ROUTES.vegaFinancial.watchlist}
             className="vf-card-hover rounded-xl border border-border bg-card p-4 flex flex-col gap-2 hover:border-muted-foreground/25 hover:bg-muted/10 transition-colors duration-200 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
           >
             <span className="font-medium text-foreground">Review watchlist</span>
@@ -279,7 +284,7 @@ export function DashboardPortfolioContent({
             <span className="text-sm font-medium text-primary mt-1">Open watchlist →</span>
           </Link>
           <Link
-            href="/vega-financial/learn"
+            href={ROUTES.vegaFinancial.learn}
             className="vf-card-hover rounded-xl border border-border bg-card p-4 flex flex-col gap-2 hover:border-muted-foreground/25 hover:bg-muted/10 transition-colors duration-200 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
           >
             <span className="font-medium text-foreground">Learn the basics</span>

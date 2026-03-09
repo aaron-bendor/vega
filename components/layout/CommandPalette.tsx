@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Search, Home, Wallet, LayoutDashboard, Store, Code2, Lock, BarChart3, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ROUTES, PROFILE_NAV_LABEL } from "@/lib/routes";
 
 interface AlgorithmOption {
   id: string;
@@ -13,12 +14,12 @@ interface AlgorithmOption {
 
 const PAGES: { href: string; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
   { href: "/", label: "Home", icon: Home },
-  { href: "/vega-financial", label: "Dashboard", icon: Wallet },
-  { href: "/vega-financial/portfolio", label: "Portfolio", icon: LayoutDashboard },
-  { href: "/vega-financial/marketplace", label: "Explore", icon: Store },
-  { href: "/vega-financial/profile", label: "Settings", icon: User },
+  { href: ROUTES.vegaFinancial.root, label: "Dashboard", icon: Wallet },
+  { href: ROUTES.vegaFinancial.portfolio, label: "Portfolio", icon: LayoutDashboard },
+  { href: ROUTES.vegaFinancial.marketplace, label: "Explore", icon: Store },
+  { href: ROUTES.vegaFinancial.profile, label: PROFILE_NAV_LABEL, icon: User },
   { href: "/algorithms", label: "Algorithms", icon: BarChart3 },
-  { href: "/vega-developer", label: "Developer", icon: Code2 },
+  { href: ROUTES.vegaDeveloper, label: "Developer", icon: Code2 },
   { href: "/private", label: "Private", icon: Lock },
 ];
 

@@ -28,8 +28,8 @@ interface FiltersDrawerProps {
 }
 
 const RISK_OPTIONS = ["Low", "Medium", "High"];
-const HORIZON_OPTIONS = ["1m", "3m", "1y"];
-const CATEGORIES = ["Momentum", "Trend Following", "Mean Reversion", "Diversifiers", "Risk Managed"];
+const STRATEGY_STYLE_OPTIONS = ["Momentum", "Trend Following", "Mean Reversion", "Quant"];
+const ASSET_OPTIONS = ["Equity", "Multi-Asset", "Commodities"];
 
 export function FiltersDrawer({
   open,
@@ -66,7 +66,37 @@ export function FiltersDrawer({
         </SheetHeader>
         <div className="space-y-6 py-6">
           <div>
-            <Label className="text-sm font-medium">Risk</Label>
+            <Label className="text-sm font-medium">Strategy style</Label>
+            <div className="flex gap-2 mt-2 flex-wrap">
+              {STRATEGY_STYLE_OPTIONS.map((c) => (
+                <Button
+                  key={c}
+                  variant={state.categories.includes(c) ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => toggleCategory(c)}
+                >
+                  {c}
+                </Button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <Label className="text-sm font-medium">Asset class</Label>
+            <div className="flex gap-2 mt-2 flex-wrap">
+              {ASSET_OPTIONS.map((a) => (
+                <Button
+                  key={a}
+                  variant={state.categories.includes(a) ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => toggleCategory(a)}
+                >
+                  {a}
+                </Button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <Label className="text-sm font-medium">Risk level</Label>
             <div className="flex gap-2 mt-2 flex-wrap">
               {RISK_OPTIONS.map((r) => (
                 <Button
@@ -91,36 +121,6 @@ export function FiltersDrawer({
               className="rounded border-input"
             />
             <Label htmlFor="verified">Verified only</Label>
-          </div>
-          <div>
-            <Label className="text-sm font-medium">Category</Label>
-            <div className="flex flex-wrap gap-2 mt-2">
-              {CATEGORIES.map((c) => (
-                <Button
-                  key={c}
-                  variant={state.categories.includes(c) ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => toggleCategory(c)}
-                >
-                  {c}
-                </Button>
-              ))}
-            </div>
-          </div>
-          <div>
-            <Label className="text-sm font-medium">Horizon</Label>
-            <div className="flex gap-2 mt-2">
-              {HORIZON_OPTIONS.map((h) => (
-                <Button
-                  key={h}
-                  variant={state.horizon === h ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => onStateChange({ ...state, horizon: h })}
-                >
-                  {h}
-                </Button>
-              ))}
-            </div>
           </div>
         </div>
       </SheetContent>

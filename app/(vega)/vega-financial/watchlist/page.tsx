@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { loadPortfolioState } from "@/lib/vega-financial/portfolio-store";
 import { VegaFinancialPageScaffold } from "@/components/vega-financial/VegaFinancialPageScaffold";
@@ -9,11 +9,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Star } from "lucide-react";
+import { ROUTES } from "@/lib/routes";
+
+const WATCHLIST_LOAD_TIMEOUT_MS = 6000;
 
 type WatchlistItem = { id: string; name: string; shortDesc: string; riskLevel: string; role?: string };
 
 export default function WatchlistPage() {
   const [items, setItems] = useState<WatchlistItem[] | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const state = loadPortfolioState();
@@ -22,10 +26,41 @@ export default function WatchlistPage() {
       setItems([]);
       return;
     }
-    fetch(`/api/vega-financial/watchlist-versions?ids=${encodeURIComponent(ids.join(","))}`)
+
+    let cancelled = false;
+    const controller = new AbortController();
+
+    timeoutRef.current = setTimeout(() => {
+      if (!cancelled) setItems([]);
+    }, WATCHLIST_LOAD_TIMEOUT_MS);
+
+    fetch(`/api/vega-financial/watchlist-versions?ids=${encodeURIComponent(ids.join(","))}`, {
+      signal: controller.signal,
+    })
       .then((res) => res.json())
-      .then((data: WatchlistItem[]) => setItems(Array.isArray(data) ? data : []))
-      .catch(() => setItems([]));
+      .then((data: WatchlistItem[]) => {
+        if (!cancelled && timeoutRef.current !== null) {
+          clearTimeout(timeoutRef.current);
+          timeoutRef.current = null;
+          setItems(Array.isArray(data) ? data : []);
+        }
+      })
+      .catch(() => {
+        if (!cancelled && timeoutRef.current !== null) {
+          clearTimeout(timeoutRef.current);
+          timeoutRef.current = null;
+          setItems([]);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+      controller.abort();
+      if (timeoutRef.current !== null) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+    };
   }, []);
 
   return (
@@ -54,13 +89,13 @@ export default function WatchlistPage() {
         <EmptyStateCard
           icon={<Star className="size-7" aria-hidden />}
           headline="No saved strategies yet"
-          description="Save strategies from Explore to compare them later."
+          description="Save strategies from Explore to compare them later or review before allocating."
           primaryAction={
             <Link
-              href="/vega-financial/marketplace"
+              href={ROUTES.vegaFinancial.marketplace}
               className="inline-flex items-center justify-center rounded-lg bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium hover:bg-primary-hover focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring min-h-[44px]"
             >
-              Explore strategies
+              Back to Explore
             </Link>
           }
         />
@@ -71,7 +106,7 @@ export default function WatchlistPage() {
               <CardContent className="p-4 sm:p-5 lg:p-6 flex flex-col gap-3">
                 <div>
                   <h3 className="font-maven-pro font-semibold text-foreground">
-                    <Link href={`/vega-financial/algorithms/${item.id}`} className="hover:underline focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded">
+                    <Link href={ROUTES.vegaFinancial.algorithm(item.id)} className="hover:underline focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded">
                       {item.name}
                     </Link>
                   </h3>
@@ -88,12 +123,12 @@ export default function WatchlistPage() {
                   )}
                 </div>
                 <div className="flex flex-wrap gap-2 mt-auto pt-2">
-                  <Link href={`/vega-financial/algorithms/${item.id}`}>
+                  <Link href={ROUTES.vegaFinancial.algorithm(item.id)}>
                     <Button variant="default" size="sm" className="w-full sm:w-auto min-h-[44px]">
                       View details
                     </Button>
                   </Link>
-                  <Link href={`/vega-financial/marketplace?compare=${item.id}`}>
+                  <Link href={`${ROUTES.vegaFinancial.marketplace}?compare=${item.id}`}>
                     <Button variant="outline" size="sm" className="w-full sm:w-auto min-h-[44px]">
                       Compare
                     </Button>

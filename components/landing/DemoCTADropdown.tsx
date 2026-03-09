@@ -1,8 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronDown } from "lucide-react";
-import { useState, useRef, useEffect, useCallback, useId } from "react";
 import { cn } from "@/lib/utils";
 
 export type DemoCTADropdownVariant = "hero" | "header";
@@ -15,14 +13,13 @@ type DemoCTADropdownProps = {
   scrolled?: boolean;
   /** Optional class for the wrapper (e.g. for mobile full width). */
   className?: string;
-  /** Optional: close callback when dropdown closes (e.g. close mobile menu). */
+  /** Optional: close callback when a CTA is clicked (e.g. close mobile menu). */
   onClose?: () => void;
 };
 
 /**
  * Hero: single "Start Investing" button that goes to the invest demo (/vega-financial).
- * Header: "Open Demo" dropdown with Invest (investor flow + tour) and Develop (developer demo).
- * Click to open; Escape / outside click to close; arrow keys move between options.
+ * Header: two buttons — Invest (investor flow + tour) and Develop (developer demo).
  */
 export function DemoCTADropdown({
   onInvest,
@@ -31,105 +28,8 @@ export function DemoCTADropdown({
   className,
   onClose,
 }: DemoCTADropdownProps) {
-  const [open, setOpen] = useState(false);
-  const [panelRect, setPanelRect] = useState({ top: 0, left: 0, width: 0 });
-  const triggerRef = useRef<HTMLButtonElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
-  const investRef = useRef<HTMLButtonElement>(null);
-  const developRef = useRef<HTMLAnchorElement>(null);
-  const id = useId();
-  const panelId = `demo-cta-panel-${id.replace(/:/g, "")}`;
-  const triggerId = `demo-cta-trigger-${id.replace(/:/g, "")}`;
-
-  const updatePosition = useCallback(() => {
-    const trigger = triggerRef.current;
-    if (!trigger) return;
-    const tr = trigger.getBoundingClientRect();
-    setPanelRect({
-      top: tr.bottom + 4,
-      left: tr.left,
-      width: tr.width,
-    });
-  }, []);
-
-  const close = useCallback(() => {
-    setOpen(false);
-    onClose?.();
-    triggerRef.current?.focus();
-  }, [onClose]);
-
-  useEffect(() => {
-    if (!open) return;
-    updatePosition();
-    const ro = new ResizeObserver(updatePosition);
-    if (triggerRef.current) ro.observe(triggerRef.current);
-    window.addEventListener("scroll", updatePosition, true);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("scroll", updatePosition, true);
-    };
-  }, [open, updatePosition]);
-
-  useEffect(() => {
-    if (open) investRef.current?.focus();
-  }, [open]);
-
-  useEffect(() => {
-    if (!open) return;
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as Node;
-      if (
-        panelRef.current?.contains(target) ||
-        triggerRef.current?.contains(target)
-      )
-        return;
-      close();
-    };
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") close();
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("keydown", handleEscape);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleEscape);
-    };
-  }, [open, close]);
-
-  const handleTriggerKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      setOpen((o) => !o);
-      if (!open) requestAnimationFrame(updatePosition);
-    }
-    if (e.key === "Escape") {
-      close();
-    }
-  };
-
-  const handlePanelKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Escape") {
-      close();
-      return;
-    }
-    const items: (HTMLButtonElement | HTMLAnchorElement)[] = [
-      investRef.current,
-      developRef.current,
-    ].filter((el): el is HTMLButtonElement | HTMLAnchorElement => el != null);
-    const current = document.activeElement;
-    const idx = items.indexOf(current as HTMLButtonElement | HTMLAnchorElement);
-    if (e.key === "ArrowDown" && idx < items.length - 1) {
-      e.preventDefault();
-      (items[idx + 1] as HTMLElement).focus();
-    }
-    if (e.key === "ArrowUp" && idx > 0) {
-      e.preventDefault();
-      (items[idx - 1] as HTMLElement).focus();
-    }
-  };
-
   const handleInvestClick = (e: React.MouseEvent) => {
-    close();
+    onClose?.();
     onInvest(e);
   };
 
@@ -144,18 +44,10 @@ export function DemoCTADropdown({
           : "bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 hover:border-white/40"
       );
 
-  const panelClass =
-    "fixed z-[1001] rounded-2xl shadow-xl overflow-hidden py-1 bg-white/20 backdrop-blur-md border border-white/30";
-
-  const itemClass =
-    "flex items-center w-full text-left px-4 py-2.5 text-sm font-semibold text-white outline-none rounded-lg mx-1 hover:bg-white/20 focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-inset";
-
-  // Hero: single "Start Investing" button that goes to invest demo (/vega-financial).
   if (isHero) {
     return (
       <div className={cn("relative", className)}>
         <button
-          ref={triggerRef}
           type="button"
           className={triggerClass}
           onClick={(e) => onInvest(e)}
@@ -168,65 +60,22 @@ export function DemoCTADropdown({
   }
 
   return (
-    <div className={cn("relative", className)}>
-      <button
-        ref={triggerRef}
-        id={triggerId}
-        type="button"
-        aria-expanded={open}
-        aria-haspopup="true"
-        aria-controls={panelId}
+    <div className={cn("flex items-center gap-2", className)}>
+      <Link
+        href="/vega-developer/demo"
         className={triggerClass}
-        onClick={() => setOpen((o) => !o)}
-        onKeyDown={handleTriggerKeyDown}
+        onClick={() => onClose?.()}
+      >
+        Develop
+      </Link>
+      <button
+        type="button"
+        className={triggerClass}
+        onClick={handleInvestClick}
         data-tour="try-it-now"
       >
-        Open Demo
-        <ChevronDown
-          className={cn(
-            "size-4 shrink-0 transition-transform duration-motion-normal ease-motion",
-            open && "rotate-180"
-          )}
-          aria-hidden
-        />
+        Invest
       </button>
-
-      <div
-        ref={panelRef}
-        id={panelId}
-        role="menu"
-        aria-orientation="vertical"
-        aria-labelledby={triggerId}
-        className={cn(
-          panelClass,
-          open ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
-        )}
-        style={{
-          top: panelRect.top,
-          left: panelRect.left,
-          width: panelRect.width,
-        }}
-        onKeyDown={handlePanelKeyDown}
-      >
-        <button
-          ref={investRef}
-          type="button"
-          role="menuitem"
-          className={itemClass}
-          onClick={handleInvestClick}
-        >
-          Invest
-        </button>
-        <Link
-          ref={developRef}
-          href="/vega-developer/demo"
-          role="menuitem"
-          className={itemClass}
-          onClick={close}
-        >
-          Develop
-        </Link>
-      </div>
     </div>
   );
 }

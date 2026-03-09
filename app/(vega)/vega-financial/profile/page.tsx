@@ -76,7 +76,7 @@ export default function VegaFinancialProfilePage() {
 
   return (
     <VegaFinancialPageScaffold
-      title="Settings"
+      title="Profile"
       description="Demo preferences, saved strategies, and reset actions."
       showDisclaimer={false}
     >

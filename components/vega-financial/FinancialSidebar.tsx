@@ -6,6 +6,7 @@ import type { MockAccount } from "@/lib/mock/portfolio";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Wallet, Menu } from "lucide-react";
+import { ROUTES } from "@/lib/routes";
 import {
   Sheet,
   SheetContent,
@@ -62,7 +63,7 @@ export function FinancialSidebar({ account }: FinancialSidebarProps) {
 
       <div className="pt-2">
         <Button variant="outline" size="sm" className="w-full" asChild>
-          <Link href="/vega-financial/portfolio">View full portfolio</Link>
+          <Link href={ROUTES.vegaFinancial.portfolio}>View full portfolio</Link>
         </Button>
       </div>
     </div>

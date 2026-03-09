@@ -170,8 +170,8 @@ export function MarketplaceFilterRail(_opts?: MarketplaceFilterRailProps) {
 
   const activeFilters = useMemo(() => {
     const a: { key: string; label: string }[] = [];
-    if (tag) a.push({ key: "tag", label: tag });
-    if (asset) a.push({ key: "asset", label: asset });
+    if (tag) a.push({ key: "tag", label: `Style: ${tag}` });
+    if (asset) a.push({ key: "asset", label: `Asset: ${asset}` });
     if (risk) a.push({ key: "risk", label: `Risk: ${risk}` });
     return a;
   }, [tag, asset, risk]);
@@ -232,8 +232,8 @@ export function MarketplaceFiltersSheet({ open, onOpenChange }: MarketplaceFilte
 
   const activeFilters = useMemo(() => {
     const a: { key: string; label: string }[] = [];
-    if (tag) a.push({ key: "tag", label: tag });
-    if (asset) a.push({ key: "asset", label: asset });
+    if (tag) a.push({ key: "tag", label: `Style: ${tag}` });
+    if (asset) a.push({ key: "asset", label: `Asset: ${asset}` });
     if (risk) a.push({ key: "risk", label: `Risk: ${risk}` });
     return a;
   }, [tag, asset, risk]);

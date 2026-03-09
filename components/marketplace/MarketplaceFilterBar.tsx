@@ -53,6 +53,7 @@ export function MarketplaceFilterBar({
   const searchParams = useSearchParams();
   const [sort, setSort] = useState(searchParams.get("sort") ?? "newest");
   const tag = searchParams.get("tag") ?? "";
+  const asset = searchParams.get("asset") ?? "";
   const risk = searchParams.get("risk") ?? "";
 
   const setParam = useCallback(
@@ -67,10 +68,11 @@ export function MarketplaceFilterBar({
 
   const activeFilters = useMemo(() => {
     const a: { key: string; label: string }[] = [];
-    if (tag) a.push({ key: "tag", label: tag });
+    if (tag) a.push({ key: "tag", label: `Style: ${tag}` });
+    if (asset) a.push({ key: "asset", label: `Asset: ${asset}` });
     if (risk) a.push({ key: "risk", label: `Risk: ${risk}` });
     return a;
-  }, [tag, risk]);
+  }, [tag, asset, risk]);
 
   const clearAll = useCallback(() => {
     router.push("/vega-financial/marketplace");
@@ -170,11 +172,14 @@ export function MarketplaceFilterBar({
           <div className="min-w-0 space-y-2">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Asset class</p>
             <SlidingChipRow
-              chips={ASSET_OPTIONS.map((name) => ({
-                href: `/vega-financial/marketplace?tag=${encodeURIComponent(name)}`,
-                label: name,
-              }))}
-              activeHref={tag ? `/vega-financial/marketplace?tag=${encodeURIComponent(tag)}` : "/vega-financial/marketplace"}
+              chips={[
+                { href: "/vega-financial/marketplace", label: "All" },
+                ...ASSET_OPTIONS.map((name) => ({
+                  href: `/vega-financial/marketplace?asset=${encodeURIComponent(name)}`,
+                  label: name,
+                })),
+              ]}
+              activeHref={asset ? `/vega-financial/marketplace?asset=${encodeURIComponent(asset)}` : "/vega-financial/marketplace"}
             />
           </div>
           <div className="min-w-0 space-y-2 sm:col-span-2 lg:col-span-1">
@@ -224,8 +229,8 @@ export function MarketplaceFilterBar({
             </>
           )}
         </div>
-        <p className="text-sm text-muted-foreground tabular-nums shrink-0">
-          Showing {resultCount} strateg{resultCount === 1 ? "y" : "ies"}
+        <p className="text-sm text-muted-foreground tabular-nums shrink-0 whitespace-nowrap">
+          {resultCount} strateg{resultCount === 1 ? "y" : "ies"}
         </p>
       </div>
       <p className="text-xs text-muted-foreground">

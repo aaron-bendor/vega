@@ -4,12 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Store, Wallet, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ROUTES, PROFILE_NAV_LABEL } from "@/lib/routes";
 
 const navItems = [
-  { href: "/vega-financial", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { href: "/vega-financial/marketplace", label: "Strategies", icon: Store },
-  { href: "/vega-financial/portfolio", label: "Portfolio", icon: Wallet },
-  { href: "/vega-financial/profile", label: "Settings", icon: User },
+  { href: ROUTES.vegaFinancial.root, label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { href: ROUTES.vegaFinancial.marketplace, label: "Strategies", icon: Store },
+  { href: ROUTES.vegaFinancial.portfolio, label: "Portfolio", icon: Wallet },
+  { href: ROUTES.vegaFinancial.profile, label: PROFILE_NAV_LABEL, icon: User },
 ];
 
 export function VegaFinancialBottomNav() {

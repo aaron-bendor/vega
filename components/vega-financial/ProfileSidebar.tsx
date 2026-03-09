@@ -15,22 +15,23 @@ import {
   ChevronRight,
   Activity,
   BookOpen,
-  Settings,
+  User,
 } from "lucide-react";
+import { ROUTES, PROFILE_NAV_LABEL } from "@/lib/routes";
 
 const ICON_SIZE = 18;
 
 const primaryNav = [
-  { href: "/vega-financial", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { href: "/vega-financial/marketplace", label: "Strategies", icon: Store },
-  { href: "/vega-financial/portfolio", label: "Portfolio", icon: Wallet },
-  { href: "/vega-financial/watchlist", label: "Watchlist", icon: Star },
-  { href: "/vega-financial/activity", label: "Activity", icon: Activity },
+  { href: ROUTES.vegaFinancial.root, label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { href: ROUTES.vegaFinancial.marketplace, label: "Strategies", icon: Store },
+  { href: ROUTES.vegaFinancial.portfolio, label: "Portfolio", icon: Wallet },
+  { href: ROUTES.vegaFinancial.watchlist, label: "Watchlist", icon: Star },
+  { href: ROUTES.vegaFinancial.activity, label: "Activity", icon: Activity },
 ];
 
-const secondaryNav = [{ href: "/vega-financial/learn", label: "Learn", icon: BookOpen }];
+const secondaryNav = [{ href: ROUTES.vegaFinancial.learn, label: "Learn", icon: BookOpen }];
 
-const bottomNav = [{ href: "/vega-financial/profile", label: "Settings", icon: Settings }];
+const bottomNav = [{ href: ROUTES.vegaFinancial.profile, label: PROFILE_NAV_LABEL, icon: User }];
 
 export function ProfileSidebar({
   naturalScroll,
@@ -46,7 +47,7 @@ export function ProfileSidebar({
     return pathname === href || pathname?.startsWith(href + "/");
   }
 
-  const isProfilePage = pathname === "/vega-financial/profile";
+  const isProfilePage = pathname === ROUTES.vegaFinancial.profile;
 
   return (
     <aside
@@ -171,7 +172,7 @@ export function ProfileSidebar({
         </ul>
       </div>
 
-      {/* 5. Bottom-pinned Settings */}
+      {/* 5. Bottom-pinned Profile */}
       <div className="mt-auto shrink-0 border-t border-shell-border px-4 py-3">
         <ul className="flex flex-col gap-0.5">
           {bottomNav.map(({ href, label, icon: Icon }) => {
