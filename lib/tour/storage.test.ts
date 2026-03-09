@@ -5,7 +5,6 @@ import {
   clearTourForReplay,
   TOUR_START_SESSION_KEY,
   setTourCompleted,
-  getTourStep,
   setTourStep,
 } from "./storage";
 
