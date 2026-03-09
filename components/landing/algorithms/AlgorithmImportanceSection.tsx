@@ -29,7 +29,7 @@ export function AlgorithmImportanceSection(): JSX.Element {
             {"// WHY IT MATTERS"}
           </div>
           <h2 className="font-maven-pro font-extrabold text-[#111111] text-3xl md:text-4xl lg:text-[50px] tracking-[-2px] leading-tight">
-            Why algorithms <span className="text-[#793de1]">outperform</span> human traders.
+            <span className="font-bold">Why algorithms</span> <span className="text-[#793de1] font-bold">outperform</span> <span className="font-bold">human traders.</span>
           </h2>
         </header>
 
@@ -39,7 +39,7 @@ export function AlgorithmImportanceSection(): JSX.Element {
               Algorithms
             </h3>
             <p className="font-maven-pro font-normal text-[#333333] text-base tracking-[-0.55px] leading-[35px] mt-1">
-              Rules-based, automated, consistent
+              <span className="font-semibold">Rules-based, automated, consistent</span>
             </p>
             <ul className="mt-6 list-none space-y-[9px] font-maven-pro text-base tracking-[-0.55px] leading-[35px] text-black">
               {algorithmFeatures.map((feature, index) => (
@@ -60,7 +60,7 @@ export function AlgorithmImportanceSection(): JSX.Element {
               Human Trader
             </h3>
             <p className="font-maven-pro font-normal text-[#333333] text-base tracking-[-0.55px] leading-[35px] mt-1 opacity-80">
-              Intuition-based, manual, variable
+              <span className="font-semibold">Intuition-based, manual, variable</span>
             </p>
             <ul className="mt-6 list-none space-y-[9px] font-maven-pro font-normal text-[#333333] text-base tracking-[-0.55px] leading-[35px] opacity-70">
               {humanTraderLimitations.map((limitation, index) => (

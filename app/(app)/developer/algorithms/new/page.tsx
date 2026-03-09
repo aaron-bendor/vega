@@ -15,7 +15,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 const RISK_LEVELS = ["Low", "Medium", "High"];
-const TAGS = ["Momentum", "Mean Reversion", "Trend Following", "Multi-Asset", "Equity", "Quant"];
+const TAGS = ["Momentum", "Mean Reversion", "Trend Following", "Multi-Asset", "Equity"];
 
 export default function NewAlgorithmPage() {
   const router = useRouter();

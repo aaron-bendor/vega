@@ -11,6 +11,7 @@ export default defineConfig({
       "lib/vega-financial/tests/**/*.test.ts",
       "lib/tour/**/*.test.ts",
       "lib/routes.test.ts",
+      "lib/utils/**/*.test.ts",
       "components/landing/algorithms/**/*.test.ts",
     ],
     globals: true,

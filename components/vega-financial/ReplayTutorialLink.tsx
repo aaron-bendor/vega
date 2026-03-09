@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { ROUTES } from "@/lib/routes";
 import { clearTourForReplay, TOUR_START_SESSION_KEY, setTourStep } from "@/lib/tour/storage";
 
 interface ReplayTutorialLinkProps {
@@ -13,11 +14,11 @@ export function ReplayTutorialLink({ label = "Start tutorial" }: ReplayTutorialL
 
   function handleClick() {
     clearTourForReplay();
+    setTourStep(0);
     if (typeof sessionStorage !== "undefined") {
       sessionStorage.setItem(TOUR_START_SESSION_KEY, "1");
     }
-    setTourStep(0);
-    router.push("/vega-financial");
+    router.push(ROUTES.vegaFinancial.root);
   }
 
   return (

@@ -26,7 +26,7 @@ export interface CompareStrategyRow {
   verified?: boolean;
 }
 
-const STYLE_TAGS = ["Momentum", "Trend Following", "Mean Reversion", "Quant"];
+const STYLE_TAGS = ["Momentum", "Trend Following", "Mean Reversion"];
 const ASSET_TAGS = ["Equity", "Multi-Asset", "Commodities"];
 
 const FALLBACK = {

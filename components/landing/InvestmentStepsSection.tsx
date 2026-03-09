@@ -38,7 +38,7 @@ export function InvestmentStepsSection() {
 
         <AnimateOnScroll delay={200}>
           <p className="mt-8 font-dm-sans font-light text-[#7b7394] text-sm md:text-base leading-[1.6]">
-            Join thousands of investors and developers building the
+            Join other investors and developers building the
             <br className="hidden sm:inline" />
             future of retail finance on Vega.
           </p>

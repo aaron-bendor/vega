@@ -98,7 +98,7 @@ export function AboutUsSection() {
               They have been the most powerful tool in finance for decades. Hedge
               funds have used algorithmic trading to generate returns that
               consistently outperform the market. But access has always been gated
-              behind enormous wealth requirements, typically £200,000 or more.
+              behind enormous wealth requirements, typically £1,000,000 or more.
             </p>
             <p className="font-maven-pro font-normal text-black text-base md:text-xl leading-relaxed">
               Vega changes that. We connect everyday investors directly with

@@ -42,6 +42,68 @@ const SHOW_THRESHOLD_PX = 16;
 const HIDE_THRESHOLD_PX = 24;
 const TOP_SHOW_THRESHOLD_PX = 8;
 
+const LIGHT_SURFACE_LUMINANCE_THRESHOLD = 0.72;
+const SURFACE_SAMPLE_INSET_PX = 12;
+
+type RGB = { r: number; g: number; b: number; a: number };
+
+function parseCssRgb(value: string): RGB | null {
+  const match = value
+    .trim()
+    .match(
+      /^rgba?\((\d+(?:\.\d+)?)\s*,\s*(\d+(?:\.\d+)?)\s*,\s*(\d+(?:\.\d+)?)(?:\s*,\s*(\d*(?:\.\d+)?))?\)$/i
+    );
+
+  if (!match) return null;
+
+  const [, r, g, b, a] = match;
+  return {
+    r: Number(r),
+    g: Number(g),
+    b: Number(b),
+    a: a == null || a === "" ? 1 : Number(a),
+  };
+}
+
+function getRelativeLuminance({ r, g, b }: Pick<RGB, "r" | "g" | "b">) {
+  const toLinear = (channel: number) => {
+    const normalized = channel / 255;
+    return normalized <= 0.04045
+      ? normalized / 12.92
+      : ((normalized + 0.055) / 1.055) ** 2.4;
+  };
+
+  const red = toLinear(r);
+  const green = toLinear(g);
+  const blue = toLinear(b);
+
+  return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+}
+
+function getEffectiveBackgroundColor(start: HTMLElement | null) {
+  let node: HTMLElement | null = start;
+
+  while (node) {
+    const { backgroundColor } = window.getComputedStyle(node);
+    const parsed = parseCssRgb(backgroundColor);
+    if (parsed && parsed.a > 0.01) {
+      return parsed;
+    }
+    node = node.parentElement;
+  }
+
+  return (
+    parseCssRgb(window.getComputedStyle(document.body).backgroundColor) ??
+    parseCssRgb(window.getComputedStyle(document.documentElement).backgroundColor)
+  );
+}
+
+function isLightSurface(start: HTMLElement | null) {
+  const background = getEffectiveBackgroundColor(start);
+  if (!background) return false;
+  return getRelativeLuminance(background) >= LIGHT_SURFACE_LUMINANCE_THRESHOLD;
+}
+
 type NavEntry =
   | { type: "link"; href: string; label: string; exact?: boolean }
   | { type: "dropdown"; label: string; items: NavDropdownItem[] };
@@ -102,7 +164,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
     prevMobileMenuOpen.current = mobileMenuOpen;
   }, [mobileMenuOpen, isInvestorApp]);
 
-  // When mobile menu is closed, hide from assistive tech and remove from tab order (no duplicate nav exposure)
+  // When mobile menu is closed, hide from assistive tech and remove from tab order
   useEffect(() => {
     const panel = mobileMenuPanelRef.current;
     if (!panel || isInvestorApp) return;
@@ -119,7 +181,9 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
     e.preventDefault();
     router.push("/vega-financial");
   };
-  const isStandalone = variant === "standalone" || variant === "investor" || variant === "investorApp";
+
+  const isStandalone =
+    variant === "standalone" || variant === "investor" || variant === "investorApp";
   const isInvestorAppCompact = variant === "investorApp";
   const bannerRef = useRef<HTMLDivElement>(null);
   const spacerRef = useRef<HTMLDivElement>(null);
@@ -130,9 +194,12 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
     if (!banner || !spacer) return;
 
     const minHeight = isInvestorAppCompact ? 56 : 84;
+    const bannerEl = banner;
+    const spacerEl = spacer;
+
     function setSpacerHeight() {
-      const h = Math.max(banner!.offsetHeight || 0, minHeight);
-      spacer!.style.setProperty("--banner-height", `${h}px`);
+      const h = Math.max(bannerEl.offsetHeight || 0, minHeight);
+      spacerEl.style.setProperty("--banner-height", `${h}px`);
     }
 
     setSpacerHeight();
@@ -158,7 +225,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
     function handleScroll() {
       const y = window.scrollY ?? 0;
       const dy = y - lastY;
-      const bannerHeight = Math.max(banner!.offsetHeight || 0, 72);
+      const bannerHeight = Math.max(bannerEl.offsetHeight || 0, 72);
 
       if (y <= TOP_SHOW_THRESHOLD_PX) {
         upAccum = 0;
@@ -232,21 +299,27 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
     const { href, exact } = entry;
     return exact === true ? pathname === href : !href.startsWith("/#") && pathname?.startsWith(href);
   });
-  const displayIndex = hoveredNavIndex ?? focusedNavIndex ?? (activeNavIndex >= 0 ? activeNavIndex : null);
+
+  const displayIndex =
+    hoveredNavIndex ?? focusedNavIndex ?? (activeNavIndex >= 0 ? activeNavIndex : null);
 
   const updateIndicator = useCallback(() => {
     const container = navContainerRef.current;
     const items = navItemRefs.current;
     if (!container) return;
+
     if (
       displayIndex == null ||
       displayIndex < 0 ||
       displayIndex >= navItems.length ||
       !items[displayIndex]
     ) {
-      setIndicator((prev) => (prev.width === 0 ? prev : { left: 0, top: 0, width: 0, height: 0 }));
+      setIndicator((prev) =>
+        prev.width === 0 ? prev : { left: 0, top: 0, width: 0, height: 0 }
+      );
       return;
     }
+
     const el = items[displayIndex];
     const cr = container.getBoundingClientRect();
     const er = el.getBoundingClientRect();
@@ -254,14 +327,17 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
     const top = er.top - cr.top;
     const width = er.width;
     const height = er.height;
+
     setIndicator((prev) =>
-      prev.left === left && prev.width === width && prev.height === height && prev.top === top
+      prev.left === left &&
+      prev.width === width &&
+      prev.height === height &&
+      prev.top === top
         ? prev
         : { left, top, width, height }
     );
   }, [displayIndex, navItems.length]);
 
-  // Update indicator synchronously after layout so the pill position matches hover/focus without a frame delay
   useLayoutEffect(() => {
     updateIndicator();
   }, [updateIndicator]);
@@ -279,7 +355,9 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
   }, [updateIndicator]);
 
   const [isScrolled, setIsScrolled] = useState(false);
+  const [usePurpleNavText, setUsePurpleNavText] = useState(false);
   const [isDesktopNavVisible, setIsDesktopNavVisible] = useState(true);
+
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 768px)");
     const update = () => setIsDesktopNavVisible(mq.matches);
@@ -287,49 +365,103 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
   }, []);
+
+  useEffect(() => {
+    if (isInvestorAppCompact) return;
+
+    const updateNavContrast = () => {
+      const banner = bannerRef.current;
+      if (!banner) return;
+
+      const rect = banner.getBoundingClientRect();
+      if (rect.bottom <= 0 || rect.top >= window.innerHeight) return;
+
+      const sampleX = window.innerWidth / 2;
+      const sampleY = Math.min(
+        Math.max(rect.bottom - SURFACE_SAMPLE_INSET_PX, rect.top + SURFACE_SAMPLE_INSET_PX),
+        window.innerHeight - 1
+      );
+
+      const previousPointerEvents = banner.style.pointerEvents;
+      banner.style.pointerEvents = "none";
+      const elementBehindBanner = document.elementFromPoint(sampleX, sampleY) as HTMLElement | null;
+      banner.style.pointerEvents = previousPointerEvents;
+
+      setUsePurpleNavText(isLightSurface(elementBehindBanner));
+    };
+
+    let ticking = false;
+    const requestContrastUpdate = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        updateNavContrast();
+        ticking = false;
+      });
+    };
+
+    const resizeObserver = new ResizeObserver(requestContrastUpdate);
+    if (bannerRef.current) resizeObserver.observe(bannerRef.current);
+    resizeObserver.observe(document.body);
+
+    requestContrastUpdate();
+    window.addEventListener("scroll", requestContrastUpdate, { passive: true });
+    window.addEventListener("resize", requestContrastUpdate);
+    window.addEventListener("load", requestContrastUpdate);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("scroll", requestContrastUpdate);
+      window.removeEventListener("resize", requestContrastUpdate);
+      window.removeEventListener("load", requestContrastUpdate);
+    };
+  }, [isInvestorAppCompact, pathname]);
+
   useEffect(() => {
     const SCROLL_DOWN_THRESHOLD = 24;
     const SCROLL_UP_THRESHOLD = 8;
     const onScroll = () => {
       const y = window.scrollY ?? 0;
-      setIsScrolled((prev) =>
-        prev ? y > SCROLL_UP_THRESHOLD : y > SCROLL_DOWN_THRESHOLD
-      );
+      setIsScrolled((prev) => (prev ? y > SCROLL_UP_THRESHOLD : y > SCROLL_DOWN_THRESHOLD));
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const desktopNavVariant = usePurpleNavText ? "brand" : "light";
+  const desktopIndicatorClass = usePurpleNavText ? "bg-primary/10" : "bg-white/15";
+  const mobileTriggerClass = usePurpleNavText
+    ? "text-primary hover:bg-primary/10"
+    : isStandalone
+      ? "text-foreground hover:bg-muted"
+      : "text-white hover:bg-white/20";
+  const headerCtaScrolled = isScrolled || usePurpleNavText;
+
   const pill = (
     <>
-      {/* On home and about-us: zero-height spacer so hero starts at top (no white band). Else: reserve space for fixed nav. */}
       <div
         ref={spacerRef}
         id="siteBannerSpacer"
-        className={cn(
-          "shrink-0 w-full",
-          isHeroPage ? "h-0 min-h-0" : ""
-        )}
+        className={cn("shrink-0 w-full", isHeroPage ? "h-0 min-h-0" : "")}
         style={
           isHeroPage
             ? { height: 0, minHeight: 0 }
             : {
                 height: "var(--banner-height, 5.5rem)",
                 minHeight: "var(--banner-height, 5.5rem)",
-                ...((pathname?.startsWith("/vega-developer") || pathname?.startsWith("/algorithms"))
+                ...((pathname?.startsWith("/vega-developer") ||
+                  pathname?.startsWith("/algorithms"))
                   ? { backgroundColor: "#000" }
                   : {}),
               }
         }
         aria-hidden="true"
       />
+
       <div
         ref={bannerRef}
-        className={cn(
-          "site-banner fixed left-0 right-0 top-0",
-          bannerHidden && "is-hidden"
-        )}
+        className={cn("site-banner fixed left-0 right-0 top-0", bannerHidden && "is-hidden")}
         style={{
           paddingTop: `calc(${isInvestorAppCompact ? "0.5rem" : "1rem"} + env(safe-area-inset-top, 0px))`,
         }}
@@ -342,15 +474,23 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
               isInvestorAppCompact ? "border rounded-2xl md:rounded-[1.25rem]" : "rounded-full border-b border-transparent",
               pillBg,
               isInvestorAppCompact && "h-11 md:h-12",
-              !isInvestorAppCompact && isScrolled && !isHeroPage && "h-12 md:h-14 bg-black/60 backdrop-blur-xl shadow-lg shadow-black/25 border-white/10",
-              !isInvestorAppCompact && isScrolled && isHeroPage && "h-12 md:h-14 bg-white/30 backdrop-blur-xl shadow-lg shadow-black/10 border-white/50",
+              !isInvestorAppCompact &&
+                isScrolled &&
+                !isHeroPage &&
+                "h-12 md:h-14 bg-black/60 backdrop-blur-xl shadow-lg shadow-black/25 border-white/10",
+              !isInvestorAppCompact &&
+                isScrolled &&
+                isHeroPage &&
+                "h-12 md:h-14 bg-white/30 backdrop-blur-xl shadow-lg shadow-black/10 border-white/50",
               !isInvestorAppCompact && !isScrolled && "h-14 md:h-16"
             )}
           >
             <nav
               className={cn(
                 "flex flex-1 items-center justify-between gap-4 h-full w-full",
-                isInvestorAppCompact ? "max-w-[1160px] mx-auto px-4 sm:px-6 lg:px-6 rounded-2xl md:rounded-[1.25rem]" : "px-4 md:px-8 rounded-full"
+                isInvestorAppCompact
+                  ? "max-w-[1160px] mx-auto px-4 sm:px-6 lg:px-6 rounded-2xl md:rounded-[1.25rem]"
+                  : "px-4 md:px-8 rounded-full"
               )}
               aria-label="Main navigation"
             >
@@ -395,17 +535,18 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                     className="hidden md:flex relative items-center gap-1 lg:gap-2"
                     aria-hidden={!isDesktopNavVisible}
                     onMouseLeave={(e) => {
-                      // Only clear hover when pointer leaves the whole nav area (avoids flicker when moving between items)
                       const related = e.relatedTarget;
                       if (!(related instanceof Node) || !navContainerRef.current?.contains(related)) {
                         setHoveredNavIndex(null);
                       }
                     }}
                   >
-                    {/* Single shared highlight: glides to hovered/focused link, returns to active on mouseleave/blur. */}
                     <span
                       aria-hidden
-                      className="absolute left-0 top-0 rounded-full bg-white/15 pointer-events-none ease-motion transition-[transform,width,height,opacity] duration-motion-slow motion-reduce:!duration-0"
+                      className={cn(
+                        "absolute left-0 top-0 rounded-full pointer-events-none ease-motion transition-[transform,width,height,opacity] duration-motion-slow motion-reduce:!duration-0",
+                        desktopIndicatorClass
+                      )}
                       style={{
                         transform: `translate(${indicator.left}px, ${indicator.top}px)`,
                         width: `${indicator.width}px`,
@@ -413,6 +554,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                         opacity: indicator.width > 0 ? 1 : 0,
                       }}
                     />
+
                     {navItems.map((entry: NavEntry, i: number) => (
                       <div
                         key={entry.type === "link" ? entry.href : entry.label}
@@ -422,7 +564,11 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                         onMouseEnter={() => setHoveredNavIndex(i)}
                         onFocus={(e) => {
                           const target = e.target;
-                          if (e.target !== e.currentTarget && target instanceof Node && navContainerRef.current?.contains(target)) {
+                          if (
+                            e.target !== e.currentTarget &&
+                            target instanceof Node &&
+                            navContainerRef.current?.contains(target)
+                          ) {
                             setFocusedNavIndex(i);
                           }
                         }}
@@ -437,7 +583,7 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                         {entry.type === "link" ? (
                           <NavLink
                             href={entry.href}
-                            variant="light"
+                            variant={desktopNavVariant}
                             noUnderline
                             className="text-sm lg:text-base whitespace-nowrap font-normal"
                             {...(activeNavIndex === i ? { "aria-current": "page" as const } : {})}
@@ -448,18 +594,19 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                           <NavDropdown
                             label={entry.label}
                             items={entry.items}
-                            variant="light"
+                            variant={desktopNavVariant}
                             onFocus={() => setFocusedNavIndex(i)}
                             onBlur={() => setFocusedNavIndex(null)}
                           />
                         )}
                       </div>
                     ))}
+
                     {!isInvestor && (
                       <DemoCTADropdown
                         onInvest={handleTryItNow}
                         variant="header"
-                        scrolled={isScrolled && !isStandalone}
+                        scrolled={headerCtaScrolled}
                       />
                     )}
                   </div>
@@ -472,26 +619,21 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
                       onClick={() => setMobileMenuOpen((o) => !o)}
                       className={cn(
                         "flex items-center justify-center min-w-[44px] min-h-[44px] rounded-full transition-colors",
-                        isStandalone
-                          ? "text-foreground hover:bg-muted"
-                          : "text-white hover:bg-white/20"
+                        mobileTriggerClass
                       )}
                       aria-expanded={mobileMenuOpen}
                       aria-controls="mobile-nav-menu"
                       aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
                     >
-                      {mobileMenuOpen ? (
-                        <X className="size-5" />
-                      ) : (
-                        <Menu className="size-5" />
-                      )}
+                      {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
                     </button>
+
                     {!isInvestor && (
                       <div className="min-w-[90px]">
                         <DemoCTADropdown
                           onInvest={handleTryItNow}
                           variant="header"
-                          scrolled={isScrolled && !isStandalone}
+                          scrolled={headerCtaScrolled}
                         />
                       </div>
                     )}
@@ -531,64 +673,63 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
           aria-hidden={!mobileMenuOpen}
         >
           <nav className="py-3" aria-label="Mobile navigation">
-          {navItems.map((entry: NavEntry, idx) =>
-            entry.type === "link" ? (
-              <Link
-                key={entry.href}
-                ref={idx === 0 ? mobileMenuFirstLinkRef : undefined}
-                href={entry.href}
-                aria-current={
-                  entry.exact === true
-                    ? pathname === entry.href
-                      ? "page"
-                      : undefined
-                    : !entry.href.startsWith("/#") && pathname?.startsWith(entry.href)
-                      ? "page"
-                      : undefined
-                }
-                className={cn(
-                  "flex items-center min-h-[44px] px-5 py-3.5 font-medium transition-colors duration-200 ease-out active:scale-[0.99] focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                  isStandalone
-                    ? "text-foreground hover:bg-muted/50"
-                    : "text-white hover:bg-white/10"
-                )}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {entry.label}
-              </Link>
-            ) : (
-              entry.items.map(({ href, label: itemLabel }) => (
+            {navItems.map((entry: NavEntry, idx) =>
+              entry.type === "link" ? (
                 <Link
-                  key={href}
-                  href={href}
+                  key={entry.href}
+                  ref={idx === 0 ? mobileMenuFirstLinkRef : undefined}
+                  href={entry.href}
+                  aria-current={
+                    entry.exact === true
+                      ? pathname === entry.href
+                        ? "page"
+                        : undefined
+                      : !entry.href.startsWith("/#") && pathname?.startsWith(entry.href)
+                        ? "page"
+                        : undefined
+                  }
                   className={cn(
-                    "flex items-center min-h-[44px] px-5 py-2.5 pl-7 text-sm transition-colors duration-200 ease-out active:scale-[0.99] focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                    isStandalone
-                      ? "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-                      : "text-white/80 hover:bg-white/10 hover:text-white"
+                    "flex items-center min-h-[44px] px-5 py-3.5 font-medium transition-colors duration-200 ease-out active:scale-[0.99] focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                    isStandalone ? "text-foreground hover:bg-muted/50" : "text-white hover:bg-white/10"
                   )}
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  {itemLabel}
+                  {entry.label}
                 </Link>
-              ))
-            )
-          )}
-          {!isInvestor && (
-            <div className="px-5 pt-2 pb-3 w-full [&_button]:w-full [&_button]:min-h-[44px]">
-              <DemoCTADropdown
-                onInvest={(e) => {
-                  setMobileMenuOpen(false);
-                  handleTryItNow(e);
-                }}
-                variant="header"
-                scrolled={isStandalone}
-                className="w-full"
-                onClose={() => setMobileMenuOpen(false)}
-              />
-            </div>
-          )}
-        </nav>
+              ) : (
+                entry.items.map(({ href, label: itemLabel }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={cn(
+                      "flex items-center min-h-[44px] px-5 py-2.5 pl-7 text-sm transition-colors duration-200 ease-out active:scale-[0.99] focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                      isStandalone
+                        ? "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                        : "text-white/80 hover:bg-white/10 hover:text-white"
+                    )}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {itemLabel}
+                  </Link>
+                ))
+              )
+            )}
+
+            {!isInvestor && (
+              <div className="px-5 pt-2 pb-3 w-full [&_button]:w-full [&_button]:min-h-[44px]">
+                <DemoCTADropdown
+                  onInvest={(e) => {
+                    setMobileMenuOpen(false);
+                    handleTryItNow(e);
+                  }}
+                  variant="header"
+                  scrolled={isStandalone}
+                  className="w-full"
+                  onClose={() => setMobileMenuOpen(false)}
+                />
+              </div>
+            )}
+          </nav>
         </div>
       )}
     </>
@@ -597,16 +738,10 @@ export function PillNav({ variant = "hero" }: { variant?: PillNavVariant }) {
   if (isStandalone) {
     return (
       <div className="w-full flex flex-col items-center pt-0 pb-3 shrink-0">
-        <div className="relative w-full flex flex-col items-center">
-          {pill}
-        </div>
+        <div className="relative w-full flex flex-col items-center">{pill}</div>
       </div>
     );
   }
 
-  return (
-    <div className="relative w-full flex flex-col items-center shrink-0">
-      {pill}
-    </div>
-  );
+  return <div className="relative w-full flex flex-col items-center shrink-0">{pill}</div>;
 }

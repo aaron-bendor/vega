@@ -21,6 +21,7 @@ import {
   getHoldingWeightPct,
 } from "@/lib/vega-financial/portfolio-selectors";
 import type { PaperHolding } from "@/lib/vega-financial/portfolio-store";
+import { AllocationDonut } from "@/components/vega-financial/AllocationDonut";
 
 
 export function PortfolioPageContent() {
@@ -219,7 +220,13 @@ export function PortfolioPageContent() {
           <Card className="rounded-xl border border-border bg-card">
             <CardContent className="pt-4">
               <p className="text-xs font-medium text-muted-foreground mb-2">By strategy (% of total portfolio)</p>
-              <ul className="text-sm space-y-1">
+              <AllocationDonut
+                data={holdings.map((h) => ({
+                  name: h.name,
+                  value: getHoldingWeightPct(h.currentValue, equity),
+                }))}
+              />
+              <ul className="text-sm space-y-1 mt-3">
                 {holdings.map((h) => {
                   const pct = getHoldingWeightPct(h.currentValue, equity).toFixed(0);
                   return (

@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 async function main() {
   // Tags
-  const tagNames = ["Momentum", "Mean Reversion", "Trend Following", "Multi-Asset", "Equity", "Quant"];
+  const tagNames = ["Momentum", "Mean Reversion", "Trend Following", "Multi-Asset", "Equity"];
   const tags: Record<string, string> = {};
   for (const name of tagNames) {
     const t = await prisma.tag.upsert({ where: { name }, create: { name }, update: {} });
@@ -69,7 +69,7 @@ async function main() {
       description: "Dynamic position sizing based on realised volatility.",
       universe: "US equities",
       riskLevel: "High",
-      tagNames: ["Quant", "Momentum"],
+      tagNames: ["Momentum", "Equity"],
     },
   ];
 

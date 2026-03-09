@@ -10,7 +10,7 @@ import { SlidersHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const RISK_OPTIONS = ["Low", "Medium", "High"] as const;
-const STRATEGY_STYLE_OPTIONS = ["Momentum", "Trend Following", "Mean Reversion", "Quant"] as const;
+const STRATEGY_STYLE_OPTIONS = ["Momentum", "Trend Following", "Mean Reversion"] as const;
 const ASSET_OPTIONS = ["Equity", "Multi-Asset", "Commodities"] as const;
 const BASE_PATH = "/vega-financial/marketplace";
 

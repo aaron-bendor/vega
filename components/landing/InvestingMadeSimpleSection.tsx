@@ -217,7 +217,7 @@ export function InvestingMadeSimpleSection() {
           border: none; cursor: pointer; padding: 0; background: transparent;
         }
         @media (max-width: 1023px) {
-          .dot-ind-btn { min-width: 44px; min-height: 44px; }
+          .dot-ind-btn { min-width: 48px; min-height: 48px; }
           .dot-ind-btn .dot-ind { height: 10px; border-radius: 5px; min-width: 10px; }
           .phone-slide-img {
             backface-visibility: hidden;
@@ -344,7 +344,7 @@ export function InvestingMadeSimpleSection() {
             ))}
           </div>
 
-          {/* Mobile phone — stable aspect slot, overflow-hidden to avoid layout bugs; GPU layer for smooth crossfade */}
+          {/* Mobile phone — stable aspect slot; only active screenshot in DOM to reduce mobile network/memory */}
           <div
             className="lg:hidden absolute left-1/2 -translate-x-1/2 pointer-events-none overflow-hidden rounded-[2rem] aspect-[440/901]"
             style={{
@@ -354,18 +354,14 @@ export function InvestingMadeSimpleSection() {
               minHeight: 0,
             }}
           >
-            {screens.map((s, i) => (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                key={s.phone}
-                src={s.phone}
-                alt=""
-                className="ims-crossfade phone-slide-img absolute inset-0 w-full h-full object-contain transition-opacity duration-[250ms]"
-                style={{ opacity: active === i ? 1 : 0 }}
-                loading="eager"
-                decoding="async"
-              />
-            ))}
+            <img
+              key={screens[active].phone}
+              src={screens[active].phone}
+              alt=""
+              className="phone-slide-img absolute inset-0 w-full h-full object-contain"
+              loading="lazy"
+              decoding="async"
+            />
           </div>
         </div>
       </div>

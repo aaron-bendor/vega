@@ -12,26 +12,17 @@ export type NavDropdownItem = { href: string; label: string };
 type NavDropdownProps = {
   label: string;
   items: NavDropdownItem[];
-  /** Light variant for dark nav (hero), dark for light nav */
-  variant?: "light" | "dark";
+  /** Light variant for dark nav, dark for light nav */
+  variant?: "light" | "dark" | "brand";
   className?: string;
-  /** Called when trigger is hovered so parent can show highlight */
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
-  /** Called when trigger receives keyboard focus so parent can move highlight */
   onFocus?: () => void;
-  /** Called when trigger loses focus */
   onBlur?: () => void;
   triggerRef?: (el: HTMLButtonElement | null) => void;
-  /** Whether this trigger is "active" for highlight */
   isActive?: boolean;
 };
 
-/**
- * Single dropdown panel that opens on hover/focus. Stripe-style: one panel,
- * no gap to trigger, close delay for forgiveness. Keyboard: Enter/Space open,
- * Escape close, focus trapped in panel when open.
- */
 export function NavDropdown({
   label,
   items,
@@ -122,12 +113,18 @@ export function NavDropdown({
   };
 
   const isLight = variant === "light";
+  const isBrand = variant === "brand";
+
   const textClass = isLight
     ? "text-white/80 hover:text-white"
-    : "text-muted-foreground hover:text-foreground";
-  const panelBg = isLight
-    ? "bg-black/90 backdrop-blur-xl border border-white/15"
-    : "bg-popover border border-border";
+    : isBrand
+      ? "text-primary hover:text-primary-hover"
+      : "text-muted-foreground hover:text-foreground";
+
+  const panelBg =
+    isLight || isBrand
+      ? "bg-black/90 backdrop-blur-xl border border-white/15"
+      : "bg-popover border border-border";
 
   return (
     <div
@@ -208,7 +205,7 @@ export function NavDropdown({
             role="menuitem"
             className={cn(
               "block px-4 py-2.5 text-sm transition-colors duration-motion-normal ease-motion",
-              isLight
+              isLight || isBrand
                 ? "text-white/90 hover:bg-white/10 hover:text-white"
                 : "text-popover-foreground hover:bg-muted"
             )}

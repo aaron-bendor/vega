@@ -26,7 +26,6 @@ const STRATEGY_STYLE_OPTIONS = [
   "Momentum",
   "Trend Following",
   "Mean Reversion",
-  "Quant",
 ];
 
 const ASSET_OPTIONS = ["Equity", "Multi-Asset", "Commodities"];

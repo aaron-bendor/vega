@@ -16,7 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { RunBacktestPanel } from "@/app/(app)/algo/[id]/RunBacktestPanel";
 
 const RISK_LEVELS = ["Low", "Medium", "High"];
-const TAGS = ["Momentum", "Mean Reversion", "Trend Following", "Multi-Asset", "Equity", "Quant"];
+const TAGS = ["Momentum", "Mean Reversion", "Trend Following", "Multi-Asset", "Equity"];
 
 type Algorithm = {
   id: string;

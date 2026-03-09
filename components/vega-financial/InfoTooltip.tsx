@@ -42,7 +42,7 @@ export function InfoTooltip({ content, className, ariaLabel, learnMoreHref }: In
   return (
     <span
       ref={ref}
-      className={cn("group/tooltip relative inline-flex shrink-0", className)}
+      className={cn("group/tooltip relative inline-flex shrink-0 overflow-visible", className)}
       aria-label={ariaLabel ?? content}
       title={content}
     >
@@ -58,7 +58,7 @@ export function InfoTooltip({ content, className, ariaLabel, learnMoreHref }: In
       <span
         role="tooltip"
         className={cn(
-          "absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-3.5 py-2 text-xs font-normal text-popover-foreground bg-popover border border-border rounded-md shadow-md z-50 min-w-[16rem] max-w-[min(22rem,90vw)] w-max text-left whitespace-normal leading-[1.45] transition-[opacity,visibility] duration-150",
+          "absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-3.5 py-2 text-xs font-normal text-popover-foreground bg-popover border border-border rounded-md shadow-md z-[100] min-w-[16rem] max-w-[min(28rem,95vw)] w-max text-left whitespace-normal leading-[1.45] transition-[opacity,visibility] duration-150 overflow-visible",
           open
             ? "opacity-100 visible pointer-events-auto"
             : "opacity-0 invisible pointer-events-none group-hover/tooltip:opacity-100 group-hover/tooltip:visible"

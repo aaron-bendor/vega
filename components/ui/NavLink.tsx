@@ -7,16 +7,12 @@ interface NavLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   href: string;
   children: React.ReactNode;
   className?: string;
-  /** Use "light" for dark backgrounds (e.g. hero nav), "dark" for light backgrounds */
-  variant?: "light" | "dark";
-  /** When true, omit the link's own underline (use when parent provides a sliding indicator) */
+  /** Use "light" for dark backgrounds, "dark" for light backgrounds */
+  variant?: "light" | "dark" | "brand";
+  /** When true, omit the link's own underline */
   noUnderline?: boolean;
 }
 
-/**
- * Nav link with underline reveal and subtle pill highlight on hover/focus.
- * No font-weight or letter-spacing change to avoid layout shift.
- */
 export function NavLink({
   href,
   children,
@@ -25,7 +21,12 @@ export function NavLink({
   noUnderline = false,
   ...props
 }: NavLinkProps) {
-  const pillOpacity = variant === "light" ? "before:bg-white/15" : "before:bg-foreground/8";
+  const pillOpacity =
+    variant === "light"
+      ? "before:bg-white/15"
+      : variant === "brand"
+        ? "before:bg-primary/10"
+        : "before:bg-foreground/8";
 
   return (
     <Link
@@ -43,7 +44,9 @@ export function NavLink({
         ],
         variant === "light"
           ? "text-white/80 hover:text-white"
-          : "text-muted-foreground hover:text-foreground",
+          : variant === "brand"
+            ? "text-primary hover:text-primary-hover"
+            : "text-muted-foreground hover:text-foreground",
         pillOpacity,
         "focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:rounded-full",
         "transition-colors duration-motion-normal ease-motion",

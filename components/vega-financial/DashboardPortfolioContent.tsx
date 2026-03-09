@@ -185,6 +185,7 @@ export function DashboardPortfolioContent({
       <section
         className="vf-reveal vf-reveal-delay-1 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 gap-y-3 sm:gap-y-4"
         aria-label="Portfolio summary"
+        data-tour="vf-overview"
       >
         <SummaryMetricCard
           label="Portfolio value"
@@ -257,7 +258,7 @@ export function DashboardPortfolioContent({
         />
       </div>
 
-      <div className="vf-reveal vf-reveal-delay-3">
+      <div className="vf-reveal vf-reveal-delay-3" data-tour="vf-holdings">
         <DashboardHoldingsSection
           holdings={account.holdings}
           equity={account.equity}

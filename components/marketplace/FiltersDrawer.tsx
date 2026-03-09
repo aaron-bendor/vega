@@ -28,7 +28,7 @@ interface FiltersDrawerProps {
 }
 
 const RISK_OPTIONS = ["Low", "Medium", "High"];
-const STRATEGY_STYLE_OPTIONS = ["Momentum", "Trend Following", "Mean Reversion", "Quant"];
+const STRATEGY_STYLE_OPTIONS = ["Momentum", "Trend Following", "Mean Reversion"];
 const ASSET_OPTIONS = ["Equity", "Multi-Asset", "Commodities"];
 
 export function FiltersDrawer({
