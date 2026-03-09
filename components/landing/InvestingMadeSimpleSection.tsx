@@ -11,7 +11,7 @@
  * investingmadesimple1 / investingmadesimple5 (full bottom of phone + bottom nav).
  */
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, type TouchEvent } from "react";
 
 const IMG_V = "?v=2";
 const N = 5;
@@ -117,59 +117,113 @@ function progressToIndex(progress: number, lastIndex: number): number {
   return progress <= lastIndex / N - HYST ? raw : lastIndex;
 }
 
-const SWIPE_THRESHOLD_PX = 40;
-
 export function InvestingMadeSimpleSection() {
   const [active, setActive] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const lastIndexRef = useRef(0);
   const activeRef = useRef(0);
-  const touchStartX = useRef<number>(0);
-  const touchCurrentX = useRef<number>(0);
   activeRef.current = active;
   lastIndexRef.current = active;
 
+  const SWIPE_THRESHOLD_PX = 40;
+
+  const touchStartX = useRef<number | null>(null);
+  const touchCurrentX = useRef<number | null>(null);
+
+  const isDesktopViewport = () =>
+    typeof window !== "undefined" && window.innerWidth >= 1024;
+
   const goTo = useCallback((index: number) => {
-    const clamped = Math.max(0, Math.min(index, N - 1));
-    setActive(clamped);
+    const next = ((index % N) + N) % N;
+    lastIndexRef.current = next;
+    activeRef.current = next;
+    setActive(next);
   }, []);
 
   const goToNext = useCallback(() => {
-    setActive((prev) => (prev + 1) % N);
-  }, []);
+    goTo(activeRef.current + 1);
+  }, [goTo]);
 
   const goToPrev = useCallback(() => {
-    setActive((prev) => (prev - 1 + N) % N);
+    goTo(activeRef.current - 1);
+  }, [goTo]);
+
+  const handleTouchStart = useCallback((e: TouchEvent<HTMLDivElement>) => {
+    const x = e.touches[0]?.clientX;
+    touchStartX.current = x ?? null;
+    touchCurrentX.current = x ?? null;
   }, []);
 
-  // Dot click: scroll to the same progress target the scroll listener uses. No lock; scroll drives active. (Desktop only; mobile uses goTo.)
+  const handleTouchMove = useCallback((e: TouchEvent<HTMLDivElement>) => {
+    touchCurrentX.current = e.touches[0]?.clientX ?? null;
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    if (touchStartX.current == null || touchCurrentX.current == null) {
+      touchStartX.current = null;
+      touchCurrentX.current = null;
+      return;
+    }
+
+    const deltaX = touchCurrentX.current - touchStartX.current;
+
+    if (Math.abs(deltaX) >= SWIPE_THRESHOLD_PX) {
+      if (deltaX < 0) {
+        goToNext();
+      } else {
+        goToPrev();
+      }
+    }
+
+    touchStartX.current = null;
+    touchCurrentX.current = null;
+  }, [goToNext, goToPrev]);
+
   const scrollToSlide = useCallback((index: number) => {
     const clamped = Math.max(0, Math.min(index, N - 1));
+
+    if (!isDesktopViewport()) {
+      goTo(clamped);
+      return;
+    }
+
     const section = containerRef.current;
     if (!section) return;
+
     const data = getSectionProgress(section);
-    if (!data) return; // guard: section not scrollable (e.g. very tall viewport)
+    if (!data) return;
+
     const targetProgress = clamped / (N - 1);
     const targetScrollY = data.sectionTop + targetProgress * data.scrollable;
-    const reducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    window.scrollTo({ top: targetScrollY, behavior: reducedMotion ? "auto" : "smooth" });
-  }, []);
+    const reducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // Source of truth: scroll position → getSectionProgress → progressToIndex. setActive only when index changes.
+    window.scrollTo({
+      top: targetScrollY,
+      behavior: reducedMotion ? "auto" : "smooth",
+    });
+  }, [goTo]);
+
+  // Source of truth: scroll position → getSectionProgress → progressToIndex. setActive only when index changes. (Desktop only; mobile uses swipe/dots.)
   useEffect(() => {
     const section = containerRef.current;
     if (!section) return;
     let rafId: number | null = null;
     const onScroll = () => {
+      if (!isDesktopViewport()) return;
       if (rafId !== null) return;
+
       rafId = requestAnimationFrame(() => {
         rafId = null;
-        if (typeof window !== "undefined" && window.innerWidth < 1024) return;
+
         const data = getSectionProgress(section);
         if (!data) return;
+
         const last = lastIndexRef.current;
         const nextIndex = progressToIndex(data.progress, last);
         lastIndexRef.current = nextIndex;
+
         if (nextIndex !== activeRef.current) setActive(nextIndex);
       });
     };
@@ -181,21 +235,25 @@ export function InvestingMadeSimpleSection() {
     };
   }, []);
 
-  // Resize: same geometry → progress → index. rAF-throttled so resize does not cause jank.
+  // Resize: same geometry → progress → index. rAF-throttled so resize does not cause jank. (Desktop only.)
   useEffect(() => {
     const section = containerRef.current;
     if (!section) return;
     let rafId: number | null = null;
     const ro = new ResizeObserver(() => {
+      if (!isDesktopViewport()) return;
       if (rafId !== null) return;
+
       rafId = requestAnimationFrame(() => {
         rafId = null;
-        if (typeof window !== "undefined" && window.innerWidth < 1024) return;
+
         const data = getSectionProgress(section);
         if (!data) return;
+
         const last = lastIndexRef.current;
         const nextIndex = progressToIndex(data.progress, last);
         lastIndexRef.current = nextIndex;
+
         if (nextIndex !== activeRef.current) setActive(nextIndex);
       });
     });
@@ -205,6 +263,8 @@ export function InvestingMadeSimpleSection() {
       if (rafId !== null) cancelAnimationFrame(rafId);
     };
   }, []);
+
+  const currentScreen = screens[active] ?? screens[0];
 
   return (
     <section
@@ -333,7 +393,7 @@ export function InvestingMadeSimpleSection() {
                   <RichText text={s.sub} />
                 </p>
 
-                {/* Dot indicators — on mobile: step label + 44px touch targets */}
+                {/* Dot indicators — on mobile: step label + 48px touch targets */}
                 <div className="mt-6 lg:mt-10">
                   <p className="lg:sr-only text-[rgba(228,215,255,0.9)] text-sm font-medium mb-2" aria-live="polite">
                     Step {active + 1} of {screens.length}
@@ -345,7 +405,7 @@ export function InvestingMadeSimpleSection() {
                         type="button"
                         className="dot-ind-btn"
                         onClick={() => {
-                          if (typeof window !== "undefined" && window.innerWidth >= 1024) {
+                          if (isDesktopViewport()) {
                             scrollToSlide(di);
                           } else {
                             goTo(di);
@@ -369,43 +429,38 @@ export function InvestingMadeSimpleSection() {
             ))}
           </div>
 
-          {/* Mobile phone — single slide, swipe + dots; fixed container to prevent layout shift */}
+          {/* Mobile phone */}
           <div
-            className="lg:hidden absolute left-1/2 -translate-x-1/2 overflow-hidden rounded-[2rem] aspect-[440/901] touch-pan-y select-none"
+            className="lg:hidden absolute left-1/2 -translate-x-1/2 overflow-hidden rounded-[2rem] aspect-[440/901] select-none"
             style={{
               width: "min(260px, 64vw)",
               bottom: "0.5rem",
               contain: "layout paint",
               minHeight: 0,
+              touchAction: "pan-y",
+              WebkitUserSelect: "none",
+              userSelect: "none",
             }}
             aria-roledescription="carousel"
-            onTouchStart={(e) => {
-              touchStartX.current = e.touches[0].clientX;
-              touchCurrentX.current = e.touches[0].clientX;
-            }}
-            onTouchMove={(e) => {
-              touchCurrentX.current = e.touches[0].clientX;
-            }}
-            onTouchEnd={() => {
-              const delta = touchCurrentX.current - touchStartX.current;
-              if (delta < -SWIPE_THRESHOLD_PX) goToNext();
-              else if (delta > SWIPE_THRESHOLD_PX) goToPrev();
-            }}
+            aria-label="Investing app screenshots"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
           >
             <span className="sr-only" aria-live="polite">
               Slide {active + 1} of {screens.length}
             </span>
-            <div className="absolute inset-0 w-full h-full" style={{ minHeight: 0 }}>
-              <img
-                key={screens[active].phone}
-                src={screens[active].phone}
-                alt=""
-                className="phone-slide-img absolute inset-0 w-full h-full object-contain"
-                loading={active === 0 ? "eager" : "lazy"}
-                decoding="async"
-                draggable={false}
-              />
-            </div>
+
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              key={currentScreen.phone}
+              src={currentScreen.phone}
+              alt=""
+              className="phone-slide-img absolute inset-0 w-full h-full object-contain"
+              loading={active === 0 ? "eager" : "lazy"}
+              decoding="async"
+              draggable={false}
+            />
           </div>
         </div>
       </div>
