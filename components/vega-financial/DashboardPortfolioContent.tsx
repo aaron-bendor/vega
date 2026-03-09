@@ -29,7 +29,6 @@ import type { PaperHolding } from "@/lib/vega-financial/portfolio-store";
 import { PortfolioReconciliationBlock } from "@/components/vega-financial/PortfolioReconciliationBlock";
 import { FirstRunWelcomeBanner } from "@/components/vega-financial/FirstRunWelcomeBanner";
 import { DemoQuickStartStrip } from "@/components/vega-financial/DemoQuickStartStrip";
-import { ReplayTutorialLink } from "@/components/vega-financial/ReplayTutorialLink";
 import { DEMO_ONBOARDING } from "@/lib/vega-financial/investor-copy";
 import { formatCurrency, formatPercent } from "@/lib/utils/format";
 
@@ -138,15 +137,12 @@ export function DashboardPortfolioContent({
       <div className="vf-reveal vf-reveal-delay-0 space-y-4">
         <FirstRunWelcomeBanner />
         <DemoQuickStartStrip />
-        <div className="flex flex-wrap items-center gap-3">
-          <Link
-            href="/vega-financial/marketplace"
-            className="inline-flex items-center justify-center rounded-lg bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium hover:bg-primary-hover focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring min-h-[44px]"
-          >
-            Explore strategies
-          </Link>
-          <ReplayTutorialLink label="Replay tutorial" />
-        </div>
+        <Link
+          href="/vega-financial/marketplace"
+          className="inline-flex items-center justify-center rounded-lg bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium hover:bg-primary-hover focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring min-h-[44px]"
+        >
+          Explore strategies
+        </Link>
       </div>
 
       <p
