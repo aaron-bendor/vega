@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { AnimateOnScroll } from "./AnimateOnScroll";
 import { DemoCTADropdown } from "./DemoCTADropdown";
-import { LANDING_CTA } from "@/lib/landing-cta";
 
 export function HeroVideoSection() {
   const router = useRouter();
