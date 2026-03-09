@@ -23,10 +23,10 @@ export function VegaDeveloperHero() {
             </AnimateOnScroll>
             <AnimateOnScroll delay={0.15}>
               <Link
-                href="/#get-started"
+                href="/vega-developer/demo"
                 className="mt-8 inline-flex items-center justify-center h-[50px] px-8 rounded-[30px] bg-white/10 backdrop-blur-sm border border-white/20 text-white font-dm-sans font-bold text-base hover:bg-white/15 hover:scale-[1.02] active:scale-[0.98] transition-[transform,background-color,border-color] duration-motion-normal ease-motion"
               >
-                Learn more
+                Try it out
               </Link>
             </AnimateOnScroll>
           </div>
