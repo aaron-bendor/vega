@@ -560,6 +560,13 @@ html {
   z-index: 1;
 }
 
+/* Hero: colorflow iframe container — containment + GPU layer for mobile performance */
+.hero-colorflow-wrap {
+  contain: strict;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
 /* Hero: moving purple/blue gradient background */
 @keyframes hero-gradient-shift {
   0%, 100% {

@@ -23,7 +23,7 @@ export function HeroVideoSection() {
     >
       {/* Same colorflow background on all viewports; GPU layer + containment for mobile performance */}
       <div
-        className="absolute inset-0 z-0 pointer-events-none [contain:strict] [transform:translateZ(0)]"
+        className="hero-colorflow-wrap absolute inset-0 z-0 pointer-events-none"
         aria-hidden
       >
         <iframe

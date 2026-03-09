@@ -32,8 +32,8 @@ export function AlgorithmsHeroSection(): JSX.Element {
       </div>
       <div className="relative z-10 flex flex-col flex-1 min-h-0 min-w-0 overflow-visible">
         <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-0 px-4 md:px-4 lg:px-5 max-w-[1520px] mx-auto w-full py-3 sm:py-6 md:py-8 min-h-0 min-w-0 items-center">
-          {/* Image: order-2 on mobile (below text), clamp height on mobile; lg: 2 cols so image ~2/3 */}
-          <div className="relative w-full order-2 lg:order-1 lg:col-span-2 min-w-0" style={{ minHeight: "clamp(240px, 40vh, 420px)" }}>
+          {/* Image: hidden on mobile; lg: 2 cols so image ~2/3 */}
+          <div className="relative w-full order-2 lg:order-1 lg:col-span-2 min-w-0 hidden lg:block" style={{ minHeight: "clamp(240px, 40vh, 420px)" }}>
             <div className="relative w-full h-full min-h-[240px] max-h-[420px] lg:min-h-[85vh] lg:max-h-[92vh]">
               <Image
                 src="/page1algo.png?v=3"
