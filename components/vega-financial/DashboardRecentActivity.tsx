@@ -5,6 +5,7 @@ import Link from "next/link";
 import { formatCurrency } from "@/lib/utils/format";
 import { EMPTY_STATES } from "@/lib/vega-financial/investor-copy";
 import { loadPortfolioState, subscribePortfolioUpdate } from "@/lib/vega-financial/portfolio-store";
+import { ROUTES } from "@/lib/routes";
 
 interface ActivityEntry {
   algorithmName: string;
@@ -56,7 +57,7 @@ export function DashboardRecentActivity() {
             {EMPTY_STATES.noActivity.body}
           </p>
           <Link
-            href="/vega-financial/marketplace"
+            href={ROUTES.vegaFinancial.marketplace}
             className="inline-flex items-center justify-center rounded-lg bg-primary text-primary-foreground text-sm font-medium h-10 px-4 mt-4 min-h-[44px] hover:bg-primary/90 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
           >
             {EMPTY_STATES.noActivity.cta}
@@ -90,7 +91,7 @@ export function DashboardRecentActivity() {
               )}
               <span className="text-sm text-muted-foreground capitalize shrink-0">{entry.type}</span>
               <Link
-                href={`/vega-financial/algorithms/${entry.algorithmId}`}
+                href={ROUTES.vegaFinancial.algorithm(entry.algorithmId)}
                 className="font-medium text-foreground hover:underline text-sm"
               >
                 {entry.algorithmName}

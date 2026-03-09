@@ -227,6 +227,19 @@ export function MarketplaceContent({ algorithms, useDemo }: MarketplaceContentPr
           </div>
         </div>
 
+        {/* Help row: links to Learn */}
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+          <Link href={`${ROUTES.vegaFinancial.learn}#compare-strategies`} className="hover:text-foreground focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded">
+            How to compare strategies
+          </Link>
+          <Link href={`${ROUTES.vegaFinancial.learn}#drawdown`} className="hover:text-foreground focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded">
+            What drawdown means
+          </Link>
+          <Link href={`${ROUTES.vegaFinancial.learn}#correlation`} className="hover:text-foreground focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring rounded">
+            Why correlation matters
+          </Link>
+        </div>
+
         {/* 2. Mobile: one chip row + More filters */}
         <div className="flex flex-wrap items-center gap-2 lg:hidden">
           <Link

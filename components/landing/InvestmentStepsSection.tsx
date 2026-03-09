@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimateOnScroll } from "./AnimateOnScroll";
+import { LANDING_CTA } from "@/lib/landing-cta";
 
 export function InvestmentStepsSection() {
   return (
@@ -51,7 +52,7 @@ export function InvestmentStepsSection() {
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center h-14 px-7 rounded-[10px] border border-[#6b21e84c] text-[#f0edff] font-dm-sans font-normal text-[15px] hover:border-[#6b21e899] hover:bg-[#6b21e80d] hover:scale-[1.02] active:scale-[0.98] transition-[transform,background-color] duration-motion-normal ease-motion"
             >
-              Register Interest for Vega Financial&nbsp;→
+              {LANDING_CTA.investorSecondary}&nbsp;→
             </a>
           </div>
         </AnimateOnScroll>

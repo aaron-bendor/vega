@@ -7,7 +7,7 @@ import { ArrowRight, ShieldCheck, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ROUTES } from "@/lib/routes";
 
-type DemoAlgo = { id: string; name: string; shortDesc?: string; tags: string[]; riskLevel?: string };
+type DemoAlgo = { id: string; name: string; shortDesc?: string; tags: string[]; riskLevel?: string; bestFor?: string };
 type DbVersion = {
   id: string;
   name: string;
@@ -21,6 +21,12 @@ type DbVersion = {
 };
 
 type Algorithm = DemoAlgo | DbVersion;
+
+function getBestFor(a: Algorithm): string | undefined {
+  return "bestFor" in a && typeof (a as DemoAlgo).bestFor === "string"
+    ? (a as DemoAlgo).bestFor
+    : undefined;
+}
 
 function isDbVersion(a: Algorithm): a is DbVersion {
   return "verificationStatus" in a && Array.isArray((a as DbVersion).tags) && (a as DbVersion).tags[0]?.tag != null;
@@ -60,6 +66,7 @@ export function StrategyCard({
   const returnPct = isDbVersion(algorithm) ? algorithm.cachedReturn : undefined;
   const maxDrop = isDbVersion(algorithm) ? algorithm.cachedMaxDrawdown : undefined;
   const desc = algorithm.shortDesc ?? (isDbVersion(algorithm) ? algorithm.description : "") ?? "";
+  const bestFor = getBestFor(algorithm);
   const algoHref = ROUTES.vegaFinancial.algorithm(algorithm.id);
 
   return (
@@ -99,6 +106,11 @@ export function StrategyCard({
           <p className="line-clamp-2 text-sm text-muted-foreground leading-snug">
             {desc}
           </p>
+          {bestFor && (
+            <p className="text-xs text-muted-foreground/90">
+              Best for {bestFor}
+            </p>
+          )}
           <div className="flex flex-wrap gap-1.5">
             {tags.slice(0, 4).map((t) => (
               <span
@@ -139,7 +151,11 @@ export function StrategyCard({
         {onCompareToggle && (
           <button
             type="button"
-            onClick={() => onCompareToggle(algorithm.id)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onCompareToggle(algorithm.id);
+            }}
             disabled={compareDisabled}
             aria-pressed={compareSelected}
             aria-label={compareSelected ? "In compare (remove from compare)" : "Add to compare (select 2–3)"}
@@ -153,6 +169,7 @@ export function StrategyCard({
         )}
         <Link
           href={`${algoHref}#invest`}
+          onClick={(e) => e.stopPropagation()}
           className="ml-auto min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors duration-150 rounded focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="Add to watchlist"
         >

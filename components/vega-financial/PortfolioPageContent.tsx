@@ -10,6 +10,7 @@ import { SummaryMetricCard } from "@/components/vega-financial/SummaryMetricCard
 import { DashboardPortfolioChart } from "@/components/vega-financial/DashboardPortfolioChart";
 import { PortfolioReconciliationBlock } from "@/components/vega-financial/PortfolioReconciliationBlock";
 import { PAGE_SUBTITLES, EMPTY_STATES } from "@/lib/vega-financial/investor-copy";
+import { ROUTES } from "@/lib/routes";
 import {
   loadPortfolioState,
   seedFromMockAccountIfEmpty,
@@ -89,12 +90,20 @@ export function PortfolioPageContent() {
             <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">
               {EMPTY_STATES.noHoldings.body}
             </p>
-            <Link
-              href="/vega-financial/marketplace"
-              className="inline-flex items-center justify-center rounded-lg bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium hover:bg-primary/90 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              Browse strategies
-            </Link>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <Link
+                href={ROUTES.vegaFinancial.marketplace}
+                className="inline-flex items-center justify-center rounded-lg bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium hover:bg-primary/90 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                Browse strategies
+              </Link>
+              <Link
+                href={`${ROUTES.vegaFinancial.learn}#compare-strategies`}
+                className="inline-flex items-center justify-center rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-medium hover:bg-accent focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                How to compare strategies
+              </Link>
+            </div>
           </CardContent>
         </Card>
       </div>

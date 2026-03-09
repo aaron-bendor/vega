@@ -1,79 +1,19 @@
 import { VegaFinancialPageScaffold } from "@/components/vega-financial/VegaFinancialPageScaffold";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const glossaryItems = [
-  {
-    title: "Momentum strategy",
-    alias: "",
-    category: "Strategy type",
-    body: "Buys assets already moving up, or cuts exposure to those moving down, on the view that recent price strength can persist for a while.",
-  },
-  {
-    title: "Trend following",
-    alias: "",
-    category: "Strategy type",
-    body: "Similar to momentum, but usually built to stay with longer, steadier market moves rather than short bursts.",
-  },
-  {
-    title: "Mean reversion",
-    alias: "",
-    category: "Strategy type",
-    body: "Looks for prices that have moved unusually far from their usual range and bets on a move back towards that average.",
-  },
-  {
-    title: "Backtesting",
-    alias: "",
-    category: "Metric",
-    body: "Runs a strategy on historical market data to see how it would have behaved. Useful for comparison, but not a guarantee of future results.",
-  },
-  {
-    title: "Return",
-    alias: "",
-    category: "Metric",
-    body: "How much a strategy gained or lost over the period shown. Read it alongside risk, not on its own.",
-  },
-  {
-    title: "Biggest drop",
-    alias: "Max drawdown",
-    category: "Metric",
-    body: "The largest fall from a previous peak to a later low before a new high is reached.",
-  },
-  {
-    title: "Risk-adjusted return",
-    alias: "Sharpe ratio",
-    category: "Metric",
-    body: "Shows how much return a strategy earned for the amount of volatility it took on. Higher is generally better.",
-  },
-  {
-    title: "Price movement",
-    alias: "Volatility",
-    category: "Metric",
-    body: "Shows how much a strategy's value tends to move up and down. Bigger swings usually mean a bumpier ride.",
-  },
-  {
-    title: "Market similarity",
-    alias: "Correlation",
-    category: "Metric",
-    body: "Shows how closely a strategy tends to move with the wider market or another strategy. Lower similarity can help diversification.",
-  },
-  {
-    title: "Allocation",
-    alias: "",
-    category: "Portfolio term",
-    body: "How much of your portfolio you put into a specific strategy or asset.",
-  },
-  {
-    title: "Diversification",
-    alias: "",
-    category: "Portfolio term",
-    body: "Spreading money across different strategies or assets so one weak area does less damage to the whole portfolio.",
-  },
-  {
-    title: "Rebalancing",
-    alias: "",
-    category: "Portfolio term",
-    body: "Adjusting holdings back towards your target mix after markets move and weights drift.",
-  },
+const glossaryItems: Array<{ title: string; alias: string; category: string; body: string; id?: string }> = [
+  { title: "Momentum strategy", alias: "", category: "Strategy type", body: "Buys assets already moving up, or cuts exposure to those moving down, on the view that recent price strength can persist for a while." },
+  { title: "Trend following", alias: "", category: "Strategy type", body: "Similar to momentum, but usually built to stay with longer, steadier market moves rather than short bursts." },
+  { title: "Mean reversion", alias: "", category: "Strategy type", body: "Looks for prices that have moved unusually far from their usual range and bets on a move back towards that average." },
+  { title: "Backtesting", alias: "", category: "Metric", body: "Runs a strategy on historical market data to see how it would have behaved. Useful for comparison, but not a guarantee of future results." },
+  { title: "Return", alias: "", category: "Metric", body: "How much a strategy gained or lost over the period shown. Read it alongside risk, not on its own." },
+  { title: "Biggest drop", alias: "Max drawdown", category: "Metric", body: "The largest fall from a previous peak to a later low before a new high is reached.", id: "drawdown" },
+  { title: "Risk-adjusted return", alias: "Sharpe ratio", category: "Metric", body: "Shows how much return a strategy earned for the amount of volatility it took on. Higher is generally better.", id: "risk-adjusted-return" },
+  { title: "Price movement", alias: "Volatility", category: "Metric", body: "Shows how much a strategy's value tends to move up and down. Bigger swings usually mean a bumpier ride." },
+  { title: "Market similarity", alias: "Correlation", category: "Metric", body: "Shows how closely a strategy tends to move with the wider market or another strategy. Lower similarity can help diversification.", id: "correlation" },
+  { title: "Allocation", alias: "", category: "Portfolio term", body: "How much of your portfolio you put into a specific strategy or asset.", id: "allocation" },
+  { title: "Diversification", alias: "", category: "Portfolio term", body: "Spreading money across different strategies or assets so one weak area does less damage to the whole portfolio.", id: "diversification" },
+  { title: "Rebalancing", alias: "", category: "Portfolio term", body: "Adjusting holdings back towards your target mix after markets move and weights drift." },
 ];
 
 const categoryPillClass: Record<string, string> = {
@@ -92,8 +32,8 @@ export default function LearnPage() {
       description="Investor education on comparing strategies, risk, and building a diversified portfolio."
     >
       <section className="space-y-6">
-        <Card className="rounded-xl border border-border bg-card overflow-hidden">
-          <CardHeader>
+<Card id="compare-strategies" className="rounded-xl border border-border bg-card overflow-hidden">
+            <CardHeader>
             <CardTitle className="font-maven-pro text-lg">How to compare strategies</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm text-muted-foreground">
@@ -103,7 +43,7 @@ export default function LearnPage() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-xl border border-border bg-card overflow-hidden">
+        <Card id="drawdown" className="rounded-xl border border-border bg-card overflow-hidden">
           <CardHeader>
             <CardTitle className="font-maven-pro text-lg">How to read drawdown</CardTitle>
           </CardHeader>
@@ -125,7 +65,7 @@ export default function LearnPage() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-xl border border-border bg-card overflow-hidden">
+        <Card id="diversification" className="rounded-xl border border-border bg-card overflow-hidden">
           <CardHeader>
             <CardTitle className="font-maven-pro text-lg">How to build a diversified strategy portfolio</CardTitle>
           </CardHeader>
@@ -143,6 +83,7 @@ export default function LearnPage() {
           {glossaryItems.map((item) => (
             <Card
               key={item.title}
+              id={item.id}
               className={`${glassCardClass} overflow-hidden border-0`}
             >
               <CardHeader className="p-4 pb-1">

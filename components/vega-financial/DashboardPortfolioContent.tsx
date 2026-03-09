@@ -160,17 +160,25 @@ export function DashboardPortfolioContent({
       {account.holdings.length === 0 && (
         <div className="vf-reveal vf-reveal-delay-1 rounded-xl border border-border bg-card p-4 sm:p-5">
           <h2 className="font-maven-pro text-base font-semibold text-foreground mb-1">
-            You have not allocated to any strategies yet
+            No strategies allocated yet
           </h2>
-          <p className="text-sm text-muted-foreground mb-3">
-            Start by exploring a few simulated strategies and add one to your paper portfolio.
+          <p className="text-sm text-muted-foreground mb-4">
+            Explore strategies and add one to your paper portfolio, or learn how to compare risk and return first.
           </p>
-          <Link
-            href={ROUTES.vegaFinancial.marketplace}
-            className="inline-flex items-center justify-center rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:bg-primary-hover focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring min-h-[44px]"
-          >
-            Explore strategies
-          </Link>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href={ROUTES.vegaFinancial.marketplace}
+              className="inline-flex items-center justify-center rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:bg-primary-hover focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring min-h-[44px]"
+            >
+              Explore strategies
+            </Link>
+            <Link
+              href={ROUTES.vegaFinancial.learn}
+              className="inline-flex items-center justify-center rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-accent focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring min-h-[44px]"
+            >
+              Learn how to compare strategies
+            </Link>
+          </div>
         </div>
       )}
 
@@ -203,6 +211,12 @@ export function DashboardPortfolioContent({
           value={riskMix}
         />
       </section>
+
+      {account.holdings.length > 0 && (maxWeight != null && maxWeight > 0.5) && (
+        <p className="vf-reveal vf-reveal-delay-1 text-sm text-muted-foreground rounded-lg border border-border/80 bg-muted/30 px-3 py-2" role="status">
+          Concentration: one holding is {Math.round(maxWeight * 100)}% of your portfolio. Consider diversifying across strategies.
+        </p>
+      )}
 
       <section
         className="vf-reveal vf-reveal-delay-2 grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6"

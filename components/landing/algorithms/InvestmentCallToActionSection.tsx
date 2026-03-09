@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { AnimateOnScroll } from "@/components/landing/AnimateOnScroll";
+import { LANDING_CTA, LANDING_CTA_HREFS } from "@/lib/landing-cta";
 
 export function InvestmentCallToActionSection(): JSX.Element {
   return (
@@ -19,20 +20,23 @@ export function InvestmentCallToActionSection(): JSX.Element {
       </div>
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12 px-4">
         <Link
-          href="/vega-financial"
+          href={LANDING_CTA_HREFS.investorDemo}
           className="inline-flex justify-center items-center h-12 px-8 w-full sm:w-auto min-w-[247px] bg-[#6b21e8] rounded-[10px] shadow-[0px_0px_40px_#6b21e866] font-dm-sans font-medium text-white text-[15px] transition-all hover:bg-[#5a1bc4] active:scale-[0.98] focus-visible:outline focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-          aria-label="Download Vega Financial"
+          aria-label={`${LANDING_CTA.investorPrimary} — ${LANDING_CTA.demoHandoff}`}
         >
-          Download Vega Financial
+          {LANDING_CTA.investorPrimary}
         </Link>
         <Link
-          href="/vega-developer"
+          href={LANDING_CTA_HREFS.developerPlatform}
           className="inline-flex justify-center items-center h-12 px-8 w-full sm:w-auto min-w-[243px] rounded-[10px] border border-[#6b21e84c] shadow-[0px_1px_5px_#531cb3] font-dm-sans font-normal text-[#f0edff] text-[15px] transition-all hover:border-violet-500 hover:shadow-[0px_1px_8px_#531cb3] active:scale-[0.98] focus-visible:outline focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-          aria-label="Register Interest for Vega Developer"
+          aria-label={`${LANDING_CTA.developerPrimary} — ${LANDING_CTA.developerSecondary}`}
         >
-          Register Interest for Vega Developer →
+          {LANDING_CTA.developerPrimary}
         </Link>
       </div>
+      <p className="text-white/70 text-sm mt-3 text-center px-4" role="status">
+        {LANDING_CTA.demoHandoff}
+      </p>
       </AnimateOnScroll>
     </section>
   );

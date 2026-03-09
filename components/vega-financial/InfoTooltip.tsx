@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import { HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -10,13 +11,15 @@ interface InfoTooltipProps {
   className?: string;
   /** Optional aria-label override */
   ariaLabel?: string;
+  /** Optional link to Learn page anchor (e.g. /vega-financial/learn#drawdown) */
+  learnMoreHref?: string;
 }
 
 /**
  * Small "?" icon that shows explanation on hover (desktop) and on click (touch/keyboard).
  * Click opens and closes the tooltip; Escape or outside click closes it.
  */
-export function InfoTooltip({ content, className, ariaLabel }: InfoTooltipProps) {
+export function InfoTooltip({ content, className, ariaLabel, learnMoreHref }: InfoTooltipProps) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLSpanElement>(null);
 
@@ -62,6 +65,14 @@ export function InfoTooltip({ content, className, ariaLabel }: InfoTooltipProps)
         )}
       >
         {content}
+        {learnMoreHref && (
+          <>
+            {" "}
+            <Link href={learnMoreHref} className="font-medium text-primary hover:underline inline-block mt-1" onClick={(e) => e.stopPropagation()}>
+              Learn more →
+            </Link>
+          </>
+        )}
       </span>
     </span>
   );

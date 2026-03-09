@@ -98,6 +98,14 @@ export default function WatchlistPage() {
               Back to Explore
             </Link>
           }
+          secondaryAction={
+            <Link
+              href={`${ROUTES.vegaFinancial.learn}#compare-strategies`}
+              className="inline-flex items-center justify-center rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-medium hover:bg-accent focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring min-h-[44px]"
+            >
+              How to compare strategies
+            </Link>
+          }
         />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

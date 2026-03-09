@@ -10,6 +10,9 @@ export function DashboardHeader() {
           <h1 className="font-maven-pro text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground tracking-tight">
             Your portfolio
           </h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Allocation, performance, and next actions at a glance.
+          </p>
         </div>
         <div
           className="flex flex-wrap items-center gap-x-4 gap-y-1 py-2 px-3 rounded-lg bg-muted/60 border border-border/80 text-[11px] sm:text-xs text-muted-foreground"
