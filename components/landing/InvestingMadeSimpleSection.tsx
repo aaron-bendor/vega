@@ -39,7 +39,7 @@ const screens = [
   {
     step: "3",
     heading: "Invest any\namount",
-    sub: "Start from **as little as £1.**\nNo minimum, no accreditation requirements.",
+    sub: "No minimum, no accreditation requirements.",
     phone: "/investingmadesimple4.png" + IMG_V,
   },
   {

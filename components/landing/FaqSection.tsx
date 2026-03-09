@@ -47,7 +47,7 @@ const faqFinancial: { question: string; answer: string }[] = [
   {
     question: "What's the minimum investment?",
     answer:
-      "There's no minimum and no requirement to be a sophisticated or high-net-worth investor. You can start with as little as £1.",
+      "There's no minimum and no requirement to be a sophisticated or high-net-worth investor.",
   },
   {
     question: "Can I withdraw my money whenever I want?",

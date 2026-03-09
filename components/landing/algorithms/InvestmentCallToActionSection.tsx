@@ -22,7 +22,7 @@ export function InvestmentCallToActionSection(): JSX.Element {
         <Link
           href={LANDING_CTA_HREFS.investorDemo}
           className="inline-flex justify-center items-center h-12 px-8 w-full sm:w-auto min-w-[247px] bg-[#6b21e8] rounded-[10px] shadow-[0px_0px_40px_#6b21e866] font-dm-sans font-medium text-white text-[15px] transition-all hover:bg-[#5a1bc4] active:scale-[0.98] focus-visible:outline focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-          aria-label={`${LANDING_CTA.investorPrimary} — ${LANDING_CTA.demoHandoff}`}
+          aria-label={LANDING_CTA.investorPrimary}
         >
           {LANDING_CTA.investorPrimary}
         </Link>
@@ -34,9 +34,6 @@ export function InvestmentCallToActionSection(): JSX.Element {
           {LANDING_CTA.developerPrimary}
         </Link>
       </div>
-      <p className="text-white/70 text-sm mt-3 text-center px-4" role="status">
-        {LANDING_CTA.demoHandoff}
-      </p>
       </AnimateOnScroll>
     </section>
   );

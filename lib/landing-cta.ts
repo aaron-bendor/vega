@@ -14,8 +14,6 @@ export const LANDING_CTA = {
   developerPrimary: "Develop",
   /** Secondary: register interest (developer). */
   developerSecondary: "Register interest",
-  /** Shown near demo CTAs to set expectations. */
-  demoHandoff: "Opens the paper-trading prototype.",
 } as const;
 
 export const LANDING_CTA_HREFS = {

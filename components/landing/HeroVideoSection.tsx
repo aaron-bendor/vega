@@ -90,9 +90,6 @@ export function HeroVideoSection() {
             <AnimateOnScroll delay={260}>
               <div className="mt-6 flex flex-col items-center gap-2">
                 <DemoCTADropdown onInvest={handleTryItNow} variant="hero" />
-                <p className="text-white/70 text-xs md:text-sm" role="status">
-                  {LANDING_CTA.demoHandoff}
-                </p>
               </div>
             </AnimateOnScroll>
           </div>

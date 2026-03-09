@@ -103,8 +103,7 @@ export function AboutUsSection() {
             <p className="font-maven-pro font-normal text-black text-base md:text-xl leading-relaxed">
               Vega changes that. We connect everyday investors directly with
               talented quant developers, turning sophisticated trading strategies
-              into something you can invest in — transparently, safely, and from
-              as little as £1.
+              into something you can invest in — transparently and safely.
             </p>
           </div>
         </div>
